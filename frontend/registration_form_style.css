@@ -298,11 +298,11 @@ h2 {
 /* Responsive design */
 @media (max-width: 600px) {
     body {
-        padding: .8rem 0.5rem;
+        padding: 1rem 0.5rem;
     }
     .form-container {
         padding: 1.5rem;
-        margin-top: 2rem; /* Adjusted for a tighter look on mobile */
+        margin-top: 3rem; /* Adjusted for a tighter look on mobile */
     }
     .main-header {
         position: static; /* Make header static to save vertical space on mobile */
@@ -322,7 +322,7 @@ h2 {
         font-size: 2rem;
     }
     .form-section h3 {
-        font-size: 1rem;
+        font-size: 1.2rem;
     }
     .checkbox-group {
         grid-template-columns: 1fr;
@@ -332,20 +332,22 @@ h2 {
         width: 85%;
     }
     /* Reduce padding and font sizes for a more compact form on mobile */
-    .form-container {
-        padding: 0.8rem; /* Reduce padding to make the form smaller */
+     .form-container {
+        padding: 1.5rem;
     }
+    /* Reduces the padding for each form section */
     .form-section {
-        padding: 1.rem; /* Reduce padding for form sections */
+        padding: 1.25rem;
     }
+    /* Reduces font size for labels and inputs */
     .input-group label {
-        font-size: 0.9rem; /* Smaller font size for labels */
+        font-size: 1rem;
     }
-    .input-group input,
-    .input-group select {
-        padding: 15px; /* Reduce input padding */
-        font-size: 0.6rem; /* Smaller font size for inputs */
+    .input-group input, .input-group select {
+        padding: 10px;
+        font-size: 0.9rem;
     }
+
     .submit-button {
         padding: 15px; /* Reduce button padding */
         font-size: 1.1rem; /* Smaller font size for button */
