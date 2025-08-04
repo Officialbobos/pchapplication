@@ -661,7 +661,9 @@ def registration_form():
             government_id_file = request.files.get('government_id')
             selfie_photo_file = request.files.get('selfie_photo')
             gov_id_filename = str(uuid.uuid4()) + "_" + secure_filename(government_id_file.filename) if government_id_file and government_id_file.filename else None
-            selfer_filename = str(uuid.uuid4()) + "_" + secure_filename(selfie_photo_file.filename) if selfie_photo_file and selfie_photo_file.filename else None
+            
+            # --- FIX: Changed 'selfer_filename' to 'selfie_filename' to match the key below ---
+            selfie_filename = str(uuid.uuid4()) + "_" + secure_filename(selfie_photo_file.filename) if selfie_photo_file and selfie_photo_file.filename else None
 
             # Construct the new user document (this will be the application record)
             new_user = {
@@ -715,7 +717,6 @@ def registration_form():
             return jsonify({'status': 'error', 'message': f'An error occurred during submission: {e}'}), 500
 
     return render_template('registration_form.html')
-
 
 # Define the route for the 'About Us' page
 @app.route('/about-us')
