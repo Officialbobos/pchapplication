@@ -66,6 +66,51 @@ p {
     background-color: #e63900;
 }
 
+/* --- Header Styles --- */
+.main-header {
+    background-color: var(--background-light);
+    border-bottom: 1px solid var(--medium-gray);
+    padding: 1.5rem 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo img {
+    height: 50px; /* Adjust the logo size as needed */
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+}
+
+.main-nav .login-button {
+    /* Reusing your existing button styles for consistency */
+    background-color: var(--cta-red);
+    color: #fff;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+}
+
+.main-nav .login-button:hover {
+    background-color: #e63900;
+    box-shadow: 0 4px 10px rgba(255, 87, 34, 0.4);
+}
+
 /* --- New Page-Specific Styles --- */
 
 /* Hero Section for About Us page */
@@ -218,5 +263,15 @@ p {
 
     .what-we-do ul {
         text-align: left;
+    }
+
+    /* Responsive Header */
+    .main-header .container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .main-nav {
+        margin-top: 1rem;
     }
 }
