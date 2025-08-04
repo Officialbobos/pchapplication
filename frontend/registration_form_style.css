@@ -298,11 +298,11 @@ h2 {
 /* Responsive design */
 @media (max-width: 600px) {
     body {
-        padding: 1rem 0.5rem;
+        padding: .8rem 0.5rem;
     }
     .form-container {
         padding: 1.5rem;
-        margin-top: 3rem; /* Adjusted for a tighter look on mobile */
+        margin-top: 2rem; /* Adjusted for a tighter look on mobile */
     }
     .main-header {
         position: static; /* Make header static to save vertical space on mobile */
@@ -322,7 +322,7 @@ h2 {
         font-size: 2rem;
     }
     .form-section h3 {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
     .checkbox-group {
         grid-template-columns: 1fr;
@@ -333,18 +333,18 @@ h2 {
     }
     /* Reduce padding and font sizes for a more compact form on mobile */
     .form-container {
-        padding: 1rem; /* Reduce padding to make the form smaller */
+        padding: 0.8rem; /* Reduce padding to make the form smaller */
     }
     .form-section {
-        padding: 1.25rem; /* Reduce padding for form sections */
+        padding: 1.rem; /* Reduce padding for form sections */
     }
     .input-group label {
         font-size: 0.9rem; /* Smaller font size for labels */
     }
     .input-group input,
     .input-group select {
-        padding: 10px; /* Reduce input padding */
-        font-size: 0.9rem; /* Smaller font size for inputs */
+        padding: 15px; /* Reduce input padding */
+        font-size: 0.6rem; /* Smaller font size for inputs */
     }
     .submit-button {
         padding: 15px; /* Reduce button padding */
