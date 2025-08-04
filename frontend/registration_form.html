@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Form</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='registration_form_style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='registration_form_style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Basic styles for the loading modal */
@@ -22,6 +22,41 @@
             color: white;
             font-size: 2em;
             text-align: center;
+        }
+
+        /* Styles for the social handles group */
+        .social-handle-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .social-handle-group select,
+        .social-handle-group input[type="text"] {
+            flex: 1;
+        }
+
+        .add-social-button {
+            cursor: pointer;
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        /* Styles for the currency input group */
+        .currency-input-group {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+        .currency-input-group label {
+            white-space: nowrap;
+        }
+        .currency-input-group input[type="text"] {
+            width: 80px; /* Adjust width as needed for symbol */
         }
     </style>
 </head>
@@ -47,7 +82,8 @@
         {% endif %}
         {% endwith %}
 
-<form id="registrationForm" action="{{ url_for('registration_form') }}" method="post" enctype="multipart/form-data">            <h2>Registration Form</h2>
+        <form id="registrationForm" action="{{ url_for('registration_form') }}" method="post" enctype="multipart/form-data">
+            <h2>Registration Form</h2>
             <p>WE NEED YOU TO PROVIDE US YOUR NEEDS FOR APPLYING FOR THIS PROGRAM</p>
 
             <div class="form-section">
@@ -169,7 +205,11 @@
                 </div>
                 <div class="input-group">
                     <label for="monthly-income">12. Monthly Income</label>
-                    <input type="number" id="monthly-income" name="monthly_income" required>
+                    <div class="currency-input-group">
+                        <label for="currency-symbol">Currency</label>
+                        <input type="text" id="currency-symbol" name="currency_symbol" placeholder="$" required>
+                        <input type="number" id="monthly-income" name="monthly_income" placeholder="Amount" required>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label for="how-heard">13. How did you hear about this program?</label>
@@ -178,13 +218,45 @@
             </div>
 
             <div class="form-section">
+                <h3>Social Handles</h3>
+                <div id="social-handles-container">
+                    <div class="input-group social-handle-group">
+                        <label for="social-platform-0">14. Social Platform</label>
+                        <select id="social-platform-0" name="social_platform[]">
+                            <option value="">Select...</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="instagram">Instagram</option>
+                            <option value="snapchat">Snapchat</option>
+                            <option value="twitter">Twitter</option>
+                            <option value="tiktok">TikTok</option>
+                        </select>
+                        <label for="social-handle-0">Handle</label>
+                        <input type="text" id="social-handle-0" name="social_handle[]">
+                    </div>
+                </div>
+                <button type="button" class="add-social-button" id="addSocialButton">Add another social handle</button>
+            </div>
+
+            <div class="form-section">
+                <h3>Physical Challenges</h3>
+                <div class="input-group">
+                    <label for="physical-challenges">15. Do you have a physical disability?</label>
+                    <select id="physical-challenges" name="physical_challenges" required>
+                        <option value="">Select...</option>
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-section">
                 <h3>ID Verification</h3>
                 <div class="input-group">
-                    <label for="government-id">14. Front picture of any of your government issue ID (Driver's license or State ID)</label>
+                    <label for="government-id">16. Front picture of any of your government issue ID (Driver's license or State ID)</label>
                     <input type="file" id="government-id" name="government_id" accept="image/*" required>
                 </div>
                 <div class="input-group">
-                    <label for="selfie">15. Front picture of yourself (a selfie)</label>
+                    <label for="selfie">17. Front picture of yourself (a selfie)</label>
                     <input type="file" id="selfie" name="selfie_photo" accept="image/*" required>
                 </div>
             </div>
@@ -198,64 +270,85 @@
             <button type="submit" class="submit-button">Submit Application</button>
         </form>
     </main>
-<div id="loadingModal" class="loading-modal">
-    <p>Processing your application...</p>
-</div>
 
-<div id="successModal" class="modal-backdrop" style="display: none;">
-    <div class="modal-content">
-        <h2 class="modal-title">Application Submitted!</h2>
-        <p>Your application has been submitted successfully. Your application is under review and you will receive an email from us within 30 to 40 minutes about your application. Keep an eye on your email!</p>
-        <button id="closeModalButton" class="modal-close-button" onclick="window.location.reload();">Close</button>
+    <div id="loadingModal" class="loading-modal">
+        <p>Processing your application...</p>
     </div>
-</div>
 
-<script>
-    document.getElementById('registrationForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Stop the default form submission (page reload)
-        
-        const form = event.target;
-        const formData = new FormData(form);
+    <div id="successModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content">
+            <h2 class="modal-title">Application Submitted!</h2>
+            <p>Your application has been submitted successfully. Your application is under review and you will receive an email from us within 30 to 40 minutes about your application. Keep an eye on your email!</p>
+            <button id="closeModalButton" class="modal-close-button" onclick="window.location.reload();">Close</button>
+        </div>
+    </div>
 
-        // Show the loading modal immediately
-        document.getElementById('loadingModal').style.display = 'flex';
+    <script>
+        // JavaScript for adding more social handle fields
+        document.addEventListener('DOMContentLoaded', function() {
+            let socialHandleCount = 1;
+            const addSocialButton = document.getElementById('addSocialButton');
+            const socialHandlesContainer = document.getElementById('social-handles-container');
 
-        // Create a promise for the 4-second delay
-        const delayPromise = new Promise(resolve => setTimeout(resolve, 4000));
-
-        // Create a promise for the form submission
-        const fetchPromise = fetch(form.action, {
-            method: 'POST',
-            body: formData
-        }).then(response => response.json());
-
-        // Use Promise.all to wait for both the delay and the fetch to complete
-        Promise.all([fetchPromise, delayPromise])
-            .then(results => {
-                const data = results[0]; // The first result is the data from the fetch call
-                
-                // Hide the loading modal after both promises are resolved
-                document.getElementById('loadingModal').style.display = 'none';
-                
-                if (data.status === 'success') {
-                    document.getElementById('successModal').style.display = 'flex';
-                } else {
-                    alert('An error occurred during submission: ' + data.message);
-                }
-            })
-            .catch(error => {
-                // Hide the loading modal and show a general error
-                document.getElementById('loadingModal').style.display = 'none';
-                alert('An unexpected error occurred. Please try again.');
-                console.error('Error:', error);
+            addSocialButton.addEventListener('click', function() {
+                const newSocialGroup = document.createElement('div');
+                newSocialGroup.className = 'input-group social-handle-group';
+                newSocialGroup.innerHTML = `
+                    <label for="social-platform-${socialHandleCount}">Platform</label>
+                    <select id="social-platform-${socialHandleCount}" name="social_platform[]">
+                        <option value="">Select...</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="snapchat">Snapchat</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="tiktok">TikTok</option>
+                    </select>
+                    <label for="social-handle-${socialHandleCount}">Handle</label>
+                    <input type="text" id="social-handle-${socialHandleCount}" name="social_handle[]">
+                `;
+                socialHandlesContainer.appendChild(newSocialGroup);
+                socialHandleCount++;
             });
-    });
-    
-    // Logic to close the success modal
-    document.getElementById('closeModalButton').addEventListener('click', function() {
-        document.getElementById('successModal').style.display = 'none';
-        window.location.reload(); // Reload the page to clear the form
-    });
-</script>
+        });
+
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault(); 
+            
+            const form = event.target;
+            const formData = new FormData(form);
+
+            document.getElementById('loadingModal').style.display = 'flex';
+
+            const delayPromise = new Promise(resolve => setTimeout(resolve, 4000));
+
+            const fetchPromise = fetch(form.action, {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json());
+
+            Promise.all([fetchPromise, delayPromise])
+                .then(results => {
+                    const data = results[0];
+                    
+                    document.getElementById('loadingModal').style.display = 'none';
+                    
+                    if (data.status === 'success') {
+                        document.getElementById('successModal').style.display = 'flex';
+                    } else {
+                        alert('An error occurred during submission: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('loadingModal').style.display = 'none';
+                    alert('An unexpected error occurred. Please try again.');
+                    console.error('Error:', error);
+                });
+        });
+        
+        document.getElementById('closeModalButton').addEventListener('click', function() {
+            document.getElementById('successModal').style.display = 'none';
+            window.location.reload();
+        });
+    </script>
 </body>
 </html>
