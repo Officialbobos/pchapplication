@@ -293,7 +293,7 @@ h2 {
         margin-top: 8rem;
     }
     .main-header {
-        position: static;
+        position: static; /* Make header static to save vertical space on mobile */
         background: rgba(255, 255, 255, 0.9);
         backdrop-filter: none;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -301,6 +301,7 @@ h2 {
     .header-container {
         flex-direction: column;
         gap: 1rem;
+        padding: 0 15px; /* Adjust padding for smaller screens */
     }
     .logo img {
         height: 50px;
@@ -317,5 +318,24 @@ h2 {
     .modal-content {
         padding: 2rem;
         width: 85%;
+    }
+    /* Reduce padding and font sizes for a more compact form on mobile */
+    .form-container {
+        padding: 1rem; /* Reduce padding to make the form smaller */
+    }
+    .form-section {
+        padding: 1.25rem; /* Reduce padding for form sections */
+    }
+    .input-group label {
+        font-size: 0.9rem; /* Smaller font size for labels */
+    }
+    .input-group input,
+    .input-group select {
+        padding: 10px; /* Reduce input padding */
+        font-size: 0.9rem; /* Smaller font size for inputs */
+    }
+    .submit-button {
+        padding: 15px; /* Reduce button padding */
+        font-size: 1.1rem; /* Smaller font size for button */
     }
 }
