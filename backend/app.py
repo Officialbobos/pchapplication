@@ -17,6 +17,9 @@ import uuid
 from .decorators import login_required, admin_required
 import re
 from functools import wraps
+from backend.forms import AdminLoginForm
+from flask_wtf.csrf import generate_csrf
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -187,9 +190,15 @@ def is_admin():
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    form = AdminLoginForm()
+
+    if form.validate_on_submit():
+        # Your form validation logic will go here.
+        # When using Flask-WTF, we check form.validate_on_submit()
+        # which automatically handles the POST check and CSRF token validation.
+
+        username = form.username.data
+        password = form.password.data
         
         user = users_collection.find_one({"username": username})
 
@@ -200,8 +209,11 @@ def admin_login():
             return redirect(url_for('admin_dashboard'))
         else:
             error = 'Invalid credentials'
-            return render_template('admin/admin_login.html', error=error)
-    return render_template('admin/admin_login.html')
+            # Pass the form object back to the template so it can display the CSRF token.
+            return render_template('admin/admin_login.html', form=form, error=error)
+
+    # For a GET request, just render the template with the form object.
+    return render_template('admin/admin_login.html', form=form)
 
 @app.route('/admin/dashboard')
 @login_required
