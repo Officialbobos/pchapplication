@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import uuid
-from decorators import login_required, admin_required
+from .decorators import login_required, admin_required
 import re
 from functools import wraps
 
