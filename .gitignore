@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 venv/
 
-# Flask
+# Flask and sensitive files
 .flaskenv
 instance/
+backend/.env
