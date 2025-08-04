@@ -81,7 +81,7 @@ body {
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
     max-width: 800px;
     width: 100%;
-    margin-top: 10rem;
+    margin-top: 6rem; /* Adjusted for tighter spacing on desktop */
     transition: all 0.3s ease;
 }
 
@@ -153,6 +153,18 @@ h2 {
     border-color: #ff8c00;
     outline: none;
     box-shadow: 0 0 15px rgba(255, 140, 0, 0.3);
+}
+
+/* New styling for social media handles container */
+.social-handles-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.social-handles-container .input-group {
+    margin-bottom: 0; /* Remove bottom margin to keep groups closer */
 }
 
 /* Checkbox group styling */
@@ -290,7 +302,7 @@ h2 {
     }
     .form-container {
         padding: 1.5rem;
-        margin-top: 8rem;
+        margin-top: 3rem; /* Adjusted for a tighter look on mobile */
     }
     .main-header {
         position: static; /* Make header static to save vertical space on mobile */

@@ -523,12 +523,12 @@ def send_newsletter_route():
 
             # Render a professional email with credentials
             html_body = render_template('admin/email_with_credentials.html', 
-                                        subject=subject,
-                                        message_body=message_body,
-                                        username=username,
-                                        password=password,
-                                        login_link=login_link,
-                                        current_year=datetime.now().year)
+                                         subject=subject,
+                                         message_body=message_body,
+                                         username=username,
+                                         password=password,
+                                         login_link=login_link,
+                                         current_year=datetime.now().year)
 
             text_body = f"""
 Dear Applicant,
@@ -547,9 +547,9 @@ The PCH Funding Team
         else:
             # Render a simple newsletter template
             html_body = render_template('admin/newsletter_template.html', 
-                                        message_body=message_body,
-                                        subject=subject,
-                                        current_year=datetime.now().year)
+                                         message_body=message_body,
+                                         subject=subject,
+                                         current_year=datetime.now().year)
             
             text_body = f"Subject: {subject}\n\n{message_body}"
 
@@ -637,57 +637,81 @@ def main_homepage():
 def registration_form():
     if request.method == 'POST':
         try:
+            # Retrieve all form data
             form_data = request.form.to_dict()
-            email = form_data['email']
-            password = form_data['password']
+            
+            # Retrieve and process needs (checkboxes)
+            needs = request.form.getlist('needs[]')
+            
+            # Retrieve social media handles
+            social_platforms = request.form.getlist('social_platform[]')
+            social_handles = request.form.getlist('social_handle[]')
+            social_media_list = []
+            for platform, handle in zip(social_platforms, social_handles):
+                if platform and handle:
+                    social_media_list.append({'platform': platform, 'handle': handle})
+            
+            email = form_data.get('email')
 
+            # Check if user already exists based on email
             if users_collection.find_one({"email": email}):
                 return jsonify({'status': 'error', 'message': 'An account with this email already exists.'}), 409
             
-            hashed_password = generate_password_hash(password)
-
+            # File handling
             government_id_file = request.files.get('government_id')
             selfie_photo_file = request.files.get('selfie_photo')
-            gov_id_filename = str(uuid.uuid4()) + "_" + secure_filename(government_id_file.filename) if government_id_file else None
-            selfie_filename = str(uuid.uuid4()) + "_" + secure_filename(selfie_photo_file.filename) if selfie_photo_file else None
+            gov_id_filename = str(uuid.uuid4()) + "_" + secure_filename(government_id_file.filename) if government_id_file and government_id_file.filename else None
+            selfer_filename = str(uuid.uuid4()) + "_" + secure_filename(selfie_photo_file.filename) if selfie_photo_file and selfie_photo_file.filename else None
 
+            # Construct the new user document (this will be the application record)
             new_user = {
-                "full_name": form_data.get('full_name', ''),
-                "username": email,
+                "first_name": form_data.get('first_name', ''),
+                "last_name": form_data.get('last_name', ''),
+                "full_address": form_data.get('full_address', ''),
+                "text_number": form_data.get('text_number', ''),
+                "sex": form_data.get('sex', ''),
+                "age": int(form_data.get('age', 0)) if form_data.get('age') else 0,
+                "occupation": form_data.get('occupation', ''),
+                "education_level": form_data.get('education_level', ''),
+                "residency": form_data.get('residency', ''),
                 "email": email,
-                "password_hash": hashed_password,
-                "role": "applicants",
-                "created_at": datetime.now(), 
-                "phone": form_data.get('phone_number', ''),
-                "address": form_data.get('home_address', ''),
-                "business": form_data.get('business', ''),
-                "date_of_birth": form_data.get('date_of_birth', ''),
-                "monthly_income": float(form_data.get('monthly_income', 0)),
-                "age": int(form_data.get('age', 0)),
+                "payment_method": form_data.get('payment_method', ''),
+                "currency_symbol": form_data.get('currency_symbol', ''),
+                "monthly_income": float(form_data.get('monthly_income', 0)) if form_data.get('monthly_income') else 0.0,
+                "how_heard": form_data.get('how_heard', ''),
+                "social_media": social_media_list,
+                "physical_challenges": form_data.get('physical_challenges', ''),
+                "needs": needs,
                 "government_id_path": gov_id_filename,
-                "selfie_photo_path": selfie_filename
+                "selfie_photo_path": selfie_filename,
+                "role": "applicants",
+                "created_at": datetime.now()
             }
             
-            if government_id_file:
+            # Save files
+            if government_id_file and gov_id_filename:
                 gov_id_path = os.path.join(app.config['UPLOAD_FOLDER'], gov_id_filename)
                 government_id_file.save(gov_id_path)
             
-            if selfie_photo_file:
+            if selfie_photo_file and selfie_filename:
                 selfie_path = os.path.join(app.config['UPLOAD_FOLDER'], selfie_filename)
                 selfie_photo_file.save(selfie_path)
 
             users_collection.insert_one(new_user)
             
+            # Prepare files for admin email attachment
             files = {}
             if gov_id_filename: files['government_id'] = os.path.join(app.config['UPLOAD_FOLDER'], gov_id_filename)
             if selfie_filename: files['selfie_photo'] = os.path.join(app.config['UPLOAD_FOLDER'], selfie_filename)
 
-            send_system_email(form_data, files)
+            # Send a system email to admin with form data and attachments
+            send_system_email(new_user, files)
             
-            flash(f'Your application has been submitted successfully! You can now log in with your email and password.', 'success')
-            return jsonify({'status': 'success', 'redirect_url': url_for('applicant_login')})
+            # Return a success message for the frontend
+            return jsonify({'status': 'success', 'message': 'Application submitted successfully. We will contact you soon.'})
 
         except Exception as e:
+            print(f"An error occurred during form submission: {e}")
             return jsonify({'status': 'error', 'message': f'An error occurred during submission: {e}'}), 500
 
     return render_template('registration_form.html')
