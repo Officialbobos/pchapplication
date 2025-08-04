@@ -26,7 +26,7 @@ template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'fr
 app = Flask(__name__, template_folder=template_dir, static_folder=template_dir)
 
 # Update this line to encode the string into a byte string
-app.secret_key = os.getenv('SECRET_KEY').encode('utf-8')
+app.secret_key = os.getenv('SECRET_KEY')
 
 # --- CONFIGURATION ---
 # Create a folder for all uploads (applicant documents and temp attachments)
@@ -39,6 +39,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ATTACHMENT_FOLDER = os.path.join(UPLOAD_FOLDER, 'temp_attachments')
 if not os.path.exists(ATTACHMENT_FOLDER):
     os.makedirs(ATTACHMENT_FOLDER)
+
+#Render URL for the application
+app.config['SERVER_NAME'] = 'pchfundingapplication.onrender.com'
 
 # MongoDB Configuration
 MONGO_URI = os.getenv('MONGO_URI')
