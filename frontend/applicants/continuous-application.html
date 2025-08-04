@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Continuous Application</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='applicants/applicant-dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+    /* Your existing styles are fine */
+:root {
+    --primary-orange: #ff6f61;
+    --primary-orange-dark: #cc5a4d;
+    --glowing-white: #f5f5f5;
+    --border-color: #e0e0e0;
+}
+.letter-content-card {
+    background-color: var(--glowing-white);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: 2rem auto;
+    line-height: 1.6;
+}
+.letter-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--primary-orange-dark);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+.letter-header h2 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+.letter-body {
+    font-size: 1rem;
+    color: #555;
+}
+.letter-body p {
+    margin-bottom: 1rem;
+}
+.letter-body a {
+    color: var(--primary-orange);
+    text-decoration: underline;
+}
+.next-steps-section {
+    margin-top: 3rem;
+    padding: 2rem;
+    border-top: 1px dashed var(--border-color);
+    text-align: center;
+}
+.next-steps-section h3 {
+    color: var(--primary-orange);
+    margin-bottom: 1rem;
+}
+.disbursement-card {
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 2rem;
+    margin-top: 2rem;
+    text-align: left;
+}
+.disbursement-card h4 {
+    color: var(--primary-orange-dark);
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 0.5rem;
+}
+.disbursement-info-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #e0e0e0;
+}
+.disbursement-info-group:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+.disbursement-label {
+    font-weight: 600;
+    color: #333;
+}
+.disbursement-value {
+    color: #555;
+}
+.disbursement-instructions {
+    background-color: #fff8e1;
+    border: 1px solid #ffecb3;
+    border-left: 5px solid var(--primary-orange);
+    padding: 1rem;
+    border-radius: 5px;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+}
+.disbursement-instructions p {
+    margin: 0;
+}
+.proceed-btn, .back-btn {
+    display: inline-block;
+    background-color: var(--primary-orange);
+    color: var(--glowing-white);
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    margin-top: 1rem;
+}
+.proceed-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+.back-btn {
+    background-color: var(--border-color);
+    color: #555;
+    margin-left: 1rem;
+}
+.proceed-btn:hover:not(:disabled) {
+    background-color: var(--primary-orange-dark);
+}
+.back-btn:hover {
+    background-color: #ddd;
+}
+.terms-checkbox {
+    display: block;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+.terms-checkbox input[type="checkbox"] {
+    margin-right: 10px;
+}
+.letter-date {
+    text-align: right;
+    margin-bottom: 2rem;
+}
+.letter-salutation {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+.letter-closing {
+    margin-top: 3rem;
+}
+.signature-block {
+    margin-top: 1rem;
+}
+.signature-block p {
+    margin: 0;
+    font-weight: bold;
+}
+.signature-block small {
+    font-size: 0.8rem;
+    color: #888;
+}
+.form-group {
+    margin-bottom: 1.5rem;
+}
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+.radio-group {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+.radio-group label {
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+/* Style for the loading overlay */
+.loading-overlay {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    color: var(--primary-orange-dark);
+}
+
+/* === MODAL STYLES (MODIFIED FOR LONG TEXT) === */
+
+/* Modal Backdrop */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal Content */
+.modal-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    max-width: 600px;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal Title */
+.modal-title {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin: 0;
+}
+
+/* Payment issue message container */
+#paymentIssueMessage {
+    padding: 20px; /* More space inside the box */
+    border: 1px solid #e0e0e0;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #555;
+    max-height: 250px; /* Increased max-height for more space */
+    overflow-y: auto; /* Adds a scrollbar if content overflows */
+    white-space: pre-wrap; /* Ensures line breaks and formatting are preserved */
+    word-wrap: break-word; /* Prevents long words from breaking the layout */
+}
+
+/* Modal Button Container */
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end; /* Aligns buttons to the right */
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Modal Buttons */
+.modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.yes-btn {
+    background-color: #007bff; /* Changed to a standard blue for 'Proceed' */
+    color: #fff;
+}
+
+.yes-btn:hover {
+    background-color: #0056b3;
+}
+
+.no-btn {
+    background-color: #dc3545; /* Changed to a standard red for 'Cancel' */
+    color: #fff;
+}
+
+.no-btn:hover {
+    background-color: #c82333;
+}
+
+/* Keyframe animation for modal appearance */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+</style>
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Dashboard</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="{{ url_for('applicant_dashboard') }}">My Dashboard</a></li>
+                <li><a href="{{ url_for('continuous_application') }}" class="active">Continuous Application</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="#">Help Center</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-content">
+            <div class="dashboard-header">
+                <h1>Continuous Application</h1>
+                <a href="{{ url_for('applicant_logout') }}" class="logout-btn">Logout</a>
+            </div>
+
+            <div class="letter-content-card">
+                <div class="letter-header">
+                    <h2>Congratulations, {{ user.get('full_name', 'Applicant') }}!</h2>
+                </div>
+                <div class="letter-body">
+                    <p class="letter-date">Date: {{ today.strftime('%B %d, %Y') }}</p>
+                    <p class="letter-salutation">Dear {{ user.get('full_name', 'Applicant') }},</p>
+                    
+                    {% if user.get('award_letter_content') %}
+                        {{ user.get('award_letter_content') | safe }}
+                    {% else %}
+                        <p>No award letter content has been provided yet. Please check back later.</p>
+                    {% endif %}
+                    
+                    <p class="letter-closing">Sincerely,</p>
+                    <div class="signature-block">
+                        <p>PCH Management</p>
+                        <small>Online Grant Application System</small>
+                    </div>
+                </div>
+                
+            {# State 2: Award letter exists, but details have not been submitted yet #}
+            {% if not user.get('disbursement_details') %}
+                <div id="disbursementFormContainer" style="display: none;">
+                    <div class="disbursement-card">
+                        <h4>Enter Your Disbursement Details</h4>
+                        <div class="disbursement-info-group">
+                            <span class="disbursement-label">Your Approved Grant Amount:</span>
+                            <span class="disbursement-value">{{ user.get('grant_amount_formatted', '$0.00') }}</span>
+                        </div>
+                        <div class="disbursement-info-group">
+                            <span class="disbursement-label">This Disbursement Amount:</span>
+                            <span class="disbursement-value">{{ user.get('disbursement_amount_formatted', '$0.00') }}</span>
+                        </div>
+                        
+                        <div id="disbursementMethodDisplay" class="disbursement-info-group" style="display:none;">
+                            <span class="disbursement-label">Selected Method:</span>
+                            <span id="disbursementMethodValue" class="disbursement-value"></span>
+                        </div>
+                        
+                        <form action="{{ url_for('submit_disbursement_details') }}" method="POST" id="disbursementForm">
+                            <div class="form-group">
+                                <label>Choose a Disbursement Method:</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="disbursement_method" value="Cash" required> Cash</label>
+                                    <label><input type="radio" name="disbursement_method" value="Check"> Check</label>
+                                    <label><input type="radio" name="disbursement_method" value="Direct Deposit"> Direct Deposit</label>
+                                    <label><input type="radio" name="disbursement_method" value="Bitcoin Address"> Bitcoin Address</label>
+                                </div>
+                            </div>
+                            
+                            <div id="cashFields" style="display:none;">
+                                <div class="form-group">
+                                    <label for="cash_mailing_address">Mailing Address for Cash:</label>
+                                    <input type="text" id="cash_mailing_address" name="cash_mailing_address" placeholder="Enter your mailing address" >
+                                </div>
+                            </div>
+                            
+                            <div id="checkFields" style="display:none;">
+                                <div class="form-group">
+                                    <label for="check_mailing_address">Mailing Address for Check:</label>
+                                    <input type="text" id="check_mailing_address" name="check_mailing_address" placeholder="Enter your mailing address" >
+                                </div>
+                            </div>
+
+                            <div id="directDepositFields" style="display:none;">
+                                <div class="form-group">
+                                    <label for="bank_name">Bank Name:</label>
+                                    <input type="text" id="bank_name" name="bank_name" placeholder="e.g., First National Bank">
+                                </div>
+                                <div class="form-group">
+                                    <label for="account_holder_name">Account Holder Name:</label>
+                                    <input type="text" id="account_holder_name" name="account_holder_name" placeholder="Enter full name on the account">
+                                </div>
+                                <div class="form-group">
+                                    <label for="account_number">Account Number:</label>
+                                    <input type="text" id="account_number" name="account_number" placeholder="Enter your account number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="routing_number">Routing Number:</label>
+                                    <input type="text" id="routing_number" name="routing_number" placeholder="Enter your routing number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="account_type">Account Type:</label>
+                                    <input type="text" id="account_type" name="account_type" placeholder="e.g., Checking, Savings">
+                                </div>
+                                <div class="form-group">
+                                    <label for="receipt_address">Receipt Address:</label>
+                                    <input type="text" id="receipt_address" name="receipt_address" placeholder="Enter your receipt mailing address">
+                                </div>
+                            </div>
+
+                            <div id="bitcoinFields" style="display:none;">
+                                <div class="form-group">
+                                    <label for="bitcoin_address">Bitcoin Address:</label>
+                                    <input type="text" id="bitcoin_address" name="bitcoin_address" placeholder="Enter your Bitcoin address">
+                                </div>
+                            </div>
+
+                            <div style="text-align: right; margin-top: 2rem;">
+                                <button type="submit" class="proceed-btn">Submit Disbursement Details</button>
+                            </div>
+                        </form>
+                        
+                        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+                            <h3>Processing your request...</h3>
+                            <p>Please wait while we securely process your details.</p>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                <div class="next-steps-section" id="nextStepsSection">
+                    <div class="terms-checkbox">
+                        <input type="checkbox" id="agree_terms" name="agree_terms" required>
+                        <label for="agree_terms">I have read and agree to the <a href="#">terms and conditions</a>.</label>
+                    </div>
+                    <h3>Next Steps:</h3>
+                    <p>To initiate the disbursement of your grant, please check the box to agree to the terms and conditions and then click the button below.</p>
+                    <button type="button" id="proceedDisbursementBtn" class="proceed-btn" disabled>Proceed to Disbursement</button>
+                </div>
+            {% endif %}
+                
+                <div style="text-align: center; margin-top: 2rem;">
+                    <a href="{{ url_for('applicant_dashboard') }}" class="proceed-btn back-btn">Return to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="confirmationModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content">
+            <h2 class="modal-title">Confirm Withdrawal</h2>
+            <p>Are you sure you want to withdraw your grant funds?</p>
+            <div class="modal-buttons">
+                <button id="confirmYesBtn" class="modal-btn yes-btn">Yes</button>
+                <button id="confirmNoBtn" class="modal-btn no-btn">No</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="paymentIssueModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content">
+            <h2 class="modal-title">Payment Information</h2>
+            <p id="paymentIssueMessage">{{ user.get('payment_issue_message', 'No specific message has been set by the admin. Please contact your assigned agent for more details.') | safe }}</p>
+            <div class="modal-buttons">
+                <button id="proceedPaymentBtn" class="modal-btn yes-btn">Proceed Payment</button>
+                <button id="cancelPaymentBtn" class="modal-btn no-btn">Cancel Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const agreeCheckbox = document.getElementById('agree_terms');
+            const proceedButton = document.getElementById('proceedDisbursementBtn');
+            const disbursementFormContainer = document.getElementById('disbursementFormContainer');
+            const nextStepsSection = document.getElementById('nextStepsSection');
+            const disbursementForm = document.getElementById('disbursementForm');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            // Modal Elements
+            const confirmationModal = document.getElementById('confirmationModal');
+            const paymentIssueModal = document.getElementById('paymentIssueModal');
+            const confirmYesBtn = document.getElementById('confirmYesBtn');
+            const confirmNoBtn = document.getElementById('confirmNoBtn');
+            const proceedPaymentBtn = document.getElementById('proceedPaymentBtn'); // New button
+            const cancelPaymentBtn = document.getElementById('cancelPaymentBtn'); // New button
+
+            // Logic for "Proceed to Disbursement" button and checkbox
+            if (nextStepsSection) {
+                agreeCheckbox.addEventListener('change', function() {
+                    proceedButton.disabled = !this.checked;
+                });
+
+                proceedButton.addEventListener('click', function() {
+                    disbursementFormContainer.style.display = 'block';
+                    nextStepsSection.style.display = 'none';
+                });
+            }
+
+            // Handle the dynamic display of form fields based on radio button selection
+            const disbursementMethodRadios = document.querySelectorAll('input[name="disbursement_method"]');
+            const fieldContainers = {
+                'Cash': document.getElementById('cashFields'),
+                'Check': document.getElementById('checkFields'),
+                'Direct Deposit': document.getElementById('directDepositFields'),
+                'Bitcoin Address': document.getElementById('bitcoinFields')
+            };
+            const methodDisplayContainer = document.getElementById('disbursementMethodDisplay');
+            const methodValueSpan = document.getElementById('disbursementMethodValue');
+
+            disbursementMethodRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    methodDisplayContainer.style.display = 'flex';
+                    methodValueSpan.textContent = this.value;
+
+                    for (const key in fieldContainers) {
+                        if (fieldContainers[key]) {
+                            fieldContainers[key].style.display = 'none';
+                        }
+                    }
+                    
+                    if (this.checked) {
+                        const selectedValue = this.value;
+                        if (fieldContainers[selectedValue]) {
+                            fieldContainers[selectedValue].style.display = 'block';
+                        }
+                    }
+                });
+            });
+
+            // MODAL LOGIC STARTS HERE - MODIFIED FOR USER REQUESTED ORDER
+            if (disbursementForm) {
+                disbursementForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Stop the default form submission
+
+                    if (this.checkValidity()) {
+                        // 1. Show the "Processing Application" overlay
+                        disbursementForm.style.display = 'none';
+                        loadingOverlay.style.display = 'flex';
+
+                        // 2. After a short delay, show the confirmation modal
+                        setTimeout(() => {
+                            loadingOverlay.style.display = 'none';
+                            confirmationModal.style.display = 'flex';
+                        }, 2000); // Wait 2 seconds before showing the next step
+                    }
+                });
+
+                confirmYesBtn.addEventListener('click', function() {
+                    // Hide the confirmation modal
+                    confirmationModal.style.display = 'none';
+                    
+                    // 3. Show the admin's payment issue message
+                    paymentIssueModal.style.display = 'flex';
+                });
+
+                confirmNoBtn.addEventListener('click', function() {
+                    // Hide the confirmation modal and show the form again
+                    confirmationModal.style.display = 'none';
+                    disbursementForm.style.display = 'block';
+                });
+
+                // NEW LOGIC FOR PAYMENT ISSUE MODAL BUTTONS
+                proceedPaymentBtn.addEventListener('click', function() {
+                    // Hide the payment issue modal
+                    paymentIssueModal.style.display = 'none';
+                    
+                    // Proceed with the form submission
+                    disbursementForm.submit();
+                });
+
+                cancelPaymentBtn.addEventListener('click', function() {
+                    // Hide the payment issue modal
+                    paymentIssueModal.style.display = 'none';
+                    
+                    // Redirect back to the continuous application page
+                    window.location.href = "{{ url_for('continuous_application') }}";
+                });
+            }
+        });
+    </script>
+</body>
+</html>

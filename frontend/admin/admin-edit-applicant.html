@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Applicant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin-dashboard.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('admin_create_applicant_account') }}">Create Applicant Account</a></li>
+                <li class="active"><a href="{{ url_for('admin_manage_applicants') }}">Manage Applicants</a></li>
+                <li><a href="{{ url_for('send_user_message') }}">Send User Message</a></li>
+                <li><a href="{{ url_for('admin_logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Edit Applicant</h1>
+            </div>
+
+            <a href="{{ url_for('admin_write_letter', applicant_id=applicant['_id']) }}" class="write-letter-btn">
+                Write Award Letter
+            </a>
+
+            <div class="form-container">
+                <form action="{{ url_for('admin_edit_applicant', applicant_id=applicant['_id']) }}" method="POST" enctype="multipart/form-data">
+                    <div class="input-group">
+                        <label for="application_id">Application ID:</label>
+                        <input type="text" id="application_id" name="application_id" value="{{ applicant.get('application_id', '') }}">
+                    </div>
+                    <div class="input-group">
+                        <label for="application_status">Application Status:</label>
+                        <select id="application_status" name="application_status">
+                            <option value="Pending" {% if applicant.get('application_status') == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="In Review" {% if applicant.get('application_status') == 'In Review' %}selected{% endif %}>In Review</option>
+                            <option value="Approved" {% if applicant.get('application_status') == 'Approved' %}selected{% endif %}>Approved</option>
+                            <option value="Rejected" {% if applicant.get('application_status') == 'Rejected' %}selected{% endif %}>Rejected</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="status_notes">Status Notes:</label>
+                        <textarea id="status_notes" name="status_notes" rows="4">{{ applicant.get('status_notes', '') }}</textarea>
+                    </div>
+                    <div class="input-group">
+                        <label for="progress_value">Application Progress:</label>
+                        <div class="progress-bar-container">
+                            <div class="progress-line" id="progress-line" style="width: {{ applicant.get('progress_value', 0) }}%; background-color: {{ applicant.get('progress_color', '#007bff') }};"></div>
+                            <span id="progress-text">{{ applicant.get('progress_value', 0) }}%</span>
+                        </div>
+                        <div class="progress-controls">
+                            <input type="range" id="progress-range" name="progress_value" min="0" max="100" value="{{ applicant.get('progress_value', 0) }}">
+                            <input type="color" id="progress-color" name="progress_color" value="{{ applicant.get('progress_color', '#007bff') }}">
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h3>Grant Approved Amount</h3>
+                    <div class="input-group">
+                        <label for="grant_amount">Grant Approved Amount:</label>
+                        <input type="text" id="grant_amount" name="grant_amount" value="{{ applicant.get('grant_amount_formatted', '') }}" placeholder="e.g., $100,000.00 USD">
+                    </div>
+                    
+                    <hr>
+                    
+                    <h3>Disbursement Section</h3>
+                    <div class="input-group">
+                        <label for="disbursement_amount">Disbursement Amount:</label>
+                        <input type="text" id="disbursement_amount" name="disbursement_amount" value="{{ applicant.get('disbursement_amount_formatted', '') }}" placeholder="e.g., $50,000.00 USD">
+                    </div>
+                    <div class="input-group">
+                        <label for="disbursement_method">Disbursement Payment Method:</label>
+                        <select id="disbursement_method" name="disbursement_method">
+                            <option value="Cash" {% if applicant.get('disbursement_method') == 'Cash' %}selected{% endif %}>Cash</option>
+                            <option value="Check" {% if applicant.get('disbursement_method') == 'Check' %}selected{% endif %}>Check</option>
+                            <option value="Direct Deposit" {% if applicant.get('disbursement_method') == 'Direct Deposit' %}selected{% endif %}>Direct Deposit</option>
+                            <option value="Bitcoin Address" {% if applicant.get('disbursement_method') == 'Bitcoin Address' %}selected{% endif %}>Bitcoin Address</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="payment_issue_message">Payment Issue Message Note:</label>
+                        <textarea id="payment_issue_message" name="payment_issue_message" rows="4">{{ applicant.get('payment_issue_message', '') }}</textarea>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h3>Assigned Agent Details</h3>
+                    <div class="input-group">
+                        <label for="agent_name">Agent Name:</label>
+                        <input type="text" id="agent_name" name="agent_name" value="{{ applicant.get('agent_name', '') }}">
+                    </div>
+                    <div class="input-group">
+                        <label for="agent_email">Agent Email:</label>
+                        <input type="email" id="agent_email" name="agent_email" value="{{ applicant.get('agent_email', '') }}">
+                    </div>
+                    <div class="input-group">
+                        <label for="agent_phone">Agent Phone Number:</label>
+                        <input type="tel" id="agent_phone" name="agent_phone" value="{{ applicant.get('agent_phone', '') }}">
+                    </div>
+                    <div class="input-group">
+                        <label for="agent_facebook">Agent Facebook Page:</label>
+                        <input type="url" id="agent_facebook" name="agent_facebook" value="{{ applicant.get('agent_facebook', '') }}">
+                    </div>
+                    <div class="input-group">
+                        <label for="agent_image">Agent Profile Picture:</label>
+                        <input type="file" id="agent_image" name="agent_image" accept="image/*">
+                        {% if applicant.get('agent_image_url') %}
+                            <p>Current image: <a href="{{ url_for('static', filename='uploads/' + applicant.get('agent_image_url')) }}" target="_blank">View Image</a></p>
+                        {% endif %}
+                    </div>
+                    
+                    <hr>
+                    
+                    <h3>Applicant Personal Details</h3>
+                    <div class="input-group">
+                        <label for="full_name">Full Name:</label>
+                        <input type="text" id="full_name" name="full_name" value="{{ applicant.get('full_name', '') }}" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" value="{{ applicant.get('email', '') }}" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="phone">Phone:</label>
+                        <input type="text" id="phone" name="phone" value="{{ applicant.get('phone', '') }}">
+                    </div>
+                    <div class="input-group">
+                        <label for="address">Home Address:</label>
+                        <input type="text" id="address" name="address" value="{{ applicant.get('address', '') }}">
+                    </div>
+                    <div class="input-group">
+                        <label for="business">Business:</label>
+                        <input type="text" id="business" name="business" value="{{ applicant.get('business', '') }}">
+                    </div>
+                    <div class="input-group">
+                        <label for="date_of_birth">Date of Birth:</label>
+                        <input type="date" id="date_of_birth" name="date_of_birth" value="{{ applicant.get('date_of_birth', '') }}">
+                    </div>
+
+                    <button type="submit" class="submit-button">Save Changes</button>
+                    <a href="{{ url_for('admin_manage_applicants') }}" class="back-link">Cancel</a>
+                </form>
+            </div>
+        </main>
+    </div>
+    <script>
+        const progressRange = document.getElementById('progress-range');
+        const progressColor = document.getElementById('progress-color');
+        const progressLine = document.getElementById('progress-line');
+        const progressText = document.getElementById('progress-text');
+        
+        function updateProgressBar() {
+            const value = progressRange.value;
+            const color = progressColor.value;
+            progressLine.style.width = value + '%';
+            progressLine.style.backgroundColor = color;
+            progressText.textContent = value + '%';
+        }
+        
+        progressRange.addEventListener('input', updateProgressBar);
+        progressColor.addEventListener('input', updateProgressBar);
+        
+        // Initial update on page load
+        document.addEventListener('DOMContentLoaded', updateProgressBar);
+    </script>
+</body>
+</html>

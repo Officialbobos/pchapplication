@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applicant Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='applicants/applicant-login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='assets/images/pch.png') }}" alt="PCH Funding Applications Logo">
+            </div>
+            <a href="/" class="back-button">Back to Home</a>
+        </div>
+    </header>
+
+    <main class="form-container">
+        <form id="loginForm" action="{{ url_for('applicant_login') }}" method="post">
+            <h2>Applicant Login</h2>
+            <p>Please enter your email and password to log in.</p>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
+
+            <div class="form-section">
+                {% if error %}
+                <div class="error-message">{{ error }}</div>
+                {% endif %}
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-button">Login</button>
+        </form>
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Created</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/style.css') }}">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('admin_create_applicant_account') }}">Create Applicant Account</a></li>
+                <li><a href="{{ url_for('send_user_message') }}">Send User Message</a></li>
+                <li><a href="{{ url_for('admin_logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Account Created Successfully!</h1>
+            </div>
+            <div class="success-message">
+                <p>An account for the applicant has been created. Here are their credentials:</p>
+                <div class="credentials">
+                    <p><strong>Username:</strong> {{ username }}</p>
+                    <p><strong>Password:</strong> {{ password }}</p>
+                </div>
+                <p>Please provide these credentials to the applicant.</p>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn">Return to Dashboard</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

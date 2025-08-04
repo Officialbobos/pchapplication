@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Applicant Account</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/style.css') }}">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('admin_create_applicant_account') }}">Create Applicant Account</a></li>
+                 <li><a href="{{ url_for('admin_manage_applicants') }}">Manage Applicants</a></li>    
+                <li><a href="{{ url_for('send_user_message') }}">Send User Message</a></li>
+                <li><a href="{{ url_for('admin_logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Create Applicant Account</h1>
+            </div>
+            <div class="form-container">
+                <form action="{{ url_for('admin_create_applicant_account') }}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea id="address" name="address" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="business">Business</label>
+                        <input type="text" id="business" name="business">
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" name="date_of_birth">
+                    </div>
+                    <div class="form-group">
+                        <label for="applicant_image">Upload Applicant Image</label>
+                        <input type="file" id="applicant_image" name="applicant_image">
+                    </div>
+                    <button type="submit">Create Account</button>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

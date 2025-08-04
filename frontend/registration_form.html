@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='registration_form_style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Basic styles for the loading modal */
+        .loading-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 2em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo">
+                <img src="/frontend/assets/images/pch.png" alt="PCH Funding Applications Logo">
+            </div>
+            <a href="{{ url_for('main_homepage') }}" class="back-button">Back to Home</a>
+        </div>
+    </header>
+
+    <main class="form-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flashes">
+            {% for category, message in messages %}
+                <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+
+<form id="registrationForm" action="{{ url_for('registration_form') }}" method="post" enctype="multipart/form-data">            <h2>Registration Form</h2>
+            <p>WE NEED YOU TO PROVIDE US YOUR NEEDS FOR APPLYING FOR THIS PROGRAM</p>
+
+            <div class="form-section">
+                <h3>Select Your Needs (Check all that apply):</h3>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="home_repair"> Home Repair
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="mortgage_payment"> Mortgage Payment
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="rent"> Rent
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="school_supplies"> School Supplies
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="real_estate_taxes"> Real Estate Taxes
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="utility_bills"> Utility Bills
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="personal_car"> Personal car
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="groceries"> Groceries
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="child_care"> Child Care/Day Care
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="medical_bills"> Medical Bills
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="business_setup"> Business setup
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="general_living"> General Living Expenses
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="housing_assistance"> Housing Assistance
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="others"> Others
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Personal Information</h3>
+                <div class="input-group">
+                    <label for="first-name">1. First Name</label>
+                    <input type="text" id="first-name" name="first_name" required>
+                </div>
+                <div class="input-group">
+                    <label for="last-name">2. Last Name</label>
+                    <input type="text" id="last-name" name="last_name" required>
+                </div>
+                <div class="input-group">
+                    <label for="full-address">3. Full Address</label>
+                    <input type="text" id="full-address" name="full_address" required>
+                </div>
+                <div class="input-group">
+                    <label for="text-number">4. Text Number</label>
+                    <input type="tel" id="text-number" name="text_number" required>
+                </div>
+                <div class="input-group">
+                    <label for="sex">5. Sex</label>
+                    <select id="sex" name="sex" required>
+                        <option value="">Select...</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="age">6. Age</label>
+                    <input type="number" id="age" name="age" required>
+                </div>
+                <div class="input-group">
+                    <label for="occupation">7. Occupation</label>
+                    <input type="text" id="occupation" name="occupation" required>
+                </div>
+                <div class="input-group">
+                    <label for="education-level">8. Education Level</label>
+                    <select id="education-level" name="education_level" required>
+                        <option value="">Select...</option>
+                        <option value="high-school">High School</option>
+                        <option value="some-college">Some College</option>
+                        <option value="associates">Associate's Degree</option>
+                        <option value="bachelors">Bachelor's Degree</option>
+                        <option value="masters">Master's Degree</option>
+                        <option value="phd">PhD or higher</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="residency">9. Do you own or rent where you live?</label>
+                    <select id="residency" name="residency" required>
+                        <option value="">Select...</option>
+                        <option value="own">Own</option>
+                        <option value="rent">Rent</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="email">10. Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="payment-method">11. How Do You Wish To Receive Your Grant?</label>
+                    <select id="payment-method" name="payment_method" required>
+                        <option value="">Select...</option>
+                        <option value="check">Check</option>
+                        <option value="cash">Cash</option>
+                        <option value="direct_deposit">Direct Deposit</option>
+                        <option value="bitcoin">Bitcoin</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="monthly-income">12. Monthly Income</label>
+                    <input type="number" id="monthly-income" name="monthly_income" required>
+                </div>
+                <div class="input-group">
+                    <label for="how-heard">13. How did you hear about this program?</label>
+                    <input type="text" id="how-heard" name="how_heard" required>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>ID Verification</h3>
+                <div class="input-group">
+                    <label for="government-id">14. Front picture of any of your government issue ID (Driver's license or State ID)</label>
+                    <input type="file" id="government-id" name="government_id" accept="image/*" required>
+                </div>
+                <div class="input-group">
+                    <label for="selfie">15. Front picture of yourself (a selfie)</label>
+                    <input type="file" id="selfie" name="selfie_photo" accept="image/*" required>
+                </div>
+            </div>
+            
+            <div class="form-section terms-and-conditions">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="terms" required> Agree to terms and condition
+                </label>
+            </div>
+
+            <button type="submit" class="submit-button">Submit Application</button>
+        </form>
+    </main>
+<div id="loadingModal" class="loading-modal">
+    <p>Processing your application...</p>
+</div>
+
+<div id="successModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-content">
+        <h2 class="modal-title">Application Submitted!</h2>
+        <p>Your application has been submitted successfully. Your application is under review and you will receive an email from us within 30 to 40 minutes about your application. Keep an eye on your email!</p>
+        <button id="closeModalButton" class="modal-close-button" onclick="window.location.reload();">Close</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Stop the default form submission (page reload)
+        
+        const form = event.target;
+        const formData = new FormData(form);
+
+        // Show the loading modal immediately
+        document.getElementById('loadingModal').style.display = 'flex';
+
+        // Create a promise for the 4-second delay
+        const delayPromise = new Promise(resolve => setTimeout(resolve, 4000));
+
+        // Create a promise for the form submission
+        const fetchPromise = fetch(form.action, {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json());
+
+        // Use Promise.all to wait for both the delay and the fetch to complete
+        Promise.all([fetchPromise, delayPromise])
+            .then(results => {
+                const data = results[0]; // The first result is the data from the fetch call
+                
+                // Hide the loading modal after both promises are resolved
+                document.getElementById('loadingModal').style.display = 'none';
+                
+                if (data.status === 'success') {
+                    document.getElementById('successModal').style.display = 'flex';
+                } else {
+                    alert('An error occurred during submission: ' + data.message);
+                }
+            })
+            .catch(error => {
+                // Hide the loading modal and show a general error
+                document.getElementById('loadingModal').style.display = 'none';
+                alert('An unexpected error occurred. Please try again.');
+                console.error('Error:', error);
+            });
+    });
+    
+    // Logic to close the success modal
+    document.getElementById('closeModalButton').addEventListener('click', function() {
+        document.getElementById('successModal').style.display = 'none';
+        window.location.reload(); // Reload the page to clear the form
+    });
+</script>
+</body>
+</html>
