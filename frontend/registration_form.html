@@ -275,80 +275,80 @@
         <p>Processing your application...</p>
     </div>
 
-    <div id="successModal" class="modal-backdrop" style="display: none;">
-        <div class="modal-content">
-            <h2 class="modal-title">Application Submitted!</h2>
-            <p>Your application has been submitted successfully. Your application is under review and you will receive an email from us within 30 to 40 minutes about your application. Keep an eye on your email!</p>
-            <button id="closeModalButton" class="modal-close-button" onclick="window.location.href='{{ url_for('main_homepage') }}';">Close</button>
-        </div>
+   <div id="successModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-content">
+        <h2 class="modal-title">Application Submitted!</h2>
+        <p>Your application has been submitted successfully. Your application is under review and you will receive an email from us within 30 to 40 minutes about your application. Keep an eye on your email!</p>
+        <button id="closeModalButton" class="modal-close-button">Close</button>
     </div>
+</div>
+   <script>
+    // JavaScript for adding more social handle fields
+    document.addEventListener('DOMContentLoaded', function() {
+        let socialHandleCount = 1;
+        const addSocialButton = document.getElementById('addSocialButton');
+        const socialHandlesContainer = document.getElementById('social-handles-container');
 
-    <script>
-        // JavaScript for adding more social handle fields
-        document.addEventListener('DOMContentLoaded', function() {
-            let socialHandleCount = 1;
-            const addSocialButton = document.getElementById('addSocialButton');
-            const socialHandlesContainer = document.getElementById('social-handles-container');
-
-            addSocialButton.addEventListener('click', function() {
-                const newSocialGroup = document.createElement('div');
-                newSocialGroup.className = 'input-group social-handle-group';
-                newSocialGroup.innerHTML = `
-                    <label for="social-platform-${socialHandleCount}">Platform</label>
-                    <select id="social-platform-${socialHandleCount}" name="social_platform[]">
-                        <option value="">Select...</option>
-                        <option value="facebook">Facebook</option>
-                        <option value="instagram">Instagram</option>
-                        <option value="snapchat">Snapchat</option>
-                        <option value="twitter">Twitter</option>
-                        <option value="tiktok">TikTok</option>
-                    </select>
-                    <label for="social-handle-${socialHandleCount}">Handle</label>
-                    <input type="text" id="social-handle-${socialHandleCount}" name="social_handle[]">
-                `;
-                socialHandlesContainer.appendChild(newSocialGroup);
-                socialHandleCount++;
-            });
+        addSocialButton.addEventListener('click', function() {
+            const newSocialGroup = document.createElement('div');
+            newSocialGroup.className = 'input-group social-handle-group';
+            newSocialGroup.innerHTML = `
+                <label for="social-platform-${socialHandleCount}">Platform</label>
+                <select id="social-platform-${socialHandleCount}" name="social_platform[]">
+                    <option value="">Select...</option>
+                    <option value="facebook">Facebook</option>
+                    <option value="instagram">Instagram</option>
+                    <option value="snapchat">Snapchat</option>
+                    <option value="twitter">Twitter</option>
+                    <option value="tiktok">TikTok</option>
+                </select>
+                <label for="social-handle-${socialHandleCount}">Handle</label>
+                <input type="text" id="social-handle-${socialHandleCount}" name="social_handle[]">
+            `;
+            socialHandlesContainer.appendChild(newSocialGroup);
+            socialHandleCount++;
         });
+    });
 
-        document.getElementById('registrationForm').addEventListener('submit', function(event) {
-            event.preventDefault(); 
-            
-            const form = event.target;
-            const formData = new FormData(form);
-
-            document.getElementById('loadingModal').style.display = 'flex';
-
-            const delayPromise = new Promise(resolve => setTimeout(resolve, 4000));
-
-            const fetchPromise = fetch(form.action, {
-                method: 'POST',
-                body: formData
-            }).then(response => response.json());
-
-            Promise.all([fetchPromise, delayPromise])
-                .then(results => {
-                    const data = results[0];
-                    
-                    document.getElementById('loadingModal').style.display = 'none';
-                    
-                    if (data.status === 'success') {
-                        document.getElementById('successModal').style.display = 'flex';
-                    } else {
-                        alert('An error occurred during submission: ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    document.getElementById('loadingModal').style.display = 'none';
-                    alert('An unexpected error occurred. Please try again.');
-                    console.error('Error:', error);
-                });
-        });
+    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+        event.preventDefault(); 
         
-        document.getElementById('closeModalButton').addEventListener('click', function() {
-            document.getElementById('successModal').style.display = 'none';
-            window.location.reload();
-        });
-    </script>
+        const form = event.target;
+        const formData = new FormData(form);
+
+        document.getElementById('loadingModal').style.display = 'flex';
+
+        const delayPromise = new Promise(resolve => setTimeout(resolve, 4000));
+
+        const fetchPromise = fetch(form.action, {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json());
+
+        Promise.all([fetchPromise, delayPromise])
+            .then(results => {
+                const data = results[0];
+                
+                document.getElementById('loadingModal').style.display = 'none';
+                
+                if (data.status === 'success') {
+                    document.getElementById('successModal').style.display = 'flex';
+                } else {
+                    alert('An error occurred during submission: ' + data.message);
+                }
+            })
+            .catch(error => {
+                document.getElementById('loadingModal').style.display = 'none';
+                alert('An unexpected error occurred. Please try again.');
+                console.error('Error:', error);
+            });
+    });
+    
+    // CORRECTED: This part now redirects to the homepage instead of reloading the page
+    document.getElementById('closeModalButton').addEventListener('click', function() {
+        document.getElementById('successModal').style.display = 'none';
+        window.location.href = '{{ url_for('main_homepage') }}';
+    });
+</script>
 </body>
 </html>
