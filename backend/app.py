@@ -677,15 +677,16 @@ def registration_form():
             # File handling
             government_id_file = request.files.get('government_id')
             selfie_photo_file = request.files.get('selfie_photo')
+            
             gov_id_filename = str(uuid.uuid4()) + "_" + secure_filename(government_id_file.filename) if government_id_file and government_id_file.filename else None
             selfie_filename = str(uuid.uuid4()) + "_" + secure_filename(selfie_photo_file.filename) if selfie_photo_file and selfie_photo_file.filename else None
-
+            
             # Construct the new user document (this will be the application record)
             new_user = {
                 "first_name": form_data.get('first_name', ''),
-                "middle_name": form_data.get('middle_name', ''), # New field
+                "middle_name": form_data.get('middle_name', ''),
                 "last_name": form_data.get('last_name', ''),
-                "address": { # New structured address fields
+                "address": {
                     "street": form_data.get('street_address', ''),
                     "county": form_data.get('county', ''),
                     "state": form_data.get('state', ''),
@@ -694,7 +695,7 @@ def registration_form():
                 },
                 "text_number": form_data.get('text_number', ''),
                 "sex": form_data.get('sex', ''),
-                "date_of_birth": form_data.get('dob', ''), # Changed from 'age' to 'dob'
+                "date_of_birth": form_data.get('dob', ''),
                 "occupation": form_data.get('occupation', ''),
                 "education_level": form_data.get('education_level', ''),
                 "residency": form_data.get('residency', ''),
@@ -709,7 +710,7 @@ def registration_form():
                 "government_id_path": gov_id_filename,
                 "selfie_photo_path": selfie_filename,
                 "role": "applicants",
-                "status": "pending", # New status field
+                "status": "pending",
                 "created_at": datetime.now()
             }
             
