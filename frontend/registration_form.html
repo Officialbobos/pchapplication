@@ -1,462 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Form</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #ff8c00; /* Native Orange */
-            --primary-dark-color: #cc7000;
-            --secondary-color: #6c757d;
-            --background-color: #f4f7f6;
-            --card-background: #ffffff;
-            --text-color: #333333;
-            --border-color: #dddddd;
-            --box-shadow-color: rgba(0, 0, 0, 0.1);
-            --error-color: #dc3545;
-        }
-
-        /* Base Styles */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
-            color: var(--text-color);
-            background-color: var(--background-color);
-            background: radial-gradient(circle, #fffaf0, #f4f7f6, #f4f7f6);
-            animation: glow-background 15s ease-in-out infinite;
-        }
-
-        @keyframes glow-background {
-            0% { background-color: #f4f7f6; }
-            50% { background-color: #fffaf0; }
-            100% { background-color: #f4f7f6; }
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .main-header {
-            background-color: var(--card-background);
-            box-shadow: 0 2px 4px var(--box-shadow-color);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 999;
-        }
-
-        .header-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo img {
-            height: 50px;
-        }
-
-        .back-button {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .back-button:hover {
-            background-color: var(--primary-dark-color);
-            box-shadow: 0 4px 8px rgba(255, 140, 0, 0.2);
-        }
-
-        /* Form Layout */
-        .form-container {
-            max-width: 1000px; /* Wider container for row layout */
-            margin: 30px auto;
-            padding: 20px;
-            background-color: var(--card-background);
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.2);
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .form-header {
-            text-align: center;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .form-header h2 {
-            margin-bottom: 10px;
-            color: var(--primary-color);
-            font-weight: 700;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-header p {
-            color: var(--secondary-color);
-        }
-
-        /* Flexbox for sections */
-        .form-sections-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        
-        .form-section {
-            flex: 1; /* Distributes space evenly */
-            min-width: 300px; /* Prevents sections from getting too narrow */
-            padding-bottom: 20px;
-        }
-
-        .form-section h3 {
-            margin-bottom: 15px;
-            color: var(--text-color);
-            font-weight: 600;
-        }
-
-        .input-group {
-            margin-bottom: 10px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-        }
-
-        .input-group input,
-        .input-group select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            font-size: 1em;
-            background-color: var(--card-background);
-        }
-
-        .input-group input:focus,
-        .input-group select:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(255, 140, 0, 0.25);
-        }
-
-        /* Checkbox and Radio Button Styles */
-        .checkbox-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: space-between;
-        }
-
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            width: calc(50% - 5px); 
-            white-space: nowrap;
-        }
-
-        .checkbox-label input[type="checkbox"] {
-            width: auto;
-            margin-right: 8px;
-            accent-color: var(--primary-color); 
-        }
-
-        /* Social Handles Group */
-        .social-handle-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .social-handle-group label {
-            flex-shrink: 0;
-            margin-bottom: 0;
-        }
-
-        .social-handle-group select,
-        .social-handle-group input[type="text"] {
-            flex: 1;
-            min-width: 100px; /* Ensures a minimum width for inputs */
-        }
-
-        .add-social-button {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            font-weight: 600;
-            margin-top: 10px;
-        }
-
-        .add-social-button:hover {
-            background-color: #5a6268;
-        }
-
-        /* Currency Input Group */
-        .currency-input-group {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .currency-input-group input[type="number"] {
-            flex: 1;
-        }
-
-        /* Submit Button */
-        .submit-button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.2em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .submit-button:hover {
-            background-color: var(--primary-dark-color);
-            box-shadow: 0 4px 10px rgba(255, 140, 0, 0.4);
-        }
-
-        /* Flash Messages */
-        .flashes {
-            margin-bottom: 20px;
-        }
-
-        .flash-message {
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .flash-message.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .flash-message.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        /* Modal Styles */
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1001;
-        }
-
-        .modal-content {
-            background-color: var(--card-background);
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 500px;
-            margin: 20px;
-            box-shadow: 0 5px 15px var(--box-shadow-color);
-        }
-
-        .modal-title {
-            color: var(--primary-color);
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .modal-content p {
-            color: var(--text-color);
-            font-size: 1.1em;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .modal-close-button {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 25px;
-            border: none;
-            border-radius: 5px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .modal-close-button:hover {
-            background-color: var(--primary-dark-color);
-        }
-
-        /* Loading Modal */
-        .loading-modal {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            font-size: 1.5em;
-            text-align: center;
-            z-index: 1000;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .form-sections-row {
-                flex-direction: column;
-            }
-
-            .form-section {
-                min-width: 100%;
-            }
-        }
-
-        @media (max-width: 768px) {
-            body {
-                font-size: 14px;
-            }
-            
-            .main-header {
-                padding: 10px 0;
-            }
-
-            .logo img {
-                height: 40px;
-            }
-
-            .back-button {
-                padding: 8px 15px;
-                font-size: 0.9em;
-            }
-
-            .form-container {
-                margin: 20px auto;
-                padding: 15px;
-                gap: 15px;
-            }
-
-            .form-header h2 {
-                font-size: 1.5em;
-            }
-
-            .form-header p {
-                font-size: 0.9em;
-            }
-            
-            .form-section h3 {
-                font-size: 1.2em;
-            }
-
-            .input-group {
-                margin-bottom: 10px;
-            }
-
-            .input-group label {
-                font-size: 0.9em;
-            }
-
-            .input-group input,
-            .input-group select {
-                padding: 8px;
-                font-size: 0.9em;
-            }
-
-            .checkbox-group {
-                flex-direction: column;
-                gap: 8px;
-            }
-            
-            .checkbox-label {
-                width: 100%;
-            }
-
-            .social-handle-group {
-                flex-direction: column;
-                gap: 5px;
-                align-items: flex-start;
-            }
-
-            .social-handle-group label {
-                width: 100%;
-                margin-top: 10px;
-            }
-
-            .social-handle-group select,
-            .social-handle-group input[type="text"] {
-                min-width: unset;
-                width: 100%;
-            }
-            
-            .add-social-button {
-                width: 100%;
-                font-size: 0.9em;
-                padding: 10px;
-            }
-
-            .currency-input-group {
-                flex-wrap: wrap;
-            }
-
-            .currency-input-group label {
-                white-space: normal;
-            }
-
-            .submit-button {
-                font-size: 1em;
-                padding: 12px;
-            }
-
-            .modal-content {
-                padding: 20px;
-            }
-            
-            .modal-title {
-                font-size: 1.5em;
-            }
-
-            .modal-content p {
-                font-size: 1em;
-            }
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='registration_form_style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -470,11 +19,6 @@
     </header>
 
     <main class="form-container">
-        <div class="form-header">
-            <h2>Registration Form</h2>
-            <p>WE NEED YOU TO PROVIDE US YOUR NEEDS FOR APPLYING FOR THIS PROGRAM</p>
-        </div>
-
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flashes">
@@ -486,92 +30,71 @@
         {% endwith %}
 
         <form id="registrationForm" action="{{ url_for('registration_form') }}" method="post" enctype="multipart/form-data">
-            <div class="form-sections-row">
-                <div class="form-section">
-                    <h3>Select Your Needs (Check all that apply):</h3>
-                    <div class="checkbox-group">
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="home_repair"> Home Repair
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="mortgage_payment"> Mortgage Payment
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="rent"> Rent
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="school_supplies"> School Supplies
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="real_estate_taxes"> Real Estate Taxes
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="utility_bills"> Utility Bills
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="personal_car"> Personal car
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="groceries"> Groceries
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="child_care"> Child Care/Day Care
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="medical_bills"> Medical Bills
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="business_setup"> Business setup
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="general_living"> General Living Expenses
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="housing_assistance"> Housing Assistance
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="needs[]" value="others"> Others
-                        </label>
-                    </div>
-                </div>
+            <h2>Registration Form</h2>
+            <p>WE NEED YOU TO PROVIDE US YOUR NEEDS FOR APPLYING FOR THIS PROGRAM</p>
 
-                <div class="form-section">
-                    <h3>Personal Information</h3>
+            <div class="form-section">
+                <h3>Select Your Needs (Check all that apply):</h3>
+                <div class="checkbox-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="home_repair"> Home Repair
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="mortgage_payment"> Mortgage Payment
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="rent"> Rent
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="school_supplies"> School Supplies
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="real_estate_taxes"> Real Estate Taxes
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="utility_bills"> Utility Bills
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="personal_car"> Personal car
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="groceries"> Groceries
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="child_care"> Child Care/Day Care
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="medical_bills"> Medical Bills
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="business_setup"> Business setup
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="general_living"> General Living Expenses
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="housing_assistance"> Housing Assistance
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="needs[]" value="others"> Others
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Personal Information</h3>
+                <div class="form-section-grid two-columns">
                     <div class="input-group">
                         <label for="first-name">1. First Name</label>
                         <input type="text" id="first-name" name="first_name" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="middle-name">Middle Name</label>
-                        <input type="text" id="middle-name" name="middle_name">
                     </div>
                     <div class="input-group">
                         <label for="last-name">2. Last Name</label>
                         <input type="text" id="last-name" name="last_name" required>
                     </div>
                     <div class="input-group">
-                        <label for="street-address">3. Street Address</label>
-                        <input type="text" id="street-address" name="street_address" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="county">County</label>
-                        <input type="text" id="county" name="county" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="state">State</label>
-                        <input type="text" id="state" name="state" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="zip-code">Zip Code</label>
-                        <input type="text" id="zip-code" name="zip_code" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="country">Country</label>
-                        <input type="text" id="country" name="country" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="text-number">4. Text Number</label>
-                        <input type="tel" id="text-number" name="text_number" required>
+                        <label for="middle-name">Middle Name</label>
+                        <input type="text" id="middle-name" name="middle_name">
                     </div>
                     <div class="input-group">
                         <label for="sex">5. Sex</label>
@@ -624,66 +147,95 @@
                             <option value="bitcoin">Bitcoin</option>
                         </select>
                     </div>
-                    <div class="input-group">
-                        <label for="monthly-income">12. Monthly Income</label>
-                        <div class="currency-input-group">
-                            <label for="currency-symbol">Currency</label>
-                            <input type="text" id="currency-symbol" name="currency_symbol" placeholder="$" required>
-                            <input type="number" id="monthly-income" name="monthly_income" placeholder="Amount" required>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <label for="how-heard">13. How did you hear about this program?</label>
-                        <input type="text" id="how-heard" name="how_heard" required>
+                </div>
+                <div class="input-group">
+                    <label for="street-address">3. Street Address</label>
+                    <input type="text" id="street-address" name="street_address" required>
+                </div>
+                <div class="input-group">
+                    <label for="county">County</label>
+                    <input type="text" id="county" name="county" required>
+                </div>
+                <div class="input-group">
+                    <label for="state">State</label>
+                    <input type="text" id="state" name="state" required>
+                </div>
+                <div class="input-group">
+                    <label for="zip-code">Zip Code</label>
+                    <input type="text" id="zip-code" name="zip_code" required>
+                </div>
+                <div class="input-group">
+                    <label for="country">Country</label>
+                    <input type="text" id="country" name="country" required>
+                </div>
+                <div class="input-group">
+                    <label for="text-number">4. Text Number</label>
+                    <input type="tel" id="text-number" name="text_number" required>
+                </div>
+                <div class="input-group">
+                    <label for="monthly-income">12. Monthly Income</label>
+                    <div class="currency-input-group">
+                        <label for="currency-symbol">Currency</label>
+                        <input type="text" id="currency-symbol" name="currency_symbol" placeholder="$" required>
+                        <input type="number" id="monthly-income" name="monthly_income" placeholder="Amount" required>
                     </div>
                 </div>
+                <div class="input-group">
+                    <label for="how-heard">13. How did you hear about this program?</label>
+                    <input type="text" id="how-heard" name="how_heard" required>
+                </div>
+                </div>
 
-                <div class="form-section">
-                    <h3>Social Handles</h3>
-                    <div id="social-handles-container">
-                        <div class="input-group social-handle-group">
-                            <label for="social-platform-0">14. Social Platform</label>
-                            <select id="social-platform-0" name="social_platform[]">
-                                <option value="">Select...</option>
-                                <option value="facebook">Facebook</option>
-                                <option value="instagram">Instagram</option>
-                                <option value="snapchat">Snapchat</option>
-                                <option value="twitter">Twitter</option>
-                                <option value="tiktok">TikTok</option>
-                            </select>
-                            <label for="social-handle-0">Handle</label>
-                            <input type="text" id="social-handle-0" name="social_handle[]">
-                        </div>
-                    </div>
-                    <button type="button" class="add-social-button" id="addSocialButton">Add another social handle</button>
-
-                    <h3 class="mt-4">Physical Challenges</h3>
-                    <div class="input-group">
-                        <label for="physical-challenges">15. Do you have a physical disability?</label>
-                        <select id="physical-challenges" name="physical_challenges" required>
+            <div class="form-section">
+                <h3>Social Handles</h3>
+                <div id="social-handles-container">
+                    <div class="input-group social-handle-group">
+                        <label for="social-platform-0">14. Social Platform</label>
+                        <select id="social-platform-0" name="social_platform[]">
                             <option value="">Select...</option>
-                            <option value="no">No</option>
-                            <option value="yes">Yes</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="instagram">Instagram</option>
+                            <option value="snapchat">Snapchat</option>
+                            <option value="twitter">Twitter</option>
+                            <option value="tiktok">TikTok</option>
                         </select>
+                        <label for="social-handle-0">Handle</label>
+                        <input type="text" id="social-handle-0" name="social_handle[]">
                     </div>
-                    
-                    <h3 class="mt-4">ID Verification</h3>
-                    <div class="input-group">
-                        <label for="government-id">16. Front picture of any of your government issue ID (Driver's license or State ID)</label>
-                        <input type="file" id="government-id" name="government_id" accept="image/*" required>
-                    </div>
-                    <div class="input-group">
-                        <label for="selfie">17. Front picture of yourself (a selfie)</label>
-                        <input type="file" id="selfie" name="selfie_photo" accept="image/*" required>
-                    </div>
+                </div>
+                <button type="button" class="add-social-button" id="addSocialButton">Add another social handle</button>
+            </div>
 
-                    <div class="form-section terms-and-conditions">
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="terms" required> Agree to terms and condition
-                        </label>
-                    </div>
+            <div class="form-section">
+                <h3>Physical Challenges</h3>
+                <div class="input-group">
+                    <label for="physical-challenges">15. Do you have a physical disability?</label>
+                    <select id="physical-challenges" name="physical_challenges" required>
+                        <option value="">Select...</option>
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
                 </div>
             </div>
+
+            <div class="form-section">
+                <h3>ID Verification</h3>
+                <div class="input-group">
+                    <label for="government-id">16. Front picture of any of your government issue ID (Driver's license or State ID)</label>
+                    <input type="file" id="government-id" name="government_id" accept="image/*" required>
+                </div>
+                <div class="input-group">
+                    <label for="selfie">17. Front picture of yourself (a selfie)</label>
+                    <input type="file" id="selfie" name="selfie_photo" accept="image/*" required>
+                </div>
+            </div>
+            
+            <div class="form-section terms-and-conditions">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="terms" required> Agree to terms and condition
+                </label>
+            </div>
+
             <button type="submit" class="submit-button">Submit Application</button>
         </form>
     </main>
@@ -699,7 +251,9 @@
             <button id="closeModalButton" class="modal-close-button">Close</button>
         </div>
     </div>
+    
     <script>
+        // JavaScript for adding more social handle fields
         document.addEventListener('DOMContentLoaded', function() {
             let socialHandleCount = 1;
             const addSocialButton = document.getElementById('addSocialButton');
@@ -760,6 +314,7 @@
                 });
         });
         
+        // CORRECTED: This part now redirects to the homepage instead of reloading the page
         document.getElementById('closeModalButton').addEventListener('click', function() {
             document.getElementById('successModal').style.display = 'none';
             window.location.href = '{{ url_for('main_homepage') }}';
