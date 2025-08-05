@@ -155,9 +155,10 @@ h2 {
     box-shadow: 0 0 15px rgba(255, 140, 0, 0.3);
 }
 
-/* New styling for social media handles container */
+/* General styling for the container */
 .social-handles-container {
     display: grid;
+    /* On mobile, each social handle group takes up one column */
     grid-template-columns: 1fr;
     gap: 1.5rem;
     margin-bottom: 1.5rem;
@@ -293,6 +294,28 @@ h2 {
 .modal-close-button:hover {
     transform: scale(1.05);
     box-shadow: 0 0 25px rgba(255, 69, 0, 0.8);
+}
+
+/* On larger screens, you might want to show them side by side */
+@media (min-width: 768px) {
+    .social-handles-container {
+        /* On larger screens, each group might be on the same row */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+/* Styling for each individual social handle group */
+.social-handle-group {
+    /* Use flexbox to stack the labels and inputs vertically on small screens */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; /* Space between the label and the input */
+}
+
+/* The button should also be handled for a better mobile experience */
+.add-social-button {
+    width: 100%;
+    /* Add any other button styling here */
 }
 
 /* Responsive design */
