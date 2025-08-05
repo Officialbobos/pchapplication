@@ -71,7 +71,7 @@ db = client.get_database('pch_funding_db')
 users_collection = db['users']
 
 def create_initial_data():
-    users_collection.create_index("username", unique=True)
+    users_collection.create_index("username", unique=True, sparse=True)
     users_collection.create_index("email", unique=True)
 
     if not users_collection.find_one({"username": "pchadmin"}):
