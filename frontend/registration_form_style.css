@@ -348,14 +348,24 @@ h2 {
         font-size: 1.2rem;
     }
     .checkbox-group {
+        /* Change to a column layout on mobile to stack the boxes */
         grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    .checkbox-label {
+        /* Adjust padding for a smaller, more compact size */
+        padding: 10px 12px;
+        font-size: 0.9rem; /* Reduce font size of the text inside the box */
+    }
+    .checkbox-label input[type="checkbox"] {
+        transform: scale(1.1); /* Slightly smaller checkbox icon */
     }
     .modal-content {
         padding: 2rem;
         width: 85%;
     }
     /* Reduce padding and font sizes for a more compact form on mobile */
-     .form-container {
+    .form-container {
         padding: 1.5rem;
     }
     /* Reduces the padding for each form section */

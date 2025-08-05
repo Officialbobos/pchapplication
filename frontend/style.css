@@ -524,7 +524,7 @@ p {
     flex: 2;
 }
 
-.about-us-content  {
+.about-us-content {
     flex: 1;
     text-align: center;
 }
@@ -658,5 +658,68 @@ footer {
 
     .about-us p, .our-mission p, .customer-service p {
         font-size: 0.9rem; /* Reduced font size for mobile */
+    }
+
+    /* === NEW AND MODIFIED MOBILE STYLES START HERE === */
+
+    /* Reduce font size for all buttons on mobile */
+    .cta-button, .cta-button-green, .cta-button-blue, .login-button, .member-login-btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+
+    /* Make the "How it Works" section show side-by-side on mobile */
+    .funding-types {
+        flex-direction: row; /* Keep the side-by-side layout */
+        justify-content: space-around;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .funding-type-item {
+        /* Ensure items are small enough to fit side-by-side */
+        width: calc(33% - 10px); /* Adjust width to fit 3 items with a gap */
+        min-width: 100px; /* Prevent it from getting too small */
+        padding: 10px;
+    }
+    
+    .funding-type-item img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .funding-type-item span {
+        font-size: 0.8rem;
+    }
+    
+    /* Small screen adjustments for the team members */
+    .team-members {
+        flex-direction: row; /* Keep them in a row */
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .team-member-item {
+        width: calc(50% - 15px); /* Fit two items per row with a gap */
+        padding: 10px;
+    }
+
+    .team-member-photo {
+        width: 80px;
+        height: 80px;
+    }
+
+    .team-member-item h4 {
+        font-size: 1rem;
+    }
+    
+    /* Adjust text size for general content on mobile */
+    .how-it-works h2, .contact-us h2, .team-heading, .funding-pie h2, .grant-services h2, .about-us h2 {
+        font-size: 2rem;
+    }
+    
+    .how-it-works > p, .contact-intro, .signup-content p {
+        font-size: 1rem;
     }
 }
