@@ -101,7 +101,7 @@ h2 {
 .form-container > p {
     text-align: center;
     color: #555555;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
 }
 
 /* Form sections and inputs */
@@ -389,10 +389,10 @@ h2 {
         width: 85%;
     }
     .form-container {
-        padding: 1.5rem;
+        padding: 1rem;
     }
     .form-section {
-        padding: 1.25rem;
+        padding: 1.10rem;
     }
     .input-group label {
         font-size: 1rem;
