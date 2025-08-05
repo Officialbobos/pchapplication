@@ -591,12 +591,16 @@ def admin_logout():
 @login_required
 @admin_required
 def admin_manage_applicants():
-    applicants = users_collection.find({"role": "applicants"})
+    # Fetch applicants who are not in a 'pending' state
+    # This assumes that once an application is reviewed, its status will be updated to something else.
+    applicants = users_collection.find({"role": "applicants", "status": {"$ne": "pending"}})
     return render_template('admin/admin_manage_applicants.html', applicants=applicants)
+
 
 # Applicant routes
 def is_applicant():
     return 'user_id' in session and session.get('role') == 'applicants'
+
 
 @app.route('/applicant/login', methods=['GET', 'POST'])
 def applicant_login():
@@ -639,7 +643,6 @@ def applicant_logout():
 @app.route('/')
 def main_homepage():
     return render_template('index.html')
-
 @app.route('/registration_form', methods=['GET', 'POST'])
 def registration_form():
     if request.method == 'POST':
@@ -673,11 +676,18 @@ def registration_form():
             # Construct the new user document (this will be the application record)
             new_user = {
                 "first_name": form_data.get('first_name', ''),
+                "middle_name": form_data.get('middle_name', ''), # New field
                 "last_name": form_data.get('last_name', ''),
-                "full_address": form_data.get('full_address', ''),
+                "address": { # New structured address fields
+                    "street": form_data.get('street_address', ''),
+                    "county": form_data.get('county', ''),
+                    "state": form_data.get('state', ''),
+                    "zip_code": form_data.get('zip_code', ''),
+                    "country": form_data.get('country', '')
+                },
                 "text_number": form_data.get('text_number', ''),
                 "sex": form_data.get('sex', ''),
-                "age": int(form_data.get('age', 0)) if form_data.get('age') else 0,
+                "date_of_birth": form_data.get('dob', ''), # Changed from 'age' to 'dob'
                 "occupation": form_data.get('occupation', ''),
                 "education_level": form_data.get('education_level', ''),
                 "residency": form_data.get('residency', ''),
@@ -692,6 +702,7 @@ def registration_form():
                 "government_id_path": gov_id_filename,
                 "selfie_photo_path": selfie_filename,
                 "role": "applicants",
+                "status": "pending", # New status field
                 "created_at": datetime.now()
             }
             
