@@ -190,16 +190,18 @@ h2 {
     margin-bottom: 0;
 }
 
-/* Checkbox group styling */
+/* CHECKBOX GROUP STYLING */
+/* Uses a responsive grid to automatically adjust columns based on screen size */
 .checkbox-group {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
 }
 
+/* Styles each checkbox label as a clickable card */
 .checkbox-label {
     display: flex;
-    align-items: center;
+    align-items: center; /* Vertically aligns the checkbox and text */
     cursor: pointer;
     background: #f0f0f0;
     border: 1px solid #e0e0e0;
@@ -213,11 +215,12 @@ h2 {
     box-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
 }
 
+/* Styles the checkbox input itself */
 .checkbox-label input[type="checkbox"] {
-    margin-right: 10px;
-    transform: scale(1.3);
+    margin-right: 10px; /* Space between the checkbox and the label text */
+    transform: scale(1.3); /* Makes the checkbox larger */
     cursor: pointer;
-    accent-color: #ff8c00;
+    accent-color: #ff8c00; /* Changes the color of the checked state */
 }
 
 /* File input styling for ID card */
@@ -369,15 +372,17 @@ h2 {
         font-size: 1.2rem;
     }
     .checkbox-group {
+        /* On mobile, stack checkboxes into a single column */
         grid-template-columns: 1fr;
         gap: 0.5rem;
     }
     .checkbox-label {
+        /* Adjust padding and font for mobile */
         padding: 10px 12px;
         font-size: 0.9rem;
     }
     .checkbox-label input[type="checkbox"] {
-        transform: scale(1.1);
+        transform: scale(1.1); /* Slightly smaller checkbox icon on mobile */
     }
     .modal-content {
         padding: 2rem;
