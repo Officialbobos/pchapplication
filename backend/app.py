@@ -227,53 +227,60 @@ def admin_dashboard():
 @admin_required
 def admin_create_applicant_account():
     if request.method == 'POST':
-        full_name = request.form['full_name']
-        email = request.form['email']
-        password = request.form['password']
-        phone = request.form['phone']
-        address = request.form['address']
-        business = request.form.get('business', '')
-        date_of_birth = request.form.get('date_of_birth', '')
+        try:
+            full_name = request.form['full_name']
+            email = request.form['email']
+            password = request.form['password']
+            phone = request.form['phone']
+            address = request.form['address']
+            business = request.form.get('business', '')
+            date_of_birth = request.form.get('date_of_birth', '')
 
-        if users_collection.find_one({"email": email}):
-            flash('Error: An account with this email already exists.', 'danger')
-            return redirect(url_for('admin_create_applicant_account'))
+            # Check if user already exists
+            if users_collection.find_one({"email": email}):
+                # Return a JSON error response for the frontend
+                return jsonify({'status': 'error', 'message': 'Error: An account with this email already exists.'}), 409
 
-        hashed_password = generate_password_hash(password)
+            # Hash the password
+            hashed_password = generate_password_hash(password)
 
-        applicant_image = request.files.get('applicant_image')
-        image_url = ''
+            # File handling logic
+            applicant_image = request.files.get('applicant_image')
+            image_url = ''
+            if applicant_image and applicant_image.filename != '':
+                filename = secure_filename(applicant_image.filename)
+                unique_filename = str(uuid.uuid4()) + "_" + filename
+                image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+                applicant_image.save(image_path)
+                image_url = unique_filename
 
-        if applicant_image and applicant_image.filename != '':
-            filename = secure_filename(applicant_image.filename)
-            unique_filename = str(uuid.uuid4()) + "_" + filename
-            image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            applicant_image.save(image_path)
-            image_url = unique_filename
+            # Construct the document to insert
+            applicant_document = {
+                "full_name": full_name,
+                "username": email,
+                "email": email,
+                "password_hash": hashed_password,
+                "phone": phone,
+                "address": address,
+                "business": business,
+                "date_of_birth": date_of_birth,
+                "image_url": image_url,
+                "role": "applicants"
+            }
 
-        applicant_document = {
-            "full_name": full_name,
-            "username": email,
-            "email": email,
-            "password_hash": hashed_password,
-            "phone": phone,
-            "address": address,
-            "business": business,
-            "date_of_birth": date_of_birth,
-            "image_url": image_url,
-            "role": "applicants"
-        }
+            # Insert into the database
+            users_collection.insert_one(applicant_document)
 
-        users_collection.insert_one(applicant_document)
-        flash('Applicant account created successfully!', 'success')
+            # Return a JSON success response
+            return jsonify({'status': 'success', 'message': 'Applicant account created successfully!'})
         
-        # CORRECTED: Redirect back to the same page to show the new applicant in the table
-        return redirect(url_for('admin_create_applicant_account'))
+        except Exception as e:
+            # Handle any other exceptions and return a JSON error
+            print(f"An error occurred: {e}")
+            return jsonify({'status': 'error', 'message': f'An unexpected error occurred: {e}'}), 500
 
-    # THIS IS THE NEW PART:
-    # On a GET request, fetch all applicants and pass them to the template
+    # This part remains for GET requests to render the page initially
     applicants = users_collection.find({"role": "applicants"})
-    
     return render_template('admin/admin_create_applicant_account.html', applicants=applicants)
 
 @app.route('/admin/applicants/edit/<applicant_id>', methods=['GET', 'POST'])

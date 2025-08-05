@@ -5,6 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Applicant Account</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='admin/style.css') }}">
+    <style>
+        /* CSS for the modal (can be moved to style.css) */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-backdrop.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-backdrop.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-content h3 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .modal-content button {
+            background: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard-wrapper">
@@ -25,7 +79,7 @@
                 <h1>Create Applicant Account</h1>
             </div>
             <div class="form-container">
-                <form action="{{ url_for('admin_create_applicant_account') }}" method="post" enctype="multipart/form-data">
+                <form id="createApplicantForm" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="full_name">Full Name</label>
                         <input type="text" id="full_name" name="full_name" required>
@@ -34,7 +88,6 @@
                         <label for="email">Email</label>
                         <input type="email" id="email" name="email" required>
                     </div>
-                    
                     <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" id="password" name="password" required>
@@ -82,8 +135,57 @@
                     </tbody>
                 </table>
             </div>
-
         </main>
     </div>
+
+    <div id="successModal" class="modal-backdrop">
+        <div class="modal-content">
+            <h3 id="modalTitle">Success!</h3>
+            <p id="modalMessage">Applicant account created successfully.</p>
+            <button id="modalCloseButton">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('createApplicantForm');
+        const modal = document.getElementById('successModal');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalCloseButton = document.getElementById('modalCloseButton');
+
+        form.addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Update modal message and show modal on success
+                    modalMessage.textContent = result.message;
+                    modal.classList.add('show');
+                    form.reset(); // Clear the form
+                } else {
+                    // Update modal message and show modal on error
+                    modalMessage.textContent = result.message || 'An error occurred.';
+                    modal.classList.add('show');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                modalMessage.textContent = 'An unexpected error occurred.';
+                modal.classList.add('show');
+            }
+        });
+
+        // Hide the modal when the close button is clicked
+        modalCloseButton.addEventListener('click', function() {
+            modal.classList.remove('show');
+        });
+    </script>
 </body>
 </html>
