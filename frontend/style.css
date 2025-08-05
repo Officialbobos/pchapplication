@@ -184,11 +184,11 @@ p {
 /* How It Works Section */
 .how-it-works {
     text-align: center;
-    padding: 4rem 0;
+    padding: 3rem 0;
 }
 
 .how-it-works h2 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     margin-bottom: 1rem;
 }
 
@@ -201,9 +201,9 @@ p {
 
 .funding-types {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
+    justify-content: center; /* Center the entire row of items */
+    flex-wrap: wrap; /* Allows items to wrap to the next line */
+    gap: 18px;
     margin-top: 3rem;
 }
 
@@ -214,6 +214,10 @@ p {
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease;
+    /* On desktop, allow items to grow to fit the space */
+    flex-grow: 1; 
+    flex-basis: 200px; /* Suggest a minimum width before wrapping */
+    max-width: 250px;
 }
 
 .funding-type-link {
@@ -226,8 +230,8 @@ p {
 }
 
 .funding-type-item img {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     margin-bottom: 10px;
 }
 
@@ -671,15 +675,17 @@ footer {
     /* Make the "How it Works" section show side-by-side on mobile */
     .funding-types {
         flex-direction: row; /* Keep the side-by-side layout */
-        justify-content: space-around;
+        justify-content: space-between; /* Space items evenly */
         align-items: center;
         gap: 10px;
     }
 
-    .funding-type-item {
-        /* Ensure items are small enough to fit side-by-side */
-        width: calc(33% - 10px); /* Adjust width to fit 3 items with a gap */
-        min-width: 100px; /* Prevent it from getting too small */
+   .funding-type-item {
+        /* This calc() value forces two items to fit per row with a gap */
+        width: calc(50% - 5px); 
+        flex-grow: 0; /* Prevents items from growing */
+        flex-basis: auto;
+        max-width: none;
         padding: 10px;
     }
     
