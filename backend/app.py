@@ -514,8 +514,11 @@ def send_newsletter_route():
         include_credentials = 'include_credentials' in request.form
         
         if not recipient_emails_str or not subject or not message_body:
-            flash('Recipient emails, subject, and message body are required.', 'danger')
-            return redirect(url_for('send_newsletter_route'))
+            # Return JSON for an error state
+            return jsonify({
+                "status": "error",
+                "message": "Recipient emails, subject, and message body are required."
+            }), 400
 
         recipient_emails = [email.strip() for email in recipient_emails_str.split(',') if email.strip()]
         
@@ -526,15 +529,18 @@ def send_newsletter_route():
             'current_year': datetime.now().year
         }
         html_template_name = 'admin/newsletter_template.html'
-        text_template_name = 'admin/newsletter_template.txt' # Assuming you'd create this file
+        text_template_name = 'admin/newsletter_template.txt'
         
         if include_credentials:
             username = request.form.get('username')
             password = request.form.get('password')
             
             if not username or not password:
-                flash('Username and password are required when including credentials.', 'danger')
-                return redirect(url_for('send_newsletter_route'))
+                # Return JSON for a missing credentials error
+                return jsonify({
+                    "status": "error",
+                    "message": "Username and password are required when including credentials."
+                }), 400
             
             # Automatically generate the login link
             login_link = url_for('applicant_login', _external=True)
@@ -545,7 +551,7 @@ def send_newsletter_route():
                 'login_link': login_link
             })
             html_template_name = 'admin/email_with_credentials.html'
-            text_template_name = 'admin/email_with_credentials.txt' # Assuming you'd create this file
+            text_template_name = 'admin/email_with_credentials.txt'
 
         # Render email bodies from templates
         html_body = render_template(html_template_name, **template_context)
@@ -574,16 +580,13 @@ def send_newsletter_route():
         if attachment_path and os.path.exists(attachment_path):
             os.remove(attachment_path)
             
-        # ... (flash messages and redirection) ...
-        if success_count > 0:
-            flash(f'Message sent to {success_count} recipients.', 'success')
-        if fail_count > 0:
-            flash(f'Failed to send message to {fail_count} recipients.', 'danger')
-
-        return redirect(url_for('send_newsletter_route'))
-        
+        # Return a success JSON object with a summary message
+        return jsonify({
+            "status": "success",
+            "message": f'Message sent to {success_count} recipients. Failed for {fail_count} recipients.'
+        })
+    
     return render_template('admin/send_newsletter.html')
-
 
 @app.route('/admin/logout')
 def admin_logout():
