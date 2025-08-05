@@ -84,7 +84,7 @@ def create_initial_data():
         })
         print("Admin user created.")
 
-create_initial_data()
+# create_initial_data()
 
 def generate_password(length=8):
     characters = string.ascii_letters + string.digits
