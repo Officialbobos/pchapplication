@@ -705,7 +705,7 @@ def registration_form():
             if selfie_filename: files['selfie_photo'] = os.path.join(app.config['UPLOAD_FOLDER'], selfie_filename)
 
             # Send a system email to admin with form data and attachments
-            # send_system_email(new_user, files)
+            send_system_email(new_user, files)
             
             # Return a success message for the frontend
             return jsonify({'status': 'success', 'message': 'Application submitted successfully. We will contact you soon.'})

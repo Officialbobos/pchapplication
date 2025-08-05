@@ -664,7 +664,7 @@ footer {
         font-size: 0.9rem; /* Reduced font size for mobile */
     }
 
-    /* === NEW AND MODIFIED MOBILE STYLES START HERE === */
+    /* === UPDATED MOBILE STYLES === */
 
     /* Reduce font size for all buttons on mobile */
     .cta-button, .cta-button-green, .cta-button-blue, .login-button, .member-login-btn {
@@ -672,21 +672,18 @@ footer {
         padding: 10px 20px;
     }
 
-    /* Make the "How it Works" section show side-by-side on mobile */
+    /* Adjust the "How it Works" section for a single-column layout on mobile */
     .funding-types {
-        flex-direction: row; /* Keep the side-by-side layout */
-        justify-content: space-between; /* Space items evenly */
-        align-items: center;
-        gap: 10px;
+        flex-direction: column; /* Stack items vertically on mobile */
+        gap: 15px; /* Add space between stacked items */
     }
 
-   .funding-type-item {
-        /* This calc() value forces two items to fit per row with a gap */
-        width: calc(50% - 5px); 
-        flex-grow: 0; /* Prevents items from growing */
+    .funding-type-item {
+        width: 100%; /* Make each item take the full width */
+        flex-grow: 0; 
         flex-basis: auto;
         max-width: none;
-        padding: 10px;
+        padding: 15px;
     }
     
     .funding-type-item img {
@@ -695,7 +692,8 @@ footer {
     }
 
     .funding-type-item span {
-        font-size: 0.8rem;
+        font-size: 1rem; /* Slightly increase font size for better readability */
+        white-space: nowrap; /* Prevents titles from wrapping awkwardly */
     }
     
     /* Small screen adjustments for the team members */
