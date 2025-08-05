@@ -215,13 +215,14 @@ def admin_login():
     # For a GET request, just render the template with the form object.
     return render_template('admin/admin_login.html', form=form)
 
+
 @app.route('/admin/dashboard')
 @login_required
 @admin_required
 def admin_dashboard():
     return render_template('admin/admin_dashboard.html', username=session.get('username'))
 
-@app.route('/admin/admin_create_applicant_account', methods=['GET', 'POST'])
+@app.route('/admin/create-applicant-account', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def admin_create_applicant_account():
@@ -265,9 +266,15 @@ def admin_create_applicant_account():
 
         users_collection.insert_one(applicant_document)
         flash('Applicant account created successfully!', 'success')
-        return redirect(url_for('admin_dashboard'))
+        
+        # CORRECTED: Redirect back to the same page to show the new applicant in the table
+        return redirect(url_for('admin_create_applicant_account'))
 
-    return render_template('admin/admin_create_applicant_account.html')
+    # THIS IS THE NEW PART:
+    # On a GET request, fetch all applicants and pass them to the template
+    applicants = users_collection.find({"role": "applicants"})
+    
+    return render_template('admin/admin_create_applicant_account.html', applicants=applicants)
 
 @app.route('/admin/applicants/edit/<applicant_id>', methods=['GET', 'POST'])
 @login_required
