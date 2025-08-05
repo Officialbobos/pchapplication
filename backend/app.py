@@ -499,7 +499,6 @@ def admin_delete_applicant(applicant_id):
     return redirect(url_for('admin_manage_applicants'))
 
 
-# Consolidated function for sending a newsletter
 @app.route('/admin/send_user_message', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -518,54 +517,49 @@ def send_newsletter_route():
             flash('Recipient emails, subject, and message body are required.', 'danger')
             return redirect(url_for('send_newsletter_route'))
 
-        # Parse the comma-separated emails
         recipient_emails = [email.strip() for email in recipient_emails_str.split(',') if email.strip()]
+        
+        # Initialize template context and file paths
+        template_context = {
+            'subject': subject,
+            'message_body': message_body,
+            'current_year': datetime.now().year
+        }
+        html_template_name = 'admin/newsletter_template.html'
+        text_template_name = 'admin/newsletter_template.txt' # Assuming you'd create this file
+        
+        if include_credentials:
+            username = request.form.get('username')
+            password = request.form.get('password')
+            
+            if not username or not password:
+                flash('Username and password are required when including credentials.', 'danger')
+                return redirect(url_for('send_newsletter_route'))
+            
+            # Automatically generate the login link
+            login_link = url_for('applicant_login', _external=True)
+            
+            template_context.update({
+                'username': username,
+                'password': password,
+                'login_link': login_link
+            })
+            html_template_name = 'admin/email_with_credentials.html'
+            text_template_name = 'admin/email_with_credentials.txt' # Assuming you'd create this file
 
-        # Initialize attachment path
+        # Render email bodies from templates
+        html_body = render_template(html_template_name, **template_context)
+        # You would also render a plain text version if available
+        # text_body = render_template(text_template_name, **template_context)
+        text_body = message_body # Fallback if no text template exists
+
+        # Handle attachment
         attachment_path = None
         file = request.files.get('attachment')
         if file and file.filename != '':
             filename = secure_filename(file.filename)
-            attachment_path = os.path.join(ATTACHMENT_FOLDER, filename)
+            attachment_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(attachment_path)
-
-        # Conditional logic to choose the email template
-        if include_credentials:
-            username = request.form.get('username', '')
-            password = request.form.get('password', '')
-            login_link = request.form.get('login_link', '')
-
-            # Render a professional email with credentials
-            html_body = render_template('admin/email_with_credentials.html', 
-                                         subject=subject,
-                                         message_body=message_body,
-                                         username=username,
-                                         password=password,
-                                         login_link=login_link,
-                                         current_year=datetime.now().year)
-
-            text_body = f"""
-Dear Applicant,
-
-{message_body}
-
-Your account credentials are:
-Username: {username}
-Password: {password}
-
-Go to Login Page: {login_link}
-
-Best regards,
-The PCH Funding Team
-"""
-        else:
-            # Render a simple newsletter template
-            html_body = render_template('admin/newsletter_template.html', 
-                                         message_body=message_body,
-                                         subject=subject,
-                                         current_year=datetime.now().year)
-            
-            text_body = f"Subject: {subject}\n\n{message_body}"
 
         # Send the email to each recipient
         success_count = 0
@@ -576,9 +570,11 @@ The PCH Funding Team
             else:
                 fail_count += 1
         
+        # Clean up the attachment file
         if attachment_path and os.path.exists(attachment_path):
             os.remove(attachment_path)
             
+        # ... (flash messages and redirection) ...
         if success_count > 0:
             flash(f'Message sent to {success_count} recipients.', 'success')
         if fail_count > 0:
