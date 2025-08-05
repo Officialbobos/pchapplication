@@ -1,472 +1,399 @@
-/* Custom Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@400;700&display=swap');
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --background-color: #f4f7f6;
+  --card-background: #ffffff;
+  --text-color: #333333;
+  --border-color: #dddddd;
+  --box-shadow-color: rgba(0, 0, 0, 0.1);
+  --error-color: #dc3545;
+}
 
-/* ==================
-   General Styling
-   ================== */
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-    font-family: 'Poppins', sans-serif;
-    color: #333333;
-    line-height: 1.6;
-    background-color: #ffffff;
-    background-image: url('https://www.transparenttextures.com/patterns/white-subtle-grunge.png'); /* Subtle texture for the background */
-    background-size: cover;
-    background-attachment: fixed;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem 1rem;
-    min-height: 100vh;
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--background-color);
 }
 
-.form-container {
-    background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 165, 0, 0.2);
-    padding: 2.5rem 3.5rem;
-    border-radius: 20px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
-    max-width: 800px;
-    width: 100%;
-    margin-top: 6rem;
-    transition: all 0.3s ease;
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
 }
 
-.form-container:hover {
-    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.25);
-}
-
-h2 {
-    text-align: center;
-    color: #ff8c00; /* Darker orange for headings */
-    font-family: 'Montserrat', sans-serif;
-    font-size: 2.5rem;
-    text-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
-    margin-bottom: 0.5rem;
-}
-
-.form-container > p {
-    text-align: center;
-    color: #555555;
-    margin-bottom: 2rem;
-}
-
-/* Flash Messages */
-.flashes {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 90%;
-    max-width: 500px;
-    z-index: 2000;
-}
-
-.flash-message {
-    padding: 15px 20px;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.flash-message.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.flash-message.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-
-/* ==================
-   Header Styling
-   ================== */
 .main-header {
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-bottom: 2px solid rgba(255, 165, 0, 0.4);
-    padding: 1rem 0;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+  background-color: var(--card-background);
+  box-shadow: 0 2px 4px var(--box-shadow-color);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 999;
 }
 
 .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .logo img {
-    height: 60px;
-    filter: drop-shadow(0 0 5px rgba(255, 165, 0, 0.8));
-    transition: filter 0.3s ease;
-}
-
-.logo img:hover {
-    filter: drop-shadow(0 0 15px rgba(255, 165, 0, 1));
+  height: 50px;
 }
 
 .back-button {
-    background: linear-gradient(90deg, #ff8c00, #ff4500); /* Orange to red gradient */
-    color: #fff;
-    padding: 12px 25px;
-    text-decoration: none;
-    border-radius: 30px;
-    font-weight: 700;
-    text-transform: uppercase;
-    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 0 10px rgba(255, 140, 0, 0.6);
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
 }
 
 .back-button:hover {
-    background: linear-gradient(90deg, #ff4500, #ff8c00);
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 0 20px rgba(255, 69, 0, 0.9);
+  background-color: #0056b3;
 }
 
-/* ==================
-   Form Sections & Inputs
-   ================== */
+/* Form Styles */
+.form-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: var(--card-background);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px var(--box-shadow-color);
+}
+
+.form-container h2 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.form-container p {
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--secondary-color);
+}
+
 .form-section {
-    background: rgba(255, 255, 255, 0.5);
-    padding: 2rem;
-    border-radius: 15px;
-    margin-bottom: 2rem;
-    border: 1px solid rgba(255, 165, 0, 0.1);
-    box-shadow: inset 0 0 10px rgba(255, 165, 0, 0.05);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .form-section h3 {
-    color: #ff8c00;
-    font-family: 'Montserrat', sans-serif;
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-    text-shadow: 0 0 5px rgba(255, 140, 0, 0.3);
+  margin-bottom: 15px;
+  color: var(--text-color);
+  font-weight: 600;
 }
 
 .input-group {
-    margin-bottom: 1.5rem;
+  margin-bottom: 15px;
 }
 
 .input-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    color: #333333;
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
 }
 
-.input-group input:not([type="checkbox"]),
+.input-group input,
 .input-group select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #cccccc;
-    border-radius: 8px;
-    font-size: 1rem;
-    background: #f9f9f9;
-    color: #333333;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 1em;
 }
 
 .input-group input:focus,
 .input-group select:focus {
-    border-color: #ff8c00;
-    outline: none;
-    box-shadow: 0 0 15px rgba(255, 140, 0, 0.3);
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-/* Currency input group styling */
-.currency-input-group {
-    display: flex;
-    gap: 10px;
-    align-items: center;
+/* Checkbox and Radio Button Styles */
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
-.currency-input-group label {
-    flex-shrink: 0;
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: calc(50% - 15px); /* Two columns layout */
 }
 
-.currency-input-group input[name="currency_symbol"] {
-    width: 60px; /* Smaller width for currency symbol input */
-    text-align: center;
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
 }
 
-.currency-input-group input[name="monthly_income"] {
-    flex-grow: 1; /* Allow income input to take up remaining space */
-}
-
-/* Social handles group styling */
-#social-handles-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-}
-
+/* Social Handles Group */
 .social-handle-group {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 10px;
-    align-items: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.social-handle-group label {
+  flex-shrink: 0;
+  margin-bottom: 0;
 }
 
 .social-handle-group select,
 .social-handle-group input[type="text"] {
-    width: 100%;
+  flex: 1;
 }
 
-.social-handle-group label {
-    margin-bottom: 0;
-}
-
-/* "Add another social handle" button */
 .add-social-button {
-    background: #ff8c00;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    text-transform: uppercase;
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: 600;
+  margin-top: 10px;
 }
 
 .add-social-button:hover {
-    background-color: #ff6f00;
-    transform: scale(1.02);
+  background-color: #5a6268;
 }
 
-/* Checkbox group styling */
-.checkbox-group {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
+/* Currency Input Group */
+.currency-input-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    background: #f0f0f0;
-    border: 1px solid #e0e0e0;
-    padding: 12px 18px;
-    border-radius: 10px;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+.currency-input-group input[type="number"] {
+  flex: 1;
 }
 
-.checkbox-label:hover {
-    background: #e9e9e9;
-    box-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
-}
-
-.checkbox-label input[type="checkbox"] {
-    margin-right: 10px;
-    transform: scale(1.3);
-    cursor: pointer;
-    accent-color: #ff8c00;
-}
-
-/* File input styling for ID card */
-.input-group input[type="file"] {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #cccccc;
-    border-radius: 8px;
-    background: #f9f9f9;
-    color: #333333;
-    cursor: pointer;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-}
-
-.input-group input[type="file"]:hover {
-    border-color: #ff8c00;
-    box-shadow: 0 0 15px rgba(255, 140, 0, 0.3);
-}
-
-/* Terms and Conditions checkbox styling */
-.terms-and-conditions .checkbox-label {
-    justify-content: center;
-    padding: 1rem;
-    font-weight: 600;
-}
-
-/* Submit button */
+/* Submit Button */
 .submit-button {
-    display: block;
-    width: 100%;
-    padding: 18px;
-    background: linear-gradient(45deg, #ff8c00, #ff4500);
-    color: #fff;
-    border: none;
-    border-radius: 30px;
-    font-size: 1.35rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 0 20px rgba(255, 140, 0, 0.5);
-    text-transform: uppercase;
-    margin-top: 2rem;
+  display: block;
+  width: 100%;
+  padding: 15px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .submit-button:hover {
-    transform: scale(1.02);
-    box-shadow: 0 0 30px rgba(255, 140, 0, 0.8);
+  background-color: #0056b3;
 }
 
-/* ==================
-   Modal Styling
-   ================== */
+/* Flash Messages */
+.flashes {
+  margin-bottom: 20px;
+}
+
+.flash-message {
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.flash-message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.flash-message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Modal Styles */
 .modal-backdrop {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1001;
 }
 
 .modal-content {
-    background: rgba(255, 255, 255, 0.95);
-    padding: 3rem;
-    border-radius: 20px;
-    text-align: center;
-    max-width: 500px;
-    width: 90%;
-    border: 1px solid rgba(255, 165, 0, 0.3);
-    box-shadow: 0 0 30px rgba(255, 165, 0, 0.5);
+  background-color: var(--card-background);
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  max-width: 500px;
+  margin: 20px;
+  box-shadow: 0 5px 15px var(--box-shadow-color);
 }
 
 .modal-title {
-    color: #ff8c00;
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    font-family: 'Montserrat', sans-serif;
-    text-shadow: 0 0 8px rgba(255, 140, 0, 0.3);
+  color: var(--primary-color);
+  font-weight: 700;
+  margin-bottom: 15px;
 }
 
 .modal-content p {
-    color: #555555;
-    margin-bottom: 2rem;
+  color: var(--text-color);
+  font-size: 1.1em;
+  line-height: 1.5;
+  margin-bottom: 20px;
 }
 
 .modal-close-button {
-    padding: 12px 30px;
-    background: linear-gradient(45deg, #ff4500, #ff8c00);
-    color: #fff;
-    border: none;
-    border-radius: 30px;
-    font-weight: 700;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    box-shadow: 0 0 15px rgba(255, 69, 0, 0.5);
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .modal-close-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 25px rgba(255, 69, 0, 0.8);
+  background-color: #0056b3;
 }
 
-/* ==================
-   Responsive Design
-   ================== */
-@media (max-width: 600px) {
-    body {
-        padding: 1rem 0.5rem;
-    }
-    .form-container {
-        padding: 1.5rem;
-        margin-top: 3rem;
-    }
-    .main-header {
-        position: static;
-        background: rgba(255, 255, 255, 0.9);
-        backdrop-filter: none;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
-    .header-container {
-        flex-direction: column;
-        gap: 1rem;
-        padding: 0 15px;
-    }
-    .logo img {
-        height: 50px;
-    }
-    h2 {
-        font-size: 2rem;
-    }
-    .form-section h3 {
-        font-size: 1.2rem;
-    }
-    .checkbox-group {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-    }
-    .checkbox-label {
-        padding: 10px 12px;
-        font-size: 0.9rem;
-    }
-    .checkbox-label input[type="checkbox"] {
-        transform: scale(1.1);
-    }
-    .modal-content {
-        padding: 2rem;
-        width: 85%;
-    }
-    .form-container {
-        padding: 1.5rem;
-    }
-    .form-section {
-        padding: 1.25rem;
-    }
-    .input-group label {
-        font-size: 1rem;
-    }
-    .input-group input, .input-group select {
-        padding: 10px;
-        font-size: 0.9rem;
-    }
-    .submit-button {
-        padding: 15px;
-        font-size: 1.1rem;
-    }
-    .social-handle-group {
-        grid-template-columns: 1fr; /* Stack on mobile */
-    }
-    .social-handle-group label {
-        display: block;
-        margin-bottom: 5px;
-    }
-    .currency-input-group {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .currency-input-group label {
-        margin-bottom: 5px;
-    }
-    .currency-input-group input[name="currency_symbol"] {
-        width: 100%;
-        text-align: left;
-    }
+/* Loading Modal */
+.loading-modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 1.5em;
+  text-align: center;
+  z-index: 1000;
+}
+
+/* Mobile Devices */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  .main-header {
+    padding: 10px 0;
+  }
+
+  .logo img {
+    height: 40px;
+  }
+
+  .back-button {
+    padding: 8px 15px;
+    font-size: 0.9em;
+  }
+
+  .form-container {
+    margin: 20px auto;
+    padding: 15px;
+  }
+
+  .form-container h2 {
+    font-size: 1.5em;
+  }
+
+  .form-container p {
+    font-size: 0.9em;
+  }
+
+  .form-section h3 {
+    font-size: 1.2em;
+  }
+  
+  .input-group label {
+    font-size: 0.9em;
+  }
+
+  .input-group input,
+  .input-group select {
+    padding: 8px;
+    font-size: 0.9em;
+  }
+
+  .checkbox-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .checkbox-label {
+    width: 100%;
+  }
+
+  .social-handle-group {
+    flex-direction: column;
+    gap: 5px;
+    align-items: flex-start;
+  }
+
+  .social-handle-group label {
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .add-social-button {
+    width: 100%;
+    font-size: 0.9em;
+    padding: 10px;
+  }
+
+  .currency-input-group {
+    flex-wrap: wrap;
+  }
+
+  .currency-input-group label {
+    white-space: normal;
+  }
+
+  .submit-button {
+    font-size: 1em;
+    padding: 12px;
+  }
+
+  .modal-content {
+    padding: 20px;
+  }
+  
+  .modal-title {
+    font-size: 1.5em;
+  }
+
+  .modal-content p {
+    font-size: 1em;
+  }
 }

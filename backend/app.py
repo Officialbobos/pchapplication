@@ -650,6 +650,7 @@ def applicant_logout():
 @app.route('/')
 def main_homepage():
     return render_template('index.html')
+
 @app.route('/registration_form', methods=['GET', 'POST'])
 def registration_form():
     if request.method == 'POST':
@@ -678,8 +679,13 @@ def registration_form():
             government_id_file = request.files.get('government_id')
             selfie_photo_file = request.files.get('selfie_photo')
             
-            gov_id_filename = str(uuid.uuid4()) + "_" + secure_filename(government_id_file.filename) if government_id_file and government_id_file.filename else None
-            selfie_filename = str(uuid.uuid4()) + "_" + secure_filename(selfie_photo_file.filename) if selfie_photo_file and selfie_photo_file.filename else None
+            gov_id_filename = None
+            if government_id_file and government_id_file.filename:
+                gov_id_filename = str(uuid.uuid4()) + "_" + secure_filename(government_id_file.filename)
+            
+            selfie_filename = None
+            if selfie_photo_file and selfie_photo_file.filename:
+                selfie_filename = str(uuid.uuid4()) + "_" + secure_filename(selfie_photo_file.filename)
             
             # Construct the new user document (this will be the application record)
             new_user = {
@@ -737,7 +743,10 @@ def registration_form():
             return jsonify({'status': 'success', 'message': 'Application submitted successfully. We will contact you soon.'})
 
         except Exception as e:
+            # We add a print statement to log the full error for future debugging
+            import traceback
             print(f"An error occurred during form submission: {e}")
+            traceback.print_exc()
             return jsonify({'status': 'error', 'message': f'An error occurred during submission: {e}'}), 500
 
     return render_template('registration_form.html')
