@@ -661,8 +661,6 @@ def registration_form():
             government_id_file = request.files.get('government_id')
             selfie_photo_file = request.files.get('selfie_photo')
             gov_id_filename = str(uuid.uuid4()) + "_" + secure_filename(government_id_file.filename) if government_id_file and government_id_file.filename else None
-            
-            # --- FIX: Changed 'selfer_filename' to 'selfie_filename' to match the key below ---
             selfie_filename = str(uuid.uuid4()) + "_" + secure_filename(selfie_photo_file.filename) if selfie_photo_file and selfie_photo_file.filename else None
 
             # Construct the new user document (this will be the application record)
@@ -707,7 +705,7 @@ def registration_form():
             if selfie_filename: files['selfie_photo'] = os.path.join(app.config['UPLOAD_FOLDER'], selfie_filename)
 
             # Send a system email to admin with form data and attachments
-            send_system_email(new_user, files)
+            # send_system_email(new_user, files)
             
             # Return a success message for the frontend
             return jsonify({'status': 'success', 'message': 'Application submitted successfully. We will contact you soon.'})
