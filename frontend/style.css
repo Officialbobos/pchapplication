@@ -1,7 +1,7 @@
 /* General Styles */
 :root {
-    --primary-orange: #ff8c00;
-    --secondary-yellow: #ffc107;
+    --primary-blue: #0a13ba;
+    --secondary-blue: #0988e2;
     --cta-red: #ff5722;
     --light-gray: #f9f9f9;
     --medium-gray: #e0e0e0;
@@ -10,7 +10,7 @@
     --background-light: #ffffff;
     --text-color: #333333;
     --card-shadow: rgba(0, 0, 0, 0.1);
-    --dark-gold: #b8860b;
+    --dark-blue: #0a045a;
 }
 
 * {
@@ -437,7 +437,7 @@ p {
 }
 
 .cta-button-green:hover {
-    background-color: #ffb300;
+    background-color: #0a0392;
 }
 
 .wait-message {
