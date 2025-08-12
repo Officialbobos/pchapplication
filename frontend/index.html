@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PCH Funding Applications</title>
+    <title>HHS Funding Applications</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" href="{{ url_for('static', filename='pch.png') }}" type="image/png">
@@ -31,7 +31,7 @@
             max-width: 500px;
             width: 90%;
             box-shadow: 0 5px 25px rgba(255, 140, 0, 0.5);
-            border: 2px solid var(--primary-orange);
+            border: 2px solid var(--primary-blue);
             animation: fadeIn 0.5s ease-in-out;
         }
 
@@ -235,9 +235,10 @@
 
         <section class="where-money-comes-from">
             <div class="container">
-                <h2>PUBLISHER'S CLEARING HOUSE</h2>
+                <h2>HHS GRANTS & CONTRACTS </h2>
                 <div class="content-row">
-                    <p>Is non-taxable and interest-free. This funds do not require a credit check, security deposits or co-signers, you can apply even if you have declared a bankruptcy or have bad credit. You as a taxpayer and U.S. citizen and other countries are entitled to apply for this money. This program is based on helping paying for Medical Bills, Buying a home and so many other valuable things, do you understand?</p>
+                    <p>HHS is the largest grant-making agency in the US. Most HHS grants are provided directly to states, territories, tribes, and educational and community organizations, then given to people and organizations who are eligible to receive funding.</p>
+                  <P>On this site you will find information for prospective and current grantees about HHS grant programs, the grant application processes, and grant management.</P>
                 </div>
                 <a href="{{ url_for('registration_form') }}" class="cta-button">Start the Application Process Today!</a>
             </div>
