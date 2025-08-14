@@ -1,7 +1,7 @@
 /* General Styles */
 :root {
-    --primary-orange: #ff8c00;
-    --secondary-yellow: #ffc107;
+    --primary-blue: #007bff;
+    --secondary-cyan: #17a2b8;
     --cta-red: #ff5722;
     --light-gray: #f9f9f9;
     --medium-gray: #e0e0e0;
@@ -10,7 +10,7 @@
     --background-light: #ffffff;
     --text-color: #333333;
     --card-shadow: rgba(0, 0, 0, 0.1);
-    --dark-gold: #b8860b;
+    --dark-blue: #04053d;
 }
 
 * {
@@ -34,7 +34,7 @@ body {
 
 h1, h2, h3, h4 {
     font-weight: 600;
-    color: var(--primary-orange);
+    color: var(--primary-blue);
 }
 
 p {
@@ -59,7 +59,7 @@ p {
 }
 
 .login-button {
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     color: #fff;
     padding: 10px 20px;
     text-decoration: none;
@@ -234,7 +234,7 @@ p {
 .funding-type-item span {
     display: block;
     font-weight: 600;
-    color: var(--primary-orange);
+    color: var(--primary-blue);
 }
 
 /* Where Money Comes From Section */
@@ -262,7 +262,7 @@ p {
 }
 
 .cta-button {
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     color: #fff;
     padding: 15px 30px;
     text-decoration: none;
@@ -320,7 +320,7 @@ p {
 }
 
 .contact-info-item h4 {
-    color: var(--primary-orange);
+    color: var(--primary-blue);
     font-size: 1.2rem;
     margin-bottom: 5px;
 }
@@ -357,7 +357,7 @@ p {
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 15px;
-    border: 3px solid var(--primary-orange);
+    border: 3px solid var(--primary-blue);
 }
 
 .team-member-item h4 {
@@ -397,7 +397,7 @@ p {
 }
 
 .new-apps-list strong {
-    color: var(--primary-orange);
+    color: var(--primary-blue);
     font-weight: 700;
 }
 
@@ -433,7 +433,7 @@ p {
 }
 
 .cta-button-green:hover {
-    background-color: #ffb300;
+    background-color: #007bff;
 }
 
 .wait-message {
@@ -502,7 +502,7 @@ p {
 /* New Section Styles for About Us */
 .about-us {
     padding: 4rem 0;
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     color: #fff; /* White text for contrast */
 }
 
@@ -580,11 +580,11 @@ footer {
 }
 
 .footer-links a:hover {
-    color: var(--primary-orange);
+    color: var(--primary-blue);
 }
 
 .member-login-btn {
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     color: #fff;
     padding: 10px 20px;
     border: none;
