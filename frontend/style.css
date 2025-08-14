@@ -66,9 +66,9 @@ p {
 
 .logo h1 {
     font-size: 1.5rem; /* Adjust the font size as needed */
-    color: var(--text-color); /* Sets the color */
+    color: var(--primary-blue);
     margin: 0; /* Removes any default margin from the h1 */
-    font-weight: 400; /* Sets the font weight */
+    font-weight: 700; /* Sets the font weight */
 }
 
 .login-button {

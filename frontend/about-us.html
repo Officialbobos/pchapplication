@@ -5,20 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | PCH Funding Applications</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='about-us.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/images/pch.png') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <header class="main-header">
-        <div class="container">
-<a href="{{ url_for('main_homepage') }}" class="logo">
-                <img src="{{ url_for('static', filename='assets/images/logo.png') }}" alt="PCH Funding Applications Logo">
-            </a>
-            <nav class="main-nav">
-            <a href="{{ url_for('applicant_login') }}" class="login-button">APPLICANT LOGIN</a>
-            </nav>
+    <div class="container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='assets/images/pch.png') }}" alt="PCH Funding Applications Logo">
+            <h1>U.S Department of Health and Human Services</h1>
         </div>
-    </header>
+        <div>
+            <a href="{{ url_for('index') }}" class="home-button">BACK TO HOMEPAGE</a>
+            <a href="{{ url_for('applicant_login') }}" class="login-button">APPLICANT LOGIN</a>
+        </div>
+    </div>
+</header>
 
     <main>
         <section class="about-hero">
