@@ -14,9 +14,12 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import uuid
-from decorators import login_required, admin_required
+from .decorators import login_required, admin_required
 import re
 from functools import wraps
+from backend.forms import AdminLoginForm
+from flask_wtf.csrf import generate_csrf
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -26,7 +29,7 @@ template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'fr
 app = Flask(__name__, template_folder=template_dir, static_folder=template_dir)
 
 # Update this line to encode the string into a byte string
-app.secret_key = os.getenv('SECRET_KEY').encode('utf-8')
+app.secret_key = os.getenv('SECRET_KEY')
 
 # --- CONFIGURATION ---
 # Create a folder for all uploads (applicant documents and temp attachments)
@@ -39,6 +42,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ATTACHMENT_FOLDER = os.path.join(UPLOAD_FOLDER, 'temp_attachments')
 if not os.path.exists(ATTACHMENT_FOLDER):
     os.makedirs(ATTACHMENT_FOLDER)
+
+#Render URL for the application
+app.config['SERVER_NAME'] = 'pchfundingapplication.onrender.com'
 
 # MongoDB Configuration
 MONGO_URI = os.getenv('MONGO_URI')
@@ -65,7 +71,7 @@ db = client.get_database('pch_funding_db')
 users_collection = db['users']
 
 def create_initial_data():
-    users_collection.create_index("username", unique=True)
+    users_collection.create_index("username", unique=True, sparse=True)
     users_collection.create_index("email", unique=True)
 
     if not users_collection.find_one({"username": "pchadmin"}):
@@ -184,9 +190,15 @@ def is_admin():
 
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    form = AdminLoginForm()
+
+    if form.validate_on_submit():
+        # Your form validation logic will go here.
+        # When using Flask-WTF, we check form.validate_on_submit()
+        # which automatically handles the POST check and CSRF token validation.
+
+        username = form.username.data
+        password = form.password.data
         
         user = users_collection.find_one({"username": username})
 
@@ -197,8 +209,12 @@ def admin_login():
             return redirect(url_for('admin_dashboard'))
         else:
             error = 'Invalid credentials'
-            return render_template('admin/admin_login.html', error=error)
-    return render_template('admin/admin_login.html')
+            # Pass the form object back to the template so it can display the CSRF token.
+            return render_template('admin/admin_login.html', form=form, error=error)
+
+    # For a GET request, just render the template with the form object.
+    return render_template('admin/admin_login.html', form=form)
+
 
 @app.route('/admin/dashboard')
 @login_required
@@ -206,53 +222,66 @@ def admin_login():
 def admin_dashboard():
     return render_template('admin/admin_dashboard.html', username=session.get('username'))
 
-@app.route('/admin/admin_create_applicant_account', methods=['GET', 'POST'])
+@app.route('/admin/create-applicant-account', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def admin_create_applicant_account():
     if request.method == 'POST':
-        full_name = request.form['full_name']
-        email = request.form['email']
-        password = request.form['password']
-        phone = request.form['phone']
-        address = request.form['address']
-        business = request.form.get('business', '')
-        date_of_birth = request.form.get('date_of_birth', '')
+        try:
+            full_name = request.form['full_name']
+            email = request.form['email']
+            password = request.form['password']
+            phone = request.form['phone']
+            address = request.form['address']
+            business = request.form.get('business', '')
+            date_of_birth = request.form.get('date_of_birth', '')
 
-        if users_collection.find_one({"email": email}):
-            flash('Error: An account with this email already exists.', 'danger')
-            return redirect(url_for('admin_create_applicant_account'))
+            # Check if user already exists
+            if users_collection.find_one({"email": email}):
+                # Return a JSON error response for the frontend
+                return jsonify({'status': 'error', 'message': 'Error: An account with this email already exists.'}), 409
 
-        hashed_password = generate_password_hash(password)
+            # Hash the password
+            hashed_password = generate_password_hash(password)
 
-        applicant_image = request.files.get('applicant_image')
-        image_url = ''
+            # File handling logic
+            applicant_image = request.files.get('applicant_image')
+            image_url = ''
+            if applicant_image and applicant_image.filename != '':
+                filename = secure_filename(applicant_image.filename)
+                unique_filename = str(uuid.uuid4()) + "_" + filename
+                image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
+                applicant_image.save(image_path)
+                image_url = unique_filename
 
-        if applicant_image and applicant_image.filename != '':
-            filename = secure_filename(applicant_image.filename)
-            unique_filename = str(uuid.uuid4()) + "_" + filename
-            image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            applicant_image.save(image_path)
-            image_url = unique_filename
+            # Construct the document to insert
+            applicant_document = {
+                "full_name": full_name,
+                "username": email,
+                "email": email,
+                "password_hash": hashed_password,
+                "phone": phone,
+                "address": address,
+                "business": business,
+                "date_of_birth": date_of_birth,
+                "image_url": image_url,
+                "role": "applicants"
+            }
 
-        applicant_document = {
-            "full_name": full_name,
-            "username": email,
-            "email": email,
-            "password_hash": hashed_password,
-            "phone": phone,
-            "address": address,
-            "business": business,
-            "date_of_birth": date_of_birth,
-            "image_url": image_url,
-            "role": "applicants"
-        }
+            # Insert into the database
+            users_collection.insert_one(applicant_document)
 
-        users_collection.insert_one(applicant_document)
-        flash('Applicant account created successfully!', 'success')
-        return redirect(url_for('admin_dashboard'))
+            # Return a JSON success response
+            return jsonify({'status': 'success', 'message': 'Applicant account created successfully!'})
+        
+        except Exception as e:
+            # Handle any other exceptions and return a JSON error
+            print(f"An error occurred: {e}")
+            return jsonify({'status': 'error', 'message': f'An unexpected error occurred: {e}'}), 500
 
-    return render_template('admin/admin_create_applicant_account.html')
+    # This part remains for GET requests to render the page initially
+    applicants = users_collection.find({"role": "applicants"})
+    return render_template('admin/admin_create_applicant_account.html', applicants=applicants)
 
 @app.route('/admin/applicants/edit/<applicant_id>', methods=['GET', 'POST'])
 @login_required
@@ -470,7 +499,6 @@ def admin_delete_applicant(applicant_id):
     return redirect(url_for('admin_manage_applicants'))
 
 
-# Consolidated function for sending a newsletter
 @app.route('/admin/send_user_message', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -486,57 +514,58 @@ def send_newsletter_route():
         include_credentials = 'include_credentials' in request.form
         
         if not recipient_emails_str or not subject or not message_body:
-            flash('Recipient emails, subject, and message body are required.', 'danger')
-            return redirect(url_for('send_newsletter_route'))
+            # Return JSON for an error state
+            return jsonify({
+                "status": "error",
+                "message": "Recipient emails, subject, and message body are required."
+            }), 400
 
-        # Parse the comma-separated emails
         recipient_emails = [email.strip() for email in recipient_emails_str.split(',') if email.strip()]
+        
+        # Initialize template context and file paths
+        template_context = {
+            'subject': subject,
+            'message_body': message_body,
+            'current_year': datetime.now().year
+        }
+        html_template_name = 'admin/newsletter_template.html'
+        text_template_name = 'admin/newsletter_template.txt'
+        
+        if include_credentials:
+            username = request.form.get('username')
+            password = request.form.get('password')
+            
+            if not username or not password:
+                # Return JSON for a missing credentials error
+                return jsonify({
+                    "status": "error",
+                    "message": "Username and password are required when including credentials."
+                }), 400
+            
+            # Automatically generate the login link
+            login_link = url_for('applicant_login', _external=True)
+            
+            template_context.update({
+                'username': username,
+                'password': password,
+                'login_link': login_link
+            })
+            html_template_name = 'admin/email_with_credentials.html'
+            text_template_name = 'admin/email_with_credentials.txt'
 
-        # Initialize attachment path
+        # Render email bodies from templates
+        html_body = render_template(html_template_name, **template_context)
+        # You would also render a plain text version if available
+        # text_body = render_template(text_template_name, **template_context)
+        text_body = message_body # Fallback if no text template exists
+
+        # Handle attachment
         attachment_path = None
         file = request.files.get('attachment')
         if file and file.filename != '':
             filename = secure_filename(file.filename)
-            attachment_path = os.path.join(ATTACHMENT_FOLDER, filename)
+            attachment_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(attachment_path)
-
-        # Conditional logic to choose the email template
-        if include_credentials:
-            username = request.form.get('username', '')
-            password = request.form.get('password', '')
-            login_link = request.form.get('login_link', '')
-
-            # Render a professional email with credentials
-            html_body = render_template('admin/email_with_credentials.html', 
-                                        subject=subject,
-                                        message_body=message_body,
-                                        username=username,
-                                        password=password,
-                                        login_link=login_link,
-                                        current_year=datetime.now().year)
-
-            text_body = f"""
-Dear Applicant,
-
-{message_body}
-
-Your account credentials are:
-Username: {username}
-Password: {password}
-
-Go to Login Page: {login_link}
-
-Best regards,
-The PCH Funding Team
-"""
-        else:
-            # Render a simple newsletter template
-            html_body = render_template('admin/newsletter_template.html', 
-                                        message_body=message_body,
-                                        subject=subject,
-                                        current_year=datetime.now().year)
-            
-            text_body = f"Subject: {subject}\n\n{message_body}"
 
         # Send the email to each recipient
         success_count = 0
@@ -547,18 +576,17 @@ The PCH Funding Team
             else:
                 fail_count += 1
         
+        # Clean up the attachment file
         if attachment_path and os.path.exists(attachment_path):
             os.remove(attachment_path)
             
-        if success_count > 0:
-            flash(f'Message sent to {success_count} recipients.', 'success')
-        if fail_count > 0:
-            flash(f'Failed to send message to {fail_count} recipients.', 'danger')
-
-        return redirect(url_for('send_newsletter_route'))
-        
+        # Return a success JSON object with a summary message
+        return jsonify({
+            "status": "success",
+            "message": f'Message sent to {success_count} recipients. Failed for {fail_count} recipients.'
+        })
+    
     return render_template('admin/send_newsletter.html')
-
 
 @app.route('/admin/logout')
 def admin_logout():
@@ -569,12 +597,16 @@ def admin_logout():
 @login_required
 @admin_required
 def admin_manage_applicants():
-    applicants = users_collection.find({"role": "applicants"})
+    # Fetch applicants who are not in a 'pending' state
+    # This assumes that once an application is reviewed, its status will be updated to something else.
+    applicants = users_collection.find({"role": "applicants", "status": {"$ne": "pending"}})
     return render_template('admin/admin_manage_applicants.html', applicants=applicants)
+
 
 # Applicant routes
 def is_applicant():
     return 'user_id' in session and session.get('role') == 'applicants'
+
 
 @app.route('/applicant/login', methods=['GET', 'POST'])
 def applicant_login():
@@ -622,61 +654,101 @@ def main_homepage():
 def registration_form():
     if request.method == 'POST':
         try:
+            # Retrieve all form data
             form_data = request.form.to_dict()
-            email = form_data['email']
-            password = form_data['password']
+            
+            # Retrieve and process needs (checkboxes)
+            needs = request.form.getlist('needs[]')
+            
+            # Retrieve social media handles
+            social_platforms = request.form.getlist('social_platform[]')
+            social_handles = request.form.getlist('social_handle[]')
+            social_media_list = []
+            for platform, handle in zip(social_platforms, social_handles):
+                if platform and handle:
+                    social_media_list.append({'platform': platform, 'handle': handle})
+            
+            email = form_data.get('email')
 
+            # Check if user already exists based on email
             if users_collection.find_one({"email": email}):
                 return jsonify({'status': 'error', 'message': 'An account with this email already exists.'}), 409
             
-            hashed_password = generate_password_hash(password)
-
+            # File handling
             government_id_file = request.files.get('government_id')
             selfie_photo_file = request.files.get('selfie_photo')
-            gov_id_filename = str(uuid.uuid4()) + "_" + secure_filename(government_id_file.filename) if government_id_file else None
-            selfie_filename = str(uuid.uuid4()) + "_" + secure_filename(selfie_photo_file.filename) if selfie_photo_file else None
-
+            
+            gov_id_filename = None
+            if government_id_file and government_id_file.filename:
+                gov_id_filename = str(uuid.uuid4()) + "_" + secure_filename(government_id_file.filename)
+            
+            selfie_filename = None
+            if selfie_photo_file and selfie_photo_file.filename:
+                selfie_filename = str(uuid.uuid4()) + "_" + secure_filename(selfie_photo_file.filename)
+            
+            # Construct the new user document (this will be the application record)
             new_user = {
-                "full_name": form_data.get('full_name', ''),
-                "username": email,
+                "first_name": form_data.get('first_name', ''),
+                "middle_name": form_data.get('middle_name', ''),
+                "last_name": form_data.get('last_name', ''),
+                "address": {
+                    "street": form_data.get('street_address', ''),
+                    "county": form_data.get('county', ''),
+                    "state": form_data.get('state', ''),
+                    "zip_code": form_data.get('zip_code', ''),
+                    "country": form_data.get('country', '')
+                },
+                "text_number": form_data.get('text_number', ''),
+                "sex": form_data.get('sex', ''),
+                "date_of_birth": form_data.get('dob', ''),
+                "occupation": form_data.get('occupation', ''),
+                "education_level": form_data.get('education_level', ''),
+                "residency": form_data.get('residency', ''),
                 "email": email,
-                "password_hash": hashed_password,
-                "role": "applicants",
-                "created_at": datetime.now(), 
-                "phone": form_data.get('phone_number', ''),
-                "address": form_data.get('home_address', ''),
-                "business": form_data.get('business', ''),
-                "date_of_birth": form_data.get('date_of_birth', ''),
-                "monthly_income": float(form_data.get('monthly_income', 0)),
-                "age": int(form_data.get('age', 0)),
+                "payment_method": form_data.get('payment_method', ''),
+                "currency_symbol": form_data.get('currency_symbol', ''),
+                "monthly_income": float(form_data.get('monthly_income', 0)) if form_data.get('monthly_income') else 0.0,
+                "how_heard": form_data.get('how_heard', ''),
+                "social_media": social_media_list,
+                "physical_challenges": form_data.get('physical_challenges', ''),
+                "needs": needs,
                 "government_id_path": gov_id_filename,
-                "selfie_photo_path": selfie_filename
+                "selfie_photo_path": selfie_filename,
+                "role": "applicants",
+                "status": "pending",
+                "created_at": datetime.now()
             }
             
-            if government_id_file:
+            # Save files
+            if government_id_file and gov_id_filename:
                 gov_id_path = os.path.join(app.config['UPLOAD_FOLDER'], gov_id_filename)
                 government_id_file.save(gov_id_path)
             
-            if selfie_photo_file:
+            if selfie_photo_file and selfie_filename:
                 selfie_path = os.path.join(app.config['UPLOAD_FOLDER'], selfie_filename)
                 selfie_photo_file.save(selfie_path)
 
             users_collection.insert_one(new_user)
             
+            # Prepare files for admin email attachment
             files = {}
             if gov_id_filename: files['government_id'] = os.path.join(app.config['UPLOAD_FOLDER'], gov_id_filename)
             if selfie_filename: files['selfie_photo'] = os.path.join(app.config['UPLOAD_FOLDER'], selfie_filename)
 
-            send_system_email(form_data, files)
+            # Send a system email to admin with form data and attachments
+            send_system_email(new_user, files)
             
-            flash(f'Your application has been submitted successfully! You can now log in with your email and password.', 'success')
-            return jsonify({'status': 'success', 'redirect_url': url_for('applicant_login')})
+            # Return a success message for the frontend
+            return jsonify({'status': 'success', 'message': 'Application submitted successfully. We will contact you soon.'})
 
         except Exception as e:
+            # We add a print statement to log the full error for future debugging
+            import traceback
+            print(f"An error occurred during form submission: {e}")
+            traceback.print_exc()
             return jsonify({'status': 'error', 'message': f'An error occurred during submission: {e}'}), 500
 
     return render_template('registration_form.html')
-
 
 # Define the route for the 'About Us' page
 @app.route('/about-us')

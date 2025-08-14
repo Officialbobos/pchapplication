@@ -184,11 +184,11 @@ p {
 /* How It Works Section */
 .how-it-works {
     text-align: center;
-    padding: 4rem 0;
+    padding: 3rem 0;
 }
 
 .how-it-works h2 {
-    font-size: 2.5rem;
+    font-size: 2rem;
     margin-bottom: 1rem;
 }
 
@@ -201,9 +201,9 @@ p {
 
 .funding-types {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
+    justify-content: center; /* Center the entire row of items */
+    flex-wrap: wrap; /* Allows items to wrap to the next line */
+    gap: 18px;
     margin-top: 3rem;
 }
 
@@ -214,6 +214,10 @@ p {
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s ease;
+    /* On desktop, allow items to grow to fit the space */
+    flex-grow: 1; 
+    flex-basis: 200px; /* Suggest a minimum width before wrapping */
+    max-width: 250px;
 }
 
 .funding-type-link {
@@ -226,8 +230,8 @@ p {
 }
 
 .funding-type-item img {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     margin-bottom: 10px;
 }
 
@@ -524,7 +528,7 @@ p {
     flex: 2;
 }
 
-.about-us-content  {
+.about-us-content {
     flex: 1;
     text-align: center;
 }
@@ -658,5 +662,68 @@ footer {
 
     .about-us p, .our-mission p, .customer-service p {
         font-size: 0.9rem; /* Reduced font size for mobile */
+    }
+
+    /* === UPDATED MOBILE STYLES === */
+
+    /* Reduce font size for all buttons on mobile */
+    .cta-button, .cta-button-green, .cta-button-blue, .login-button, .member-login-btn {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+
+    /* Adjust the "How it Works" section for a single-column layout on mobile */
+    .funding-types {
+        flex-direction: column; /* Stack items vertically on mobile */
+        gap: 15px; /* Add space between stacked items */
+    }
+
+    .funding-type-item {
+        width: 100%; /* Make each item take the full width */
+        flex-grow: 0; 
+        flex-basis: auto;
+        max-width: none;
+        padding: 15px;
+    }
+    
+    .funding-type-item img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .funding-type-item span {
+        font-size: 1rem; /* Slightly increase font size for better readability */
+        white-space: nowrap; /* Prevents titles from wrapping awkwardly */
+    }
+    
+    /* Small screen adjustments for the team members */
+    .team-members {
+        flex-direction: row; /* Keep them in a row */
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .team-member-item {
+        width: calc(50% - 15px); /* Fit two items per row with a gap */
+        padding: 10px;
+    }
+
+    .team-member-photo {
+        width: 80px;
+        height: 80px;
+    }
+
+    .team-member-item h4 {
+        font-size: 1rem;
+    }
+    
+    /* Adjust text size for general content on mobile */
+    .how-it-works h2, .contact-us h2, .team-heading, .funding-pie h2, .grant-services h2, .about-us h2 {
+        font-size: 2rem;
+    }
+    
+    .how-it-works > p, .contact-intro, .signup-content p {
+        font-size: 1rem;
     }
 }
