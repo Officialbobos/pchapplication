@@ -3,14 +3,14 @@
 
 /* --- Global Variables --- */
 :root {
-    --primary-orange: #ff8c00;
-    --primary-orange-dark: #cc7000;
+    --primary-blue: #007bff;
+    --primary-blue-dark: #04284e;
     --glowing-white: #ffffff;
     --text-color: #333;
     --light-gray: #f7f7f7;
     --medium-gray: #666;
     --border-color: #ccc;
-    --box-shadow-color: rgba(255, 165, 0, 0.3);
+    --box-shadow-color: rgba(3, 4, 56, 0.3);
 }
 
 /* --- General body and container styling --- */
@@ -33,7 +33,7 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     padding: 0.75rem 0; /* Reduced padding */
     z-index: 1000;
@@ -54,7 +54,7 @@ body {
 
 .back-button {
     background-color: var(--glowing-white);
-    color: var(--primary-orange);
+    color: var(--primary-blue);
     padding: 10px 20px; /* Reduced padding */
     text-decoration: none;
     border-radius: 30px;
@@ -62,13 +62,13 @@ body {
     text-transform: uppercase;
     transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
     box-shadow: 0 0 8px var(--box-shadow-color);
-    border: 2px solid var(--primary-orange);
+    border: 2px solid var(--primary-blue);
 }
 
 .back-button:hover {
-    background-color: var(--primary-orange-dark);
+    background-color: var(--primary-blue-dark);
     color: var(--glowing-white);
-    box-shadow: 0 0 12px rgba(255, 165, 0, 0.7);
+    box-shadow: 0 0 12px rgba(1, 13, 48, 0.7);
 }
 
 /* --- Form Container --- */
@@ -122,7 +122,7 @@ h2 {
 }
 
 .input-group input:focus {
-    border-color: var(--primary-orange);
+    border-color: var(--primary-blue);
     outline: none;
     box-shadow: 0 0 8px var(--box-shadow-color);
 }
@@ -139,7 +139,7 @@ h2 {
     display: block;
     width: 100%;
     padding: 16px; /* Reduced padding */
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     color: var(--glowing-white);
     border: none;
     border-radius: 30px;
@@ -153,9 +153,9 @@ h2 {
 }
 
 .submit-button:hover {
-    background-color: var(--primary-orange-dark);
+    background-color: var(--primary-blue-dark);
     transform: scale(1.01);
-    box-shadow: 0 0 18px rgba(255, 165, 0, 0.8);
+    box-shadow: 0 0 18px rgba(3, 2, 71, 0.8);
 }
 
 /* --- Responsive design --- */

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HHS Funding Applications</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/images/pch.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="{{ url_for('static', filename='pch.png') }}" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+
         /* SCAM ALERT MODAL STYLES */
         .scam-alert-modal-backdrop {
             position: fixed;
@@ -130,14 +131,15 @@
         </div>
     </div>
 
-    <header class="main-header">
-        <div class="container">
-            <div class="logo">
-                <img src="{{ url_for('static', filename='assets/images/pch.png') }}" alt="PCH Funding Applications Logo">
-            </div>
-            <a href="{{ url_for('applicant_login') }}" class="login-button">APPLICANT LOGIN</a>
+   <header class="main-header">
+    <div class="container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='assets/images/pch.png') }}" alt="PCH Funding Applications Logo">
+            <h1>U.S Department of Health and Human Services</h1>
         </div>
-    </header>
+        <a href="{{ url_for('applicant_login') }}" class="login-button">APPLICANT LOGIN</a>
+    </div>
+</header>
 
     <main>
         <section class="hero-section">
