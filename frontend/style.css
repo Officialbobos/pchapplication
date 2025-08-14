@@ -58,6 +58,19 @@ p {
     height: 50px;
 }
 
+.logo {
+    display: flex; /* This makes the children (the img and h1) flex items */
+    align-items: center; /* This vertically centers the items along the cross-axis */
+    gap: 15px; /* This adds a gap between the logo and the text */
+}
+
+.logo h1 {
+    font-size: 1.5rem; /* Adjust the font size as needed */
+    color: var(--text-color); /* Sets the color */
+    margin: 0; /* Removes any default margin from the h1 */
+    font-weight: 400; /* Sets the font weight */
+}
+
 .login-button {
     background-color: var(--primary-blue);
     color: #fff;

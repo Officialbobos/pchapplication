@@ -1,9 +1,9 @@
 /* --- Global Styles --- */
 :root {
-    --primary-orange: #FF8C00;      /* A vibrant orange */
-    --primary-orange-dark: #cc7000; /* A darker shade for hover effects */
-    --glowing-white: #fcfcfc;       /* A slightly off-white for glow effect */
-    --sidebar-bg: #FF8C00;          /* The sidebar uses the same vibrant orange */
+    --primary-blue: #007bff;      
+    --primary-blue-dark: #011d3b; 
+    --glowing-white: #fcfcfc;      
+    --sidebar-bg: #007bff;        
     --text-color: #333;
     --border-color: #ddd;
     --shadow-color: rgba(0, 0, 0, 0.2);
@@ -59,7 +59,7 @@ body {
 }
 
 .form-group input:focus {
-    border-color: var(--primary-orange);
+    border-color: var(--primary-blue);
     box-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
     outline: none;
 }
@@ -76,7 +76,7 @@ body {
 button[type="submit"] {
     width: 100%;
     padding: 1rem;
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     color: var(--glowing-white);
     border: none;
     border-radius: 6px;
@@ -88,7 +88,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: var(--primary-orange-dark);
+    background-color: var(--primary-blue-dark);
     box-shadow: 0 0 10px rgba(255, 140, 0, 0.7);
 }
 
@@ -141,7 +141,7 @@ button[type="submit"]:hover {
 
 .sidebar-menu a:hover,
 .sidebar-menu a.active {
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     color: #000;
     text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
 }
@@ -165,12 +165,12 @@ button[type="submit"]:hover {
 .dashboard-header h1 {
     margin: 0;
     font-size: 2rem;
-    color: var(--primary-orange);
+    color: var(--primary-blue);
 }
 
 .logout-btn {
     padding: 10px 20px;
-    background-color: var(--primary-orange-dark);
+    background-color: var(--primary-blue-dark);
     color: var(--glowing-white);
     text-decoration: none;
     border-radius: 5px;
@@ -179,7 +179,7 @@ button[type="submit"]:hover {
 }
 
 .logout-btn:hover {
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
 }
 
@@ -209,7 +209,7 @@ button[type="submit"]:hover {
 .btn {
     display: inline-block;
     padding: 10px 20px;
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     color: var(--glowing-white);
     text-decoration: none;
     border-radius: 5px;
@@ -218,7 +218,7 @@ button[type="submit"]:hover {
 }
 
 .btn:hover {
-    background-color: var(--primary-orange-dark);
+    background-color: var(--primary-blue-dark);
 }
 
 /* --- Table and Form Styles for Admin Pages --- */
@@ -259,7 +259,7 @@ tbody tr:hover {
 
 /* Style for action links/buttons */
 td a {
-    color: var(--primary-orange);
+    color: var(--primary-blue);
     text-decoration: none;
     font-weight: bold;
     margin-right: 15px;
@@ -267,7 +267,7 @@ td a {
 }
 
 td a:hover {
-    color: var(--primary-orange-dark);
+    color: var(--primary-blue-dark);
 }
 
 /* --- Styles for the Edit Applicant Form (Integrated) --- */
@@ -306,7 +306,7 @@ td a:hover {
 .input-group input:focus,
 .input-group textarea:focus,
 .input-group select:focus {
-    border-color: var(--primary-orange);
+    border-color: var(--primary-blue);
     outline: none;
 }
 
@@ -415,10 +415,10 @@ hr {
 }
 
 h3 {
-    color: var(--primary-orange-dark);
+    color: var(--primary-blue-dark);
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
-    border-left: 4px solid var(--primary-orange);
+    border-left: 4px solid var(--primary-blue);
     padding-left: 1rem;
 }
 
@@ -447,7 +447,7 @@ h3 {
 .letter-form-container .applicant-name {
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--primary-orange-dark);
+    color: var(--primary-blue-dark);
     margin-bottom: 2rem;
     text-align: center;
 }
@@ -467,7 +467,7 @@ h3 {
 }
 
 .letter-form-container textarea:focus {
-    border-color: var(--primary-orange);
+    border-color: var(--primary-blue);
     box-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
     outline: none;
 }
@@ -514,7 +514,7 @@ h3 {
 }
 
 .admin-header h2 {
-    color: var(--primary-orange);
+    color: var(--primary-blue);
     font-size: 2rem;
     margin: 0;
 }
@@ -534,7 +534,7 @@ h3 {
 }
 
 .admin-header nav a:hover {
-    background-color: var(--primary-orange-dark);
+    background-color: var(--primary-blue-dark);
     color: var(--glowing-white);
     box-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
 }
@@ -596,7 +596,7 @@ h3 {
 }
 
 .message-form .form-control:focus {
-    border-color: var(--primary-orange);
+    border-color: var(--primary-blue);
     box-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
     outline: none;
 }
@@ -609,7 +609,7 @@ h3 {
 .message-form .btn-primary {
     width: 100%;
     padding: 1rem;
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     color: var(--glowing-white);
     border: none;
     border-radius: 6px;
@@ -621,7 +621,7 @@ h3 {
 }
 
 .message-form .btn-primary:hover {
-    background-color: var(--primary-orange-dark);
+    background-color: var(--primary-blue-dark);
     box-shadow: 0 0 10px rgba(255, 140, 0, 0.7);
 }
 

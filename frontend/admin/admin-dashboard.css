@@ -1,6 +1,6 @@
 :root {
-    --primary-orange: #ff8c00;
-    --primary-orange-dark: #cc7000;
+    --primary-blue: #007bff;
+    --primary-blue-dark: #050f66;
     --primary-white: #ffffff;
     --text-color: #333;
     --sidebar-bg: #2c3e50;
@@ -66,7 +66,7 @@ body {
 .sidebar-menu li a:hover,
 .sidebar-menu li .active {
     background-color: var(--hover-link-bg);
-    border-left: 5px solid var(--primary-orange);
+    border-left: 5px solid var(--primary-blue);
     padding-left: 1.5rem;
 }
 
@@ -94,7 +94,7 @@ body {
 }
 
 .back-btn, .write-letter-btn {
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     color: var(--primary-white);
     padding: 0.75rem 1.5rem;
     border-radius: 50px;
@@ -104,7 +104,7 @@ body {
 }
 
 .back-btn:hover, .write-letter-btn:hover {
-    background-color: var(--primary-orange-dark);
+    background-color: var(--primary-blue-dark);
 }
 
 .form-container {
@@ -119,7 +119,7 @@ body {
 
 .form-container h2, .form-container h3 {
     text-align: center;
-    color: var(--primary-orange-dark);
+    color: var(--primary-blue-dark);
     font-weight: 600;
     margin-top: 0;
 }
@@ -151,7 +151,7 @@ body {
 .input-group input:focus,
 .input-group select:focus,
 .input-group textarea:focus {
-    border-color: var(--primary-orange);
+    border-color: var(--primary-blue);
     outline: none;
 }
 
@@ -159,7 +159,7 @@ body {
     display: block;
     width: 100%;
     padding: 0.75rem;
-    background-color: var(--primary-orange);
+    background-color: var(--primary-blue);
     color: var(--primary-white);
     border: none;
     border-radius: 5px;
@@ -170,7 +170,7 @@ body {
 }
 
 .submit-button:hover {
-    background-color: var(--primary-orange-dark);
+    background-color: var(--primary-blue-dark);
 }
 
 .back-link {
@@ -190,7 +190,7 @@ body {
 .letter-form-container .applicant-name {
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--primary-orange-dark);
+    color: var(--primary-blue-dark);
     margin-bottom: 2rem;
     text-align: center;
 }
@@ -210,7 +210,7 @@ body {
 }
 
 .letter-form-container textarea:focus {
-    border-color: var(--primary-orange);
+    border-color: var(--primary-blue);
     box-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
     outline: none;
 }
