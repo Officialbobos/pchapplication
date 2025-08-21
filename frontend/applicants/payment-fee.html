@@ -2,189 +2,346 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Fee Option</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='applicants/applicant-dashboard.css') }}">
+    <!-- Importing Google Fonts for the 'Poppins' font family -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Importing Font Awesome for icons, specifically the email and Facebook icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    
     <style>
-      :root {
-    --primary-orange: #ff6f61;
-    --primary-orange-dark: #cc5a4d;
-    --glowing-white: #f5f5f5;
-    --border-color: #e0e0e0;
-}
+        /* General body and typography styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-/* --- Payment Fee Card and Options --- */
-.payment-fee-card {
-    background-color: var(--glowing-white);
-    padding: 2.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 900px;
-    margin: 2rem auto;
-    text-align: center;
-}
+        /* Variables for consistent theming */
+        :root {
+            --primary-orange: #ff6f61;
+            --primary-orange-dark: #cc5a4d;
+            --glowing-white: #f5f5f5;
+            --border-color: #e0e0e0;
+        }
 
-.payment-fee-card h2 {
-    color: var(--primary-orange-dark);
-    margin-bottom: 1rem;
-}
+        /* Dashboard layout and styling */
+        .dashboard-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            min-height: 90vh;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
 
-.payment-fee-card p {
-    color: #555;
-    margin-bottom: 2rem;
-    font-size: 1rem;
-}
+        /* Sidebar styling */
+        .sidebar {
+            width: 250px;
+            background-color: var(--primary-orange);
+            color: white;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-.payment-options {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-bottom: 3rem;
-    flex-wrap: wrap;
-}
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
 
-.option-card {
-    background-color: #fff;
-    border: 2px solid var(--border-color);
-    border-radius: 10px;
-    padding: 2rem;
-    width: 250px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+        .sidebar-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
 
-.option-card:hover {
-    border-color: var(--primary-orange);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transform: translateY(-5px);
-}
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
 
-.option-card.selected {
-    border-color: var(--primary-orange-dark);
-    background-color: #ffe8e6;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-}
+        .sidebar-menu li {
+            margin-bottom: 1rem;
+        }
 
-.option-card h3 {
-    margin: 0 0 0.5rem 0;
-    color: #333;
-}
+        .sidebar-menu a {
+            color: #fff;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            display: block;
+            transition: background-color 0.3s;
+        }
 
-.option-card p {
-    font-size: 0.9rem;
-    color: #777;
-}
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: var(--primary-orange-dark);
+        }
 
-.option-card input[type="radio"] {
-    display: none;
-}
- 
-/* --- Buttons --- */
-.proceed-btn {
-    display: inline-block;
-    background-color: var(--primary-orange);
-    color: var(--glowing-white);
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    font-weight: bold;
-    text-decoration: none;
-    transition: background-color 0.3s;
-    margin-top: 1rem;
-}
+        /* Main content area styling */
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+            background-color: var(--glowing-white);
+        }
 
-.proceed-btn:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
 
-.proceed-btn:hover:not(:disabled) {
-    background-color: var(--primary-orange-dark);
-}
+        .dashboard-header h1 {
+            margin: 0;
+            color: #333;
+            font-size: 2rem;
+        }
 
-.return-btn {
-    display: inline-block;
-    background-color: var(--border-color);
-    color: #555;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    font-weight: bold;
-    text-decoration: none;
-    transition: background-color 0.3s;
-    margin-top: 1rem;
-}
+        .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
 
-.return-btn:hover {
-    background-color: #ddd;
-}
+        .logout-btn:hover {
+            background-color: #c82333;
+        }
 
-/* --- Contact Info Section --- */
-.contact-info-section {
-    display: none;
-    margin-top: 3rem;
-    padding: 2rem;
-    border-top: 1px dashed var(--border-color);
-}
- 
-.contact-info-section h3 {
-    color: var(--primary-orange);
-    margin-bottom: 1rem;
-}
+        /* Payment Fee Card and Options */
+        .payment-fee-card {
+            background-color: #fff;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 2rem auto;
+            text-align: center;
+        }
 
-.contact-info-section p {
-    font-size: 1.1rem;
-    color: #333;
-    font-weight: 600;
-}
+        .payment-fee-card h2 {
+            color: var(--primary-orange-dark);
+            margin-bottom: 1rem;
+        }
 
-/* Contact buttons container */
-.contact-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 20px;
-}
+        .payment-fee-card p {
+            color: #555;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
 
-/* Base style for all contact buttons */
-.contact-btn {
-    display: inline-flex;
-    align-items: center;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-weight: bold;
-    text-decoration: none;
-    transition: background-color 0.3s, color 0.3s;
-}
+        .payment-options {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
 
-.contact-btn i {
-    margin-right: 8px;
-}
+        .option-card {
+            background-color: #fff;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 2rem;
+            width: 250px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-/* Specific styling for the email button */
-.email-btn {
-    background-color: #000;
-    color: #fff;
-}
+        .option-card:hover {
+            border-color: var(--primary-orange);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transform: translateY(-5px);
+        }
 
-.email-btn:hover {
-    background-color: #333;
-}
+        .option-card.selected {
+            border-color: var(--primary-orange-dark);
+            background-color: #ffe8e6;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
 
-/* Specific styling for the Facebook button */
-.facebook-btn {
-    background-color: #1877f2;
-    color: #fff;
-}
+        .option-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: #333;
+        }
 
-.facebook-btn:hover {
-    background-color: #125699;
-}
+        .option-card p {
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .option-card input[type="radio"] {
+            display: none;
+        }
+        
+        /* Buttons */
+        .proceed-btn {
+            display: inline-block;
+            background-color: var(--primary-orange);
+            color: var(--glowing-white);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+        }
+
+        .proceed-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .proceed-btn:hover:not(:disabled) {
+            background-color: var(--primary-orange-dark);
+        }
+
+        .return-btn {
+            display: inline-block;
+            background-color: var(--border-color);
+            color: #555;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            margin-top: 1rem;
+        }
+
+        .return-btn:hover {
+            background-color: #ddd;
+        }
+
+        /* Contact Info Section */
+        .contact-info-section {
+            display: none;
+            margin-top: 3rem;
+            padding: 2rem;
+            border-top: 1px dashed var(--border-color);
+        }
+        
+        .contact-info-section h3 {
+            color: var(--primary-orange);
+            margin-bottom: 1rem;
+        }
+
+        .contact-info-section p {
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Contact buttons container */
+        .contact-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        /* Base style for all contact buttons */
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .contact-btn i {
+            margin-right: 8px;
+        }
+
+        /* Specific styling for the email button */
+        .email-btn {
+            background-color: #000;
+            color: #fff;
+        }
+
+        .email-btn:hover {
+            background-color: #333;
+        }
+
+        /* Specific styling for the Facebook button */
+        .facebook-btn {
+            background-color: #1877f2;
+            color: #fff;
+        }
+
+        .facebook-btn:hover {
+            background-color: #125699;
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .dashboard-wrapper {
+                flex-direction: column;
+                min-height: auto;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 1rem;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            }
+
+            .sidebar-menu {
+                flex-direction: row;
+                justify-content: center;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .sidebar-menu li {
+                margin-bottom: 0;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .payment-options {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .option-card {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -195,8 +352,9 @@
                 <h2>Dashboard</h2>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="{{ url_for('applicant_dashboard') }}">My Dashboard</a></li>
-                <li><a href="{{ url_for('continuous_application') }}">Continuous Application</a></li>
+                <!-- Using '#' as a placeholder for URL_for() since we don't have a backend -->
+                <li><a href="#" class="active">My Dashboard</a></li>
+                <li><a href="#">Continuous Application</a></li>
                 <li><a href="#">Messages</a></li>
                 <li><a href="#">Help Center</a></li>
             </ul>
@@ -205,7 +363,8 @@
         <div class="main-content">
             <div class="dashboard-header">
                 <h1>Payment Fee Options</h1>
-                <a href="{{ url_for('applicant_logout') }}" class="logout-btn">Logout</a>
+                <!-- Using '#' as a placeholder for URL_for() since we don't have a backend -->
+                <a href="#" class="logout-btn">Logout</a>
             </div>
 
             <div class="payment-fee-card">
@@ -213,51 +372,53 @@
                 <p>To finalize the disbursement of your grant, a mandatory payment processing fee is required. Please select your preferred method below to proceed.</p>
 
                 <div class="payment-options">
-                    <label for="option1" class="option-card" id="card-cashier-check">
-                        <input type="radio" id="option1" name="payment_option" value="cashier-check">
+                    <!-- Corrected radio button IDs and values to be unique -->
+                    <label for="cashier-check" class="option-card" id="card-cashier-check">
+                        <input type="radio" id="cashier-check" name="payment_option" value="cashier-check">
                         <h3>Cashier Check</h3>
                         <p>Make your payment fee via a secure cashier's check. Instructions will be provided on how to make the payment with check.</p>
                     </label>
-                    <label for="option2" class="option-card" id="card-cash-mailing">
-                        <input type="radio" id="option2" name="payment_option" value="cash-mailing">
+                    <label for="cash-mailing" class="option-card" id="card-cash-mailing">
+                        <input type="radio" id="cash-mailing" name="payment_option" value="cash-mailing">
                         <h3>Cash Mailing</h3>
-                        <p>Make your payment fee mailed as cash, securely packaged and insured. for fast activationa and confirmation.</p>
+                        <p>Make your payment fee mailed as cash, securely packaged and insured, for fast activation and confirmation.</p>
                     </label>
-                    <label for="option3" class="option-card" id="card-wire-transfer">
-                        <input type="radio" id="option3" name="payment_option" value="wire-transfer">
+                    <label for="wire-transfer" class="option-card" id="card-wire-transfer">
+                        <input type="radio" id="wire-transfer" name="payment_option" value="wire-transfer">
                         <h3>Wire Transfer</h3>
                         <p>Make your payment fee directly via a bank-to-bank wire transfer. This is the fastest and most secure option.</p>
                     </label>
-                     <label for="option3" class="option-card" id="card-wire-transfer">
-                        <input type="radio" id="option3" name="payment_option" value="wire-transfer">
+                    <label for="bitcoin-address" class="option-card" id="card-bitcoin-address">
+                        <input type="radio" id="bitcoin-address" name="payment_option" value="bitcoin-address">
                         <h3>Bitcoin Address</h3>
-                        <p>Make your payment fee directly via bitcoin address. This is the fastest and most secure option.</p>
+                        <p>Make your payment fee directly via a Bitcoin address. This is a fast and secure cryptocurrency option.</p>
                     </label>
-                    <label for="option3" class="option-card" id="card-wire-transfer">
-                        <input type="radio" id="option3" name="payment_option" value="wire-transfer">
+                    <label for="other-option" class="option-card" id="card-other-option">
+                        <input type="radio" id="other-option" name="payment_option" value="other-option">
                         <h3>Other Payment Option</h3>
+                        <p>Contact us to discuss alternative payment methods that may be available to you.</p>
                     </label>
                 </div>
                 
                 <button id="proceedButton" class="proceed-btn" disabled>Proceed</button>
-<div id="contactInfo" class="contact-info-section">
-    <h3>Next Step: Contact Cashier Accountant</h3>
-    <p>Thank you for selecting your payment method. To proceed with the payment of your fee and initiate the grant disbursement, please use one of the contact methods below.</p>
-    
-    <div class="contact-buttons">
-    <a href="mailto:noreplypchgrant@gmail.com" class="contact-btn email-btn">
-        <i class="fas fa-envelope"></i> Contact via Email
-    </a>
-        <a href="https://www.facebook.com/profile.php?id=61568384265971&mibextid=ZbWKwL" target="_blank" class="contact-btn facebook-btn">
-    <i class="fab fa-facebook-f"></i> Message on Facebook
-</a>
-    </div>
-
-    <p class="instructions">Please include your full name and applicant ID in your message to the cashier accountant.</p>
-</div>
+                <div id="contactInfo" class="contact-info-section">
+                    <h3>Next Step: Contact Cashier Accountant</h3>
+                    <p>Thank you for selecting your payment method. To proceed with the payment of your fee and initiate the grant disbursement, please use one of the contact methods below.</p>
+                    
+                    <div class="contact-buttons">
+                        <a href="mailto:noreplypchgrant@gmail.com" class="contact-btn email-btn">
+                            <i class="fas fa-envelope"></i> Contact via Email
+                        </a>
+                        <a href="https://www.facebook.com/profile.php?id=61568384265971&mibextid=ZbWKwL" target="_blank" class="contact-btn facebook-btn">
+                            <i class="fab fa-facebook-f"></i> Message on Facebook
+                        </a>
+                    </div>
+                    <p class="instructions">Please include your full name and applicant ID in your message to the cashier accountant.</p>
+                </div>
 
                 <div style="margin-top: 2rem;">
-                    <a href="{{ url_for('applicant_dashboard') }}" class="return-btn">Return to Dashboard</a>
+                    <!-- Using '#' as a placeholder for URL_for() since we don't have a backend -->
+                    <a href="#" class="return-btn">Return to Dashboard</a>
                 </div>
             </div>
         </div>
@@ -265,25 +426,39 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const paymentOptions = document.querySelectorAll('input[name="payment_option"]');
+            // Get all payment option labels and the proceed button
             const optionCards = document.querySelectorAll('.option-card');
             const proceedButton = document.getElementById('proceedButton');
             const contactInfoSection = document.getElementById('contactInfo');
             
+            // Add a click event listener to each option card
             optionCards.forEach(card => {
                 card.addEventListener('click', function() {
+                    // Remove the 'selected' class from all cards
                     optionCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Add the 'selected' class to the clicked card
                     this.classList.add('selected');
+                    
+                    // Check the radio button inside the clicked card
                     this.querySelector('input').checked = true;
+                    
+                    // Enable the proceed button
                     proceedButton.disabled = false;
                 });
             });
 
+            // Add a click event listener to the proceed button
             proceedButton.addEventListener('click', function() {
+                // Only proceed if the button is not disabled
                 if (!this.disabled) {
+                    // Show the contact information section
                     contactInfoSection.style.display = 'block';
+                    
+                    // Hide the proceed button
                     this.style.display = 'none';
-                    // You can add more logic here, like sending data to a server
+                    
+                    // You can add more logic here, such as sending the selected option to a server
                 }
             });
         });
