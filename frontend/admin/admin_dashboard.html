@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/admin-dashboard.css') }}">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('admin_create_applicant_account') }}">Create Applicant Account</a></li>
+                <li><a href="{{ url_for('admin_manage_applicants') }}">Manage Applicants</a></li>     
+                <li><a href="{{ url_for('send_newsletter_route') }}">Send User Message</a></li>
+                <li><a href="{{ url_for('admin_logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Welcome, {{ username }}</h1>
+                <a href="{{ url_for('admin_logout') }}" class="logout-btn">Logout</a>
+            </div>
+            <p>This is your secure admin dashboard. You can add more content here later.</p>
+        </main>
+    </div>
+</body>
+</html>

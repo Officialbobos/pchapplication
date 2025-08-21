@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HHS Funding Applications</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/images/pch.png') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+
+        /* SCAM ALERT MODAL STYLES */
+        .scam-alert-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease;
+        }
+
+        .scam-alert-modal-content {
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 5px 25px rgba(17, 2, 80, 0.3);
+            border: 2px solid var(--primary-blue);
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .scam-alert-modal-content .caution-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1.5rem;
+        }
+
+        .scam-alert-modal-content h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-blue);
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 5px rgba(17, 2, 80, 0.3);
+        }
+
+        .scam-alert-modal-content p {
+            color: var(--text-color);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .scam-alert-modal-content .close-button {
+            padding: 12px 30px;
+            background-color: var(--primary-blue);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .scam-alert-modal-content .close-button:hover {
+            background-color: var(--cta-red);
+            transform: translateY(-2px);
+        }
+
+        .scam-alert-modal-backdrop.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+            .scam-alert-modal-content {
+                /* Reduce padding for smaller screens */
+                padding: 1.5rem;
+                /* Make the modal slightly narrower to fit better */
+                width: 95%;
+            }
+
+            .scam-alert-modal-content .caution-icon {
+                /* Reduce icon size on mobile */
+                width: 60px;
+                height: 60px;
+                margin-bottom: 1rem;
+            }
+
+            .scam-alert-modal-content h2 {
+                /* Decrease font size for the heading */
+                font-size: 1.5rem;
+                margin-bottom: 0.75rem;
+            }
+
+            .scam-alert-modal-content p {
+                /* Reduce font size and margin for paragraphs */
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .scam-alert-modal-content .close-button {
+                /* Adjust button padding to fit on smaller screens */
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="scam-alert-modal" class="scam-alert-modal-backdrop">
+        <div class="scam-alert-modal-content">
+            <img src="{{ url_for('static', filename='assets/images/caution.png') }}" alt="Caution Icon" class="caution-icon">
+            <h2>SCAM ALERT!</h2>
+            <p><strong>Warning:</strong> Be cautious of potential scams and phishing attempts. HHS Funding Applications will never ask for your personal or financial information via unofficial channels. Only use our official website to apply. Report any suspicious activity immediately.</p>
+            <button class="close-button" id="close-scam-alert">I Understand</button>
+        </div>
+    </div>
+
+<header class="main-header">
+    <div class="container">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='assets/images/pch.png') }}" alt="PCH Funding Applications Logo">
+            <h1>U.S Department of Health and Human Services</h1>
+        </div>
+        <a href="{{ url_for('applicant_login') }}" class="login-button">APPLICANT LOGIN</a>
+    </div>
+</header>
+
+    <main>
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Applications are <br> NOW Available!</h1>
+                    <p>Each year billions of dollars are awarded to individuals and businesses in the form of grants and other types of funding. Apply for YOUR piece today!</p>
+                    <div class="get-started">
+                        <h3>Here's how it works!</h3>
+                        <p>HHS Funding Applications is an online funding applicatio system that gives you access to over 10,000 APPLICATION SOURCES, including GRANTS</p>
+                        <div class="hero-steps-grid">
+                            <div class="hero-step">
+                                <img src="{{ url_for('static', filename='assets/images/register.png') }}" alt="Register Icon">
+                                <h3>REGISTER</h3>
+                                <p>Easy to fill out. Your information is secure.</p>
+                            </div>
+                            <div class="hero-step">
+                                <img src="{{ url_for('static', filename='assets/images/research.png') }}" alt="Research Icon">
+                                <h3>RESEARCH</h3>
+                                <p>We provide the application sources and teach you how to apply.</p>
+                            </div>
+                            <div class="hero-step">
+                                <img src="{{ url_for('static', filename='assets/images/apply.png') }}" alt="Apply Icon">
+                                <h3>APPLY</h3>
+                                <p>There's no limit to the number of grants and other sources you can apply to.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-it-works">
+            <div class="container">
+                <h2>LET'S GET STARTED! APPLY NOW</h2>
+                <p>WHICH OF THE GRANT WOULD YOU LIKE TO APPLY FOR?</p>
+                <div class="funding-types">
+                    <a href="{{ url_for('registration_form') }}" class="funding-type-link">
+                        <div class="funding-type-item">
+                            <img src="{{ url_for('static', filename='assets/images/grants_16819310.png') }}" alt="Cash Grants Icon">
+                            <span>Cash Grants</span>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('registration_form') }}" class="funding-type-link">
+                        <div class="funding-type-item">
+                            <img src="{{ url_for('static', filename='assets/images/avatar-design.png') }}" alt="Personal Icon">
+                            <span>Small and Large Business Grants</span>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('registration_form') }}" class="funding-type-link">
+                        <div class="funding-type-item">
+                            <img src="{{ url_for('static', filename='assets/images/diversity.png') }}" alt="Community Icon">
+                            <span>College and Scholarships Grants</span>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('registration_form') }}" class="funding-type-link">
+                        <div class="funding-type-item">
+                            <img src="{{ url_for('static', filename='assets/images/graduated.png') }}" alt="Education Icon">
+                            <span>Federal & State Grants</span>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('registration_form') }}" class="funding-type-link">
+                        <div class="funding-type-item">
+                            <img src="{{ url_for('static', filename='assets/images/businesswoman.png') }}" alt="Real Estate Icon">
+                            <span>Grants for women</span>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('registration_form') }}" class="funding-type-link">
+                        <div class="funding-type-item">
+                            <img src="{{ url_for('static', filename='assets/images/car.png') }}" alt="Real Estate Icon">
+                            <span>Personal Car</span>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('registration_form') }}" class="funding-type-link">
+                        <div class="funding-type-item">
+                            <img src="{{ url_for('static', filename='assets/images/buy-a-house.png') }}" alt="Real Estate Icon">
+                            <span>Housing and New Homes Grants</span>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('registration_form') }}" class="funding-type-link">
+                        <div class="funding-type-item">
+                            <img src="{{ url_for('static', filename='assets/images/diversity.png') }}" alt="Real Estate Icon">
+                            <span>PLUS 1000's of Government Benefits</span>
+                        </div>
+                    </a>
+                    <a href="{{ url_for('registration_form') }}" class="funding-type-link">
+                        <div class="funding-type-item">
+                            <img src="{{ url_for('static', filename='assets/images/government.png') }}" alt="Real Estate Icon">
+                            <span>US Government Grant CD 2024/2025 Edition (New)</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="where-money-comes-from">
+            <div class="container">
+                <h2>HHS GRANTS & CONTRACTS </h2>
+                <div class="content-row">
+                    <p>HHS is the largest grant-making agency in the US. Most HHS grants are provided directly to states, territories, tribes, and educational and community organizations, then given to people and organizations who are eligible to receive funding.</p>
+                  <P>On this site you will find information for prospective and current grantees about HHS grant programs, the grant application processes, and grant management.</P>
+                </div>
+                <a href="{{ url_for('registration_form') }}" class="cta-button">Start the Application Process Today!</a>
+            </div>
+        </section>
+
+
+        <section class="contact-us">
+            <div class="container">
+                <h2>Contact Us</h2>
+                <p class="contact-intro">We're here to help you with your funding application journey. Feel free to reach out to us with any questions or concerns. Here are our main contact points and key team members.</p>
+
+                <div class="contact-details">
+                    <div class="contact-info-item">
+                        <img src="{{ url_for('static', filename='assets/images/gmail.png') }}" alt="Email Icon" class="contact-icon">
+                        <h4>Email Us</h4>
+                        <p>noreplypchgrant@gmail.com</p>
+                    </div>
+                    <div class="contact-info-item">
+                        <img src="{{ url_for('static', filename='assets/images/contact.png') }}" alt="Phone Icon" class="contact-icon">
+                        <h4>Call Us</h4>
+                        <p>+1 (888) 281-4837</p>
+                    </div>
+                </div>
+
+                <h3 class="team-heading">Meet Our Team</h3>
+                <div class="team-members">
+                    <div class="team-member-item">
+                        <img src="{{ url_for('static', filename='assets/images/PCH AGENT 2.jpg') }}" alt="Team Member Photo" class="team-member-photo">
+                        <h4>Jane Doe</h4>
+                        <p>Funding Specialist</p>
+                    </div>
+                    <div class="team-member-item">
+                        <img src="{{ url_for('static', filename='assets/images/wayne.jpeg') }}" alt="Team Member Photo" class="team-member-photo">
+                        <h4>John Smith</h4>
+                        <p>Application Support Manager</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="new-applications">
+            <div class="container">
+                <h2>We've recently added the following number of applications:</h2>
+                <div class="new-apps-list">
+                    <p>Last 7 Days: <strong>704</strong> new applications</p>
+                    <p>Last 30 Days: <strong>2,989</strong> new applications</p>
+                    <p>Last 90 Days: <strong>9,889</strong> new applications</p>
+                </div>
+            </div>
+        </section>
+<section>
+        <section class="funding-pie">
+            <div class="container">
+                <h2>Get your piece of the funding pie.</h2>
+                <p>Don't worry about your present financial situation. Funding applications do not require collateral, credit checks, security deposits or co-signers. You can apply even if you have a Bankruptcy. Also remember that government funding is not available for personal expenses or paying off debt but there may be other assistance programs out there to help you out of your situation!</p>
+                <a href="{{ url_for('registration_form') }}" class="cta-button-green">Start the Application Process Now</a>
+                <p class="wait-message">Don't wait. The money you need may be given to your neighbor, if they qualify!</p>
+            </div>
+        </section>
+
+<section class="about-us">
+    <div class="container">
+        <h2>About Us</h2>
+        <div class="about-us-content">
+            <div class="text-content">
+                <p>HHS Funding Applications is here to help you get the info you need today, not next year. "Change your future in 2025." If FREE FUNDING to start a new business, expand your business or complete a worthwhile project, would change your life and benefit you for the rest of your life, what are you waiting for?</p>
+                <p>We are Funding Seeking Specialists, dedicated to helping you find and apply for the money you need to change your life forever. We provide the essential information and tools to make your funding search successful.</p>
+                <a href="{{ url_for('about_us') }}" class="cta-button">Learn More</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <section class="sign-up-today">
+            <div class="container">
+                <h2>Sign up today!</h2>
+                <div class="signup-content">
+                    <p>The sad news is most people never apply for any kind of funding because they just don't know "how" or "who" to apply to, not to mention the fact that they think it is too hard. It may be easier than you may think, but you will never know until you try, so what are you waiting for?</p>
+                    <a href="{{ url_for('registration_form') }}" class="cta-button-green">Start the Application Process Today!</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="#">Home</a>
+                <a href="{{ url_for('admin_login') }}">Log In</a>
+                <a href="#">PCI Link</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Contact 1-888-281-4837</a>
+            </div>
+            <p class="copyright">Copyright 2019 USA Funding Applications</p>
+            <p class="disclaimer">HHS Funding Applications is a government agency and is not affiliated with the United States Government or any other funding agency.HHS Grant Applications supplies training materials on how to apply for funding. We are not a government agency.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('scam-alert-modal');
+            const closeButton = document.getElementById('close-scam-alert');
+
+            // Function to close the modal
+            function closeModal() {
+                modal.classList.add('hidden');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300); // Wait for the transition to finish before hiding
+            }
+
+            // Close modal automatically after 5 seconds
+            setTimeout(closeModal, 5000);
+
+            // Close modal when the button is clicked
+            closeButton.addEventListener('click', closeModal);
+        });
+    </script>
+</body>
+</html>

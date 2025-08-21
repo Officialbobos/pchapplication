@@ -1,0 +1,195 @@
+/* Custom Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@400;700&display=swap');
+
+/* --- Global Variables --- */
+:root {
+    --primary-blue: #007bff;
+    --primary-blue-dark: #04284e;
+    --glowing-white: #ffffff;
+    --text-color: #333;
+    --light-gray: #f7f7f7;
+    --medium-gray: #666;
+    --border-color: #ccc;
+    --box-shadow-color: rgba(3, 4, 56, 0.3);
+}
+
+/* --- General body and container styling --- */
+body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+    background-color: var(--light-gray);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1rem;
+    min-height: 100vh;
+}
+
+/* --- Header --- */
+.main-header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--primary-blue);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 0.75rem 0; /* Reduced padding */
+    z-index: 1000;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.logo img {
+    height: 50px; /* Adjusted logo size */
+}
+
+.back-button {
+    background-color: var(--glowing-white);
+    color: var(--primary-blue);
+    padding: 10px 20px; /* Reduced padding */
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 8px var(--box-shadow-color);
+    border: 2px solid var(--primary-blue);
+}
+
+.back-button:hover {
+    background-color: var(--primary-blue-dark);
+    color: var(--glowing-white);
+    box-shadow: 0 0 12px rgba(1, 13, 48, 0.7);
+}
+
+/* --- Form Container --- */
+.form-container {
+    background-color: var(--glowing-white);
+    padding: 1.5rem; /* Reduced padding */
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); /* Updated shadow */
+    max-width: 500px;
+    width: 100%;
+    margin-top: 5rem; /* Reduced margin */
+    border: 1px solid var(--box-shadow-color);
+}
+
+h2 {
+    text-align: center;
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.2rem; /* Reduced font size */
+    text-shadow: none;
+    margin-bottom: 0.5rem;
+}
+
+.form-container > p {
+    text-align: center;
+    color: var(--medium-gray);
+    margin-bottom: 1.5rem;
+}
+
+/* --- Form sections and inputs --- */
+.input-group {
+    margin-bottom: 1.25rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px; /* Reduced input padding */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #fff;
+    color: var(--text-color);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group input:focus {
+    border-color: var(--primary-blue);
+    outline: none;
+    box-shadow: 0 0 8px var(--box-shadow-color);
+}
+
+/* --- Error message --- */
+.error-message {
+    color: #dc3545;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+/* --- Submit button --- */
+.submit-button {
+    display: block;
+    width: 100%;
+    padding: 16px; /* Reduced padding */
+    background-color: var(--primary-blue);
+    color: var(--glowing-white);
+    border: none;
+    border-radius: 30px;
+    font-size: 1.2rem; /* Reduced font size */
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 0 12px var(--box-shadow-color);
+    text-transform: uppercase;
+    margin-top: 1.5rem; /* Reduced margin */
+}
+
+.submit-button:hover {
+    background-color: var(--primary-blue-dark);
+    transform: scale(1.01);
+    box-shadow: 0 0 18px rgba(3, 2, 71, 0.8);
+}
+
+/* --- Responsive design --- */
+@media (max-width: 600px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+
+    .main-header {
+        position: static;
+        padding: 0.5rem 0;
+        box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo img {
+        height: 40px; /* Smaller logo for mobile */
+    }
+
+    .back-button {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+    }
+
+    .form-container {
+        padding: 1.25rem; /* Further reduced padding */
+        margin-top: 2rem; /* Reduced margin */
+    }
+
+    h2 {
+        font-size: 1.8rem;
+    }
+    
+    .submit-button {
+        padding: 14px;
+        font-size: 1.1rem;
+    }
+}

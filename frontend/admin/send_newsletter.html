@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Newsletter</title>
+    
+    <style>
+        /* --- Global Styles --- */
+        :root {
+            --primary-orange: #FF8C00;      /* A vibrant orange */
+            --primary-orange-dark: #cc7000; /* A darker shade for hover effects */
+            --glowing-white: #fcfcfc;       /* A slightly off-white for glow effect */
+            --text-color: #333;
+            --border-color: #ddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        /* --- Admin Page Layout and Container --- */
+        .admin-container {
+            background: var(--glowing-white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        /* --- Admin Header --- */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .admin-header h2 {
+            color: var(--primary-orange);
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .admin-header nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .admin-header nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+        }
+
+        .admin-header nav a:hover {
+            background-color: var(--primary-orange-dark);
+            color: var(--glowing-white);
+            box-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+        }
+
+        .admin-header .logout-btn {
+            background-color: #dc3545;
+            color: var(--glowing-white);
+        }
+
+        .admin-header .logout-btn:hover {
+            background-color: #c82333;
+            color: var(--glowing-white);
+        }
+
+        /* --- Main Content and Flash Messages --- */
+        .main-content {
+            padding: 0;
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        
+        /* --- Form Styles --- */
+        .message-form .form-group {
+            margin-bottom: 25px;
+        }
+
+        .message-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .message-form .form-control {
+            width: 100%;
+            padding: 0.85rem;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .message-form .form-control:focus {
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
+            outline: none;
+        }
+
+        .message-form textarea.form-control {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .message-form .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--primary-orange);
+            color: var(--glowing-white);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+
+        .message-form .btn-primary:hover {
+            background-color: var(--primary-orange-dark);
+            box-shadow: 0 0 10px rgba(255, 140, 0, 0.7);
+        }
+
+        .message-form select.form-control {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF8C00' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 16px;
+        }
+        
+        /* Styles for the dynamically shown fields */
+        .credentials-fields {
+            display: none;
+            margin-top: 15px;
+            padding: 20px;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* --- NEW MODAL STYLES --- */
+        .modal-backdrop, .loading-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-backdrop.show, .loading-modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--glowing-white);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 500px;
+            margin: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-backdrop.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            color: var(--primary-orange);
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            color: var(--text-color);
+            font-size: 1.1em;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .modal-close-button {
+            background-color: var(--primary-orange);
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .modal-close-button:hover {
+            background-color: var(--primary-orange-dark);
+        }
+
+        .loading-modal .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-orange);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-modal p {
+            color: white;
+            font-size: 1.2em;
+        }
+
+        /* --- Responsive Design for Mobile --- */
+        @media (max-width: 768px) {
+            .admin-container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            .admin-header h2 {
+                font-size: 1.5rem;
+            }
+            .admin-header nav {
+                flex-direction: column;
+                gap: 5px;
+            }
+            .admin-header nav a {
+                padding: 5px 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <h2>Send Newsletter to Applicants</h2>
+            <nav>
+                <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                <a href="{{ url_for('admin_manage_applicants') }}">Manage Applicants</a>
+                <a href="{{ url_for('admin_logout') }}" class="logout-btn">Logout</a>
+            </nav>
+        </header>
+
+        <div class="main-content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <form id="newsletterForm" action="{{ url_for('send_newsletter_route') }}" method="POST" class="message-form" enctype="multipart/form-data">
+                
+                <div class="form-group">
+                    <label for="recipient_emails">Recipient Emails (comma-separated):</label>
+                    <textarea id="recipient_emails" name="recipient_emails" class="form-control" rows="3" placeholder="email1@example.com, email2@example.com" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="subject">Subject:</label>
+                    <input type="text" id="subject" name="subject" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="attachment">Attach Document (optional):</label>
+                    <input type="file" id="attachment" name="attachment" class="form-control">
+                </div>
+                
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="include_credentials" name="include_credentials">
+                    <label for="include_credentials" style="margin-bottom: 0;">Include Login Credentials?</label>
+                </div>
+
+                <div id="credentials-fields" class="credentials-fields">
+                    <h4>Applicant Login Credentials</h4>
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="text" id="password" name="password" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="message_body">Newsletter Body (HTML is supported):</label>
+                    <textarea id="message_body" name="message_body" class="form-control" rows="10" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Send Newsletter</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="successModal" class="modal-backdrop">
+        <div class="modal-content">
+            <h2 class="modal-title">Success!</h2>
+            <p id="successMessage">The newsletter has been sent successfully.</p>
+            <button id="closeModalButton" class="modal-close-button">Close</button>
+        </div>
+    </div>
+
+    <div id="loadingModal" class="loading-modal">
+        <div class="loader"></div>
+        <p>Sending newsletter...</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const credentialsCheckbox = document.getElementById('include_credentials');
+            const credentialsFields = document.getElementById('credentials-fields');
+            const newsletterForm = document.getElementById('newsletterForm');
+            const loadingModal = document.getElementById('loadingModal');
+            const successModal = document.getElementById('successModal');
+            const closeModalButton = document.getElementById('closeModalButton');
+
+            // Toggle credentials fields visibility
+            credentialsCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    credentialsFields.style.display = 'block';
+                } else {
+                    credentialsFields.style.display = 'none';
+                }
+            });
+
+            // Handle form submission via JavaScript
+            newsletterForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                // Show the loading modal
+                loadingModal.classList.add('show');
+                
+                const formData = new FormData(newsletterForm);
+
+                fetch(newsletterForm.action, {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => {
+                    // Check if the response is successful and is JSON
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.indexOf("application/json") !== -1) {
+                        return response.json();
+                    } else {
+                        // If not JSON, it's likely an error page or a redirect from the server.
+                        throw new Error('Server did not return a JSON response.');
+                    }
+                })
+                .then(data => {
+                    // Hide the loading modal
+                    loadingModal.classList.remove('show');
+                    
+                    if (data.status === 'success') {
+                        // Display the success modal
+                        document.getElementById('successMessage').textContent = data.message;
+                        successModal.classList.add('show');
+                        newsletterForm.reset(); // Reset the form after success
+                    } else {
+                        // Display an error message if the server indicates failure
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    // Hide the loading modal and show an error alert
+                    loadingModal.classList.remove('show');
+                    console.error('Fetch error:', error);
+                    alert('An error occurred. Please try again. ' + error.message);
+                });
+            });
+
+            // Close the success modal
+            closeModalButton.addEventListener('click', function() {
+                successModal.classList.remove('show');
+            });
+        });
+    </script>
+</body>
+</html>

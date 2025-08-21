@@ -1,0 +1,277 @@
+/* about-us.css */
+
+/* This file should be linked in your about-us.html file, for example: <link rel="stylesheet" href="about-us.css"> */
+
+/* --- General and Reused Styles --- */
+:root {
+    --primary-blue: #007bff;
+    --secondary-cyan: #17a2b8;
+    --cta-red: #ff5722;
+    --light-gray: #f9f9f9;
+    --medium-gray: #e0e0e0;
+    --dark-gray: #666666;
+    --red: #dc3545;
+    --background-light: #ffffff;
+    --text-color: #333333;
+    --card-shadow: rgba(0, 0, 0, 0.1);
+    --dark-gold: #0b0547;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+    background-color: var(--background-light);
+}
+
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+h1, h2, h3, h4 {
+    font-weight: 600;
+    color: var(--primary-blue);
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+/* Reused button style for consistency */
+.cta-button, .cta-button-blue {
+    background-color: var(--primary-blue);
+    color: #fff;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block; /* Essential for proper button-like behavior */
+    margin-top: 1.5rem;
+}
+
+.cta-button:hover {
+    background-color: var(--cta-red);
+}
+
+.cta-button-blue {
+    background-color: var(--cta-red);
+}
+
+.cta-button-blue:hover {
+    background-color: #e63900;
+}
+
+/* --- Header Styles --- */
+.main-header {
+    background-color: var(--background-light);
+    border-bottom: 1px solid var(--medium-gray);
+    padding: 1.5rem 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.main-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo img {
+    height: 50px; /* Adjust the logo size as needed */
+    transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+}
+
+.main-nav .login-button {
+    /* Reusing your existing button styles for consistency */
+    background-color: var(--cta-red);
+    color: #fff;
+    padding: 12px 25px;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+}
+
+.main-nav .login-button:hover {
+    background-color: #e63900;
+    box-shadow: 0 4px 10px rgba(255, 87, 34, 0.4);
+}
+
+/* --- New Page-Specific Styles --- */
+
+/* Hero Section for About Us page */
+.about-hero {
+    background-color: #f0f4f8;
+    background-image: url('assets/images/pchhappy.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 8rem 0;
+    color: #fff;
+    position: relative;
+    text-align: center;
+    box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.6);
+}
+
+.about-hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.about-hero p {
+    font-size: 1.2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    color: #fff;
+}
+
+/* Our Story Section */
+.our-story {
+    padding: 4rem 0;
+    background-color: var(--background-light);
+}
+
+.our-story h2, .our-values h2, .what-we-do h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.story-content, .what-we-do-content {
+    display: flex;
+    gap: 40px;
+    align-items: center;
+}
+
+.story-content .text-content, .what-we-do-content .text-content {
+    flex: 2;
+}
+
+.story-content .image-content, .what-we-do-content .image-content {
+    flex: 1;
+    text-align: center;
+}
+
+.story-content img, .what-we-do-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px var(--card-shadow);
+}
+
+/* Our Values Section */
+.our-values {
+    padding: 4rem 0;
+    background-color: #fff8e1;
+    text-align: center;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.value-item {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.value-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.value-item img {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 15px;
+}
+
+.value-item h3 {
+    color: var(--cta-red);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+/* What We Do Section */
+.what-we-do {
+    padding: 4rem 0;
+}
+
+.what-we-do ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 2rem;
+}
+
+.what-we-do li {
+    background-image: url('assets/images/check-icon.png'); /* You'll need an icon for this */
+    background-repeat: no-repeat;
+    background-position: left center;
+    padding-left: 35px;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    color: var(--text-color);
+}
+
+/* --- Media Queries for Responsiveness --- */
+@media (max-width: 768px) {
+    .about-hero {
+        padding: 5rem 0;
+    }
+
+    .about-hero h1 {
+        font-size: 2rem;
+    }
+
+    .about-hero p {
+        font-size: 1rem;
+    }
+
+    .story-content, .what-we-do-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .story-content .text-content, .what-we-do-content .text-content {
+        order: 2; /* Puts the text below the image on mobile */
+    }
+    
+    .story-content .image-content, .what-we-do-content .image-content {
+        order: 1; /* Puts the image above the text on mobile */
+        margin-bottom: 2rem;
+    }
+
+    .what-we-do ul {
+        text-align: left;
+    }
+
+    /* Responsive Header */
+    .main-header .container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .main-nav {
+        margin-top: 1rem;
+    }
+}

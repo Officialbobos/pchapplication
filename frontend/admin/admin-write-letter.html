@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Write Grant Award Letter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Embedded Styles for Admin Panel --- */
+        :root {
+            --primary-orange: #FF8C00;
+            --primary-orange-dark: #cc7000;
+            --glowing-white: #fcfcfc;
+            --sidebar-bg: #FF8C00;
+            --text-color: #333;
+            --border-color: #ddd;
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --sidebar-text: #ecf0f1;
+            --hover-link-bg: #3b5066;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- Dashboard Layout --- */
+        .dashboard-wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- Sidebar Styles --- */
+        .sidebar {
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--glowing-white);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar-header {
+            text-align: center;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        .sidebar-menu {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu li a {
+            display: block;
+            padding: 1rem 2rem;
+            color: var(--glowing-white);
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .sidebar-menu li a:hover,
+        .sidebar-menu li a.active {
+            background-color: var(--primary-orange-dark);
+            border-left: 5px solid var(--glowing-white);
+            padding-left: 1.5rem;
+        }
+
+        /* --- Main Content Styles --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem 3rem;
+            background-color: #f9f9f9;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .dashboard-header h1 {
+            margin: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        /* --- Form Styles --- */
+        .form-container {
+            background: var(--glowing-white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            margin: 2rem auto;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .input-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+            min-height: 400px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            padding: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #fcfcfc;
+            resize: vertical;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .input-group textarea:focus {
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+            outline: none;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .submit-button {
+            background-color: var(--primary-orange);
+            color: var(--glowing-white);
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .submit-button:hover {
+            background-color: var(--primary-orange-dark);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: var(--primary-orange-dark);
+            text-decoration: underline;
+        }
+
+        /* --- Responsive Design for Mobile --- */
+        @media (max-width: 768px) {
+            .dashboard-wrapper {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                padding: 15px 10px;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                position: relative;
+            }
+            
+            .sidebar-menu {
+                display: none; /* Hide menu on small screens */
+            }
+            
+            .main-content {
+                padding: 1.5rem;
+            }
+            
+            .form-container {
+                padding: 1.5rem;
+                margin: 1rem auto;
+            }
+            
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+                gap: 1rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .form-actions .submit-button,
+            .form-actions .back-link {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('admin_manage_applicants') }}" class="active">Manage Applicants</a></li>
+                <li><a href="{{ url_for('admin_logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-content">
+            <div class="dashboard-header">
+                <h1>Write Grant Award Letter</h1>
+            </div>
+            
+            <div class="form-container">
+                <h2>For Applicant: {{ applicant.get('full_name', 'N/A') }}</h2>
+                <form action="{{ url_for('admin_write_letter', applicant_id=applicant._id) }}" method="POST">
+                    <div class="input-group">
+                        <label for="award_letter_content">Letter Content (You can use HTML tags for formatting):</label>
+                        <textarea id="award_letter_content" name="award_letter_content" rows="20" required>{{ applicant.get('award_letter_content', '') }}</textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="submit-button">Save Letter</button>
+                        <a href="{{ url_for('admin_edit_applicant', applicant_id=applicant._id) }}" class="back-link">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,769 @@
+/* --- Global Styles --- */
+:root {
+    --primary-blue: #007bff;      
+    --primary-blue-dark: #011d3b; 
+    --glowing-white: #fcfcfc;      
+    --sidebar-bg: #007bff;        
+    --text-color: #333;
+    --border-color: #ddd;
+    --shadow-color: rgba(0, 0, 0, 0.2);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    color: var(--text-color);
+    margin: 0;
+}
+
+/* --- Login Page Styles --- */
+.login-container {
+    background: var(--glowing-white);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 0 15px rgba(255, 140, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.login-container h2 {
+    text-align: center;
+    color: var(--text-color);
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.85rem;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
+    outline: none;
+}
+
+.error-message {
+    color: #d9534f;
+    background-color: #f2dede;
+    padding: 10px;
+    border-radius: 4px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--primary-blue);
+    color: var(--glowing-white);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: var(--primary-blue-dark);
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.7);
+}
+
+
+/* --- Dashboard Layout --- */
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* --- Sidebar Styles --- */
+.sidebar {
+    width: 250px;
+    background-color: var(--sidebar-bg);
+    color: var(--glowing-white);
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.sidebar-menu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li {
+    margin-bottom: 10px;
+}
+
+.sidebar-menu a {
+    display: block;
+    color: var(--glowing-white);
+    text-decoration: none;
+    padding: 12px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s, text-shadow 0.3s;
+}
+
+.sidebar-menu a:hover,
+.sidebar-menu a.active {
+    background-color: var(--primary-blue);
+    color: #000;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+}
+
+/* --- Main Content Styles --- */
+.main-content {
+    flex-grow: 1;
+    padding: 30px;
+    background-color: #f9f9f9;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+}
+
+.dashboard-header h1 {
+    margin: 0;
+    font-size: 2rem;
+    color: var(--primary-blue);
+}
+
+.logout-btn {
+    padding: 10px 20px;
+    background-color: var(--primary-blue-dark);
+    color: var(--glowing-white);
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: var(--primary-blue);
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.5);
+}
+
+/* --- Added styles for new pages and modals --- */
+.form-container {
+    background: var(--glowing-white);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.success-message {
+    background: var(--glowing-white);
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.credentials {
+    background: #e9ecef;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: var(--primary-blue);
+    color: var(--glowing-white);
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: var(--primary-blue-dark);
+}
+
+/* --- Table and Form Styles for Admin Pages --- */
+.table-container {
+    background: var(--glowing-white);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    table-layout: auto;
+}
+
+thead {
+    background-color: var(--sidebar-bg);
+    color: var(--glowing-white);
+    text-align: left;
+}
+
+th, td {
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    vertical-align: middle;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f6f6f6;
+}
+
+tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+/* Style for action links/buttons */
+td a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: 15px;
+    transition: color 0.3s;
+}
+
+td a:hover {
+    color: var(--primary-blue-dark);
+}
+
+/* --- Styles for the Edit Applicant Form (Integrated) --- */
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.input-group input[type="text"],
+.input-group input[type="email"],
+.input-group input[type="date"],
+.input-group input[type="tel"],
+.input-group input[type="url"],
+.input-group textarea,
+.input-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.input-group input[type="file"] {
+    padding: 0.75rem 0;
+}
+
+.input-group input:focus,
+.input-group textarea:focus,
+.input-group select:focus {
+    border-color: var(--primary-blue);
+    outline: none;
+}
+
+.input-group select {
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236c757d' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 16px;
+}
+
+.submit-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+}
+
+.back-link {
+    display: inline-block;
+    margin-left: 1rem;
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.back-link:hover {
+    color: #495057;
+    text-decoration: underline;
+}
+
+/* --- Styles for the Progress Bar --- */
+.progress-bar-container {
+    width: 100%;
+    height: 1rem;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    margin-top: 0.5rem;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.progress-line {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.progress-bar-container span {
+    position: absolute;
+    right: 0.5rem;
+    color: #000;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.progress-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.progress-controls input[type="range"] {
+    flex-grow: 1;
+    -webkit-appearance: none;
+    height: 8px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    border-radius: 5px;
+}
+
+.progress-controls input[type="range"]:hover {
+    opacity: 1;
+}
+
+.progress-controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #007bff;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+/* --- New Styles for Agent Details Section --- */
+hr {
+    margin: 2.5rem 0;
+    border: 0;
+    border-top: 1px solid var(--border-color);
+}
+
+h3 {
+    color: var(--primary-blue-dark);
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--primary-blue);
+    padding-left: 1rem;
+}
+
+/* NEW: Write Award Letter Button */
+.write-letter-btn {
+    display: inline-block;
+    background-color: #28a745; /* Green color */
+    color: white;
+    padding: 12px 25px;
+    margin-bottom: 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.write-letter-btn:hover {
+    background-color: #218838;
+}
+
+/* --- Styles for Write Award Letter Page --- */
+.letter-form-container {
+    padding: 3rem;
+}
+
+.letter-form-container .applicant-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary-blue-dark);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.letter-form-container textarea {
+    min-height: 400px; /* Ensure the textarea has a good starting height */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: #fcfcfc;
+    transition: all 0.3s ease;
+    resize: vertical; /* Allow vertical resizing only */
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.letter-form-container textarea:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+    outline: none;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.form-actions .submit-button {
+    width: auto;
+    padding: 0.75rem 1.5rem;
+}
+
+.form-actions .back-link {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+
+/*
+ * NEW: Styles for the Send User Message Page
+ * This section is tailored to match the design language from the main style.css.
+ */
+.admin-container {
+    background: var(--glowing-white);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: 40px auto;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.admin-header h2 {
+    color: var(--primary-blue);
+    font-size: 2rem;
+    margin: 0;
+}
+
+.admin-header nav {
+    display: flex;
+    gap: 15px;
+}
+
+.admin-header nav a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+.admin-header nav a:hover {
+    background-color: var(--primary-blue-dark);
+    color: var(--glowing-white);
+    box-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+}
+
+.admin-header .logout-btn {
+    background-color: #dc3545;
+    color: var(--glowing-white);
+}
+
+.admin-header .logout-btn:hover {
+    background-color: #c82333;
+    color: var(--glowing-white);
+}
+
+.flash-messages {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.message-form .form-group {
+    margin-bottom: 25px;
+}
+
+.message-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.message-form .form-control {
+    width: 100%;
+    padding: 0.85rem;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.message-form .form-control:focus {
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
+    outline: none;
+}
+
+.message-form textarea.form-control {
+    min-height: 200px;
+    resize: vertical;
+}
+
+.message-form .btn-primary {
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--primary-blue);
+    color: var(--glowing-white);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.message-form .btn-primary:hover {
+    background-color: var(--primary-blue-dark);
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.7);
+}
+
+.message-form select.form-control {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF8C00' width='18px' height='18px'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 16px;
+}
+
+/* --- Responsive Design for Mobile --- */
+@media (max-width: 768px) {
+    .dashboard-wrapper {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 15px 10px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+    }
+
+    .sidebar-header {
+        margin-bottom: 0;
+    }
+
+    .sidebar-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--sidebar-bg);
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .sidebar-menu.active {
+        display: block;
+    }
+
+    .sidebar-menu li {
+        margin-bottom: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-menu a {
+        padding: 15px;
+    }
+
+    .main-content {
+        padding: 20px 15px;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .table-container {
+        padding: 1.5rem;
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+
+    td a {
+        margin-right: 10px;
+    }
+
+    .logout-btn {
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    /* Additional Mobile-specific styles for the Edit Form */
+    .form-container {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+
+    .form-container h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .submit-button,
+    .back-link {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-left: 0;
+        margin-top: 1rem;
+    }
+    .letter-form-container {
+        padding: 1.5rem;
+    }
+
+    .letter-form-container .applicant-name {
+        font-size: 1.25rem;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-actions .submit-button,
+    .form-actions .back-link {
+        width: 100%;
+        text-align: center;
+    }
+    
+    /* Additional Mobile-specific styles for Send Message Form */
+    .admin-container {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    .admin-header h2 {
+        font-size: 1.5rem;
+    }
+    .admin-header nav {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .admin-header nav a {
+        padding: 5px 10px;
+        text-align: center;
+    }
+}

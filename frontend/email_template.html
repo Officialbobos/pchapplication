@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f0f0; /* A soft gray for a more elegant background */
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #FFF5E6; /* Glowing, soft orange background */
+            border-radius: 12px; /* Smoother rounded corners */
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow to make it stand out */
+        }
+        .header {
+            background-color: #e7880b; /* A bold, vibrant orange */
+            color: #ffffff;
+            padding: 30px 20px; /* More vertical padding */
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px; /* Larger, more prominent heading */
+            font-weight: 600;
+        }
+        .content {
+            padding: 25px; /* Increased padding for better spacing */
+            color: #333333;
+        }
+        .content p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            border-radius: 8px;
+            overflow: hidden; /* Ensures rounded corners on the table */
+        }
+        .details-table th, .details-table td {
+            text-align: left;
+            padding: 15px; /* Increased padding in table cells */
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .details-table th {
+            background-color: #fce7c0; /* A light orange for the headers */
+            font-weight: 600;
+            width: 40%;
+        }
+        .footer {
+            text-align: center;
+            padding: 25px;
+            font-size: 13px;
+            color: #777777;
+            border-top: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>New PCH Funding Application</h1>
+        </div>
+        <div class="content">
+            <p>A new application has been submitted through the public form. Please review the details below:</p>
+            
+            <table class="details-table">
+                <tbody>
+                    {% for key, value in form_data.items() %}
+                        {% if key != 'terms' %}
+                            <tr>
+                                <th>{{ key.replace('_', ' ').title() }}:</th>
+                                <td>{{ value }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            <p style="margin-top: 25px;">The applicant's government ID and selfie are attached to this email.</p>
+        </div>
+        <div class="footer">
+            &copy; {{ current_year }} PCH Funding. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>

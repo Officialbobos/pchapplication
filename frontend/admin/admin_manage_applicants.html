@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Applicants</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin/style.css') }}">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="{{ url_for('admin_dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('admin_create_applicant_account') }}">Create Applicant Account</a></li>
+                <li class="active"><a href="{{ url_for('admin_manage_applicants') }}">Manage Applicants</a></li>
+                <li><a href="{{ url_for('send_newsletter_route') }}">Send Newsletter</a></li>
+                <li><a href="{{ url_for('admin_logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+        <main class="main-content">
+            <div class="dashboard-header">
+                <h1>Manage Applicants</h1>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if applicants %}
+                            {% for applicant in applicants %}
+                            <tr>
+                                <td>{{ applicant.get('full_name', 'N/A') }}</td>
+                                <td>{{ applicant.get('email', 'N/A') }}</td>
+                                <td>{{ applicant.get('phone', 'N/A') }}</td>
+                                <td>
+                                    <a href="{{ url_for('admin_edit_applicant', applicant_id=applicant['_id']) }}" class="action-btn edit-btn">Update</a>
+                                    <form action="{{ url_for('admin_delete_applicant', applicant_id=applicant['_id']) }}" method="POST" style="display:inline;">
+                                        <button type="submit" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this applicant?');">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" style="text-align: center;">No applicants found.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applicant Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='applicants/applicant-dashboard.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/images/pch.png') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="dashboard-wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Dashboard</h2>
+                <button class="toggle-btn">☰</button>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" id="dashboardLink" class="active">My Dashboard</a></li>
+                <li><a href="#" id="profileLink">My Profile</a></li>
+                <li><a href="#">Messages</a></li>
+                <li><a href="#">Help Center</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-content">
+            <div class="dashboard-header">
+                <h1>Applicant Dashboard</h1>
+                <a href="{{ url_for('applicant_logout') }}" class="logout-btn">Logout</a>
+            </div>
+
+            <div id="welcomeModal" class="modal-backdrop">
+                <div class="modal-content">
+                    <h2 class="modal-title">
+                        Welcome, <span class="applicant-name">{{ user.get('full_name', 'Applicant') }}</span>!
+                    </h2>
+                    <p>Congratulations! We are thrilled to tell you that your grant application has been approved by Publishers Clearing House! Fortune is smiling on you, and we are so happy to see it.</p>
+                    <p class="proceed-message">To proceed, please click here:</p>
+                    <a href="#" id="proceedButton" class="modal-proceed-btn">Proceed to Dashboard</a>
+                </div>
+            </div>
+
+            <div id="dashboardSection" style="display: none;">
+                {% if user.get('agent_name') %}
+                <div class="agent-card">
+                    <img src="{% if user.get('agent_image_url') %}{{ url_for('static', filename='uploads/' + user.get('agent_image_url')) }}{% else %}{{ url_for('static', filename='assets/images/default-agent.png') }}{% endif %}" alt="Agent Profile Image" class="agent-img">
+                    <div class="agent-details">
+                        <h3>Your Assigned Agent</h3>
+                        <div class="info-group">
+                            <span class="info-label">Agent Name:</span>
+                            <span class="info-value">{{ user.get('agent_name', 'Not assigned') }}</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">{{ user.get('agent_email', 'N/A') }}</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Phone:</span>
+                            <span class="info-value">{{ user.get('agent_phone', 'N/A') }}</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Facebook:</span>
+                            {% if user.get('agent_facebook') %}
+                                <a href="{{ user.get('agent_facebook') }}" target="_blank" class="facebook-btn">Agent Facebook Page</a>
+                            {% else %}
+                                <span class="info-value">N/A</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="status-section profile-card" style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
+                    <h3>Application Status</h3>
+                    <div class="info-group">
+                        <span class="info-label">Application ID:</span>
+                        <span class="info-value">{{ user.get('application_id', 'Not assigned') }}</span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label">Current Status:</span>
+                        <span class="info-value status-{{ user.get('application_status', 'Pending') | lower | replace(' ', '-') }}">{{ user.get('application_status', 'Pending') }}</span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label">Status Notes:</span>
+                        <span class="info-value">{{ user.get('status_notes', 'N/A') }}</span>
+                    </div>
+                    <div class="info-group">
+                        <span class="info-label">Application Progress:</span>
+                        <div class="progress-bar-container">
+                            <div class="progress-line" style="width: {{ user.get('progress_value', 0) }}%; background-color: {{ user.get('progress_color', '#007bff') }};"></div>
+                            <span class="progress-text">{{ user.get('progress_value', 0) }}%</span>
+                        </div>
+                    </div>
+                </div>
+
+                {% if user.get('grant_amount') %}
+                <div class="grant-approved-card">
+                    <h3 class="grant-approved-title">Approved Grant Amount:</h3>
+                    <p class="grant-amount">{{ user.get('grant_amount') }}</p>
+                    <p class="grant-news">Great News! Your grant application has been approved.</p>
+                <a href="{{ url_for('continuous_application') }}" class="proceed-button">Proceed</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div id="profileSection" style="display: none;">
+                <div class="profile-card">
+                    <img src="{% if user.get('image_url') %}{{ url_for('static', filename='uploads/' + user.get('image_url')) }}{% else %}{{ url_for('static', filename='assets/images/default-profile.png') }}{% endif %}" alt="Profile Image" class="profile-img">
+                    <div class="profile-details">
+                        <h2>{{ user.get('full_name', 'Not provided') }}</h2>
+                        
+                        <div class="info-group">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value">{{ user.get('email', 'Not provided') }}</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Home Address:</span>
+                            <span class="info-value">{{ user.get('address', 'Not provided') }}</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Phone Number:</span>
+                            <span class="info-value">{{ user.get('phone', 'Not provided') }}</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Business:</span>
+                            <span class="info-value">{{ user.get('business', 'Not provided') }}</span>
+                        </div>
+                        <div class="info-group">
+                            <span class="info-label">Date of Birth:</span>
+                            <span class="info-value">{{ user.get('date_of_birth', 'Not provided') }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const proceedButton = document.getElementById('proceedButton');
+            const welcomeModal = document.getElementById('welcomeModal');
+            const dashboardSection = document.getElementById('dashboardSection');
+            const profileSection = document.getElementById('profileSection');
+            const sidebarMenu = document.querySelector('.sidebar-menu');
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+            const toggleBtn = document.querySelector('.toggle-btn');
+
+            proceedButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                welcomeModal.style.display = 'none';
+                dashboardSection.style.display = 'block';
+            });
+
+            // Toggle sidebar menu visibility on mobile
+            toggleBtn.addEventListener('click', function() {
+                sidebarMenu.classList.toggle('active');
+            });
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    
+                    // Remove 'active' class from all links
+                    sidebarLinks.forEach(item => item.classList.remove('active'));
+                    
+                    // Add 'active' class to the clicked link
+                    link.classList.add('active');
+
+                    // Hide all content sections
+                    dashboardSection.style.display = 'none';
+                    profileSection.style.display = 'none';
+
+                    // Show the content section based on the clicked link's ID
+                    if (link.id === 'dashboardLink') {
+                        dashboardSection.style.display = 'block';
+                    } else if (link.id === 'profileLink') {
+                        profileSection.style.display = 'block';
+                    }
+
+                    // Hide the sidebar menu on mobile after a link is clicked
+                    if (window.innerWidth <= 768) {
+                        sidebarMenu.classList.remove('active');
+                    }
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
