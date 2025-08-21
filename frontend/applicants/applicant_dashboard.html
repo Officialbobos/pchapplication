@@ -175,69 +175,69 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const proceedButton = document.getElementById('proceedButton');
-            const welcomeModal = document.getElementById('welcomeModal');
-            const dashboardSection = document.getElementById('dashboardSection');
-            const profileSection = document.getElementById('profileSection');
-            const messagesSection = document.getElementById('messagesSection');
-            const helpCenterSection = document.getElementById('helpCenterSection');
-            const sidebarMenu = document.querySelector('.sidebar-menu');
-            const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
-            const toggleBtn = document.querySelector('.toggle-btn');
-            
-            // Initially hide all content sections except the welcome modal
-            dashboardSection.style.display = 'none';
-            profileSection.style.display = 'none';
-            messagesSection.style.display = 'none';
-            helpCenterSection.style.display = 'none';
+   <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const proceedButton = document.getElementById('proceedButton');
+        const welcomeModal = document.getElementById('welcomeModal');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const profileSection = document.getElementById('profileSection');
+        const messagesSection = document.getElementById('messagesSection');
+        const helpCenterSection = document.getElementById('helpCenterSection');
+        const sidebarMenu = document.querySelector('.sidebar-menu');
+        const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+        const toggleBtn = document.querySelector('.toggle-btn');
+        
+        // Initially hide all content sections except the welcome modal
+        dashboardSection.style.display = 'none';
+        profileSection.style.display = 'none';
+        messagesSection.style.display = 'none';
+        helpCenterSection.style.display = 'none';
 
-            proceedButton.addEventListener('click', function(event) {
-                event.preventDefault();
-                welcomeModal.style.display = 'none';
-                dashboardSection.style.display = 'block';
-            });
+        proceedButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            welcomeModal.style.display = 'none';
+            dashboardSection.style.display = 'block';
+        });
 
-            // Toggle sidebar menu visibility on mobile
-            toggleBtn.addEventListener('click', function() {
-                sidebarMenu.classList.toggle('active');
-            });
+        // Toggle sidebar menu visibility on mobile
+        toggleBtn.addEventListener('click', function() {
+            sidebarMenu.classList.toggle('active');
+        });
 
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    
-                    // Remove 'active' class from all links
-                    sidebarLinks.forEach(item => item.classList.remove('active'));
-                    
-                    // Add 'active' class to the clicked link
-                    link.classList.add('active');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                
+                // Remove 'active' class from all links
+                sidebarLinks.forEach(item => item.classList.remove('active'));
+                
+                // Add 'active' class to the clicked link
+                link.classList.add('active');
 
-                    // Hide all content sections
-                    dashboardSection.style.display = 'none';
-                    profileSection.style.display = 'none';
-                    messagesSection.style.display = 'none';
-                    helpCenterSection.style.display = 'none';
+                // Hide all content sections
+                dashboardSection.style.display = 'none';
+                profileSection.style.display = 'none';
+                messagesSection.style.display = 'none';
+                helpCenterSection.style.display = 'none';
 
-                    // Show the content section based on the clicked link's ID
-                    if (link.id === 'dashboardLink') {
-                        dashboardSection.style.display = 'block';
-                    } else if (link.id === 'profileLink') {
-                        profileSection.style.display = 'block';
-                    } else if (link.id === 'messagesLink') {
-                        messagesSection.style.display = 'block';
-                    } else if (link.id === 'helpCenterLink') {
-                        helpCenterSection.style.display = 'block';
-                    }
+                // Show the content section based on the clicked link's ID
+                if (link.id === 'dashboardLink') {
+                    dashboardSection.style.display = 'block';
+                } else if (link.id === 'profileLink') {
+                    profileSection.style.display = 'block';
+                } else if (link.id === 'messagesLink') {
+                    messagesSection.style.display = 'block';
+                } else if (link.id === 'helpCenterLink') {
+                    helpCenterSection.style.display = 'block';
+                }
 
-                    // Hide the sidebar menu on mobile after a link is clicked
-                    if (window.innerWidth <= 768) {
-                        sidebarMenu.classList.remove('active');
-                    }
-                });
-            });
-    </script>
-
+                // Hide the sidebar menu on mobile after a link is clicked
+                if (window.innerWidth <= 768) {
+                    sidebarMenu.classList.remove('active');
+                }
+            });
+        });
+    }); // This is the missing part
+</script>
 </body>
 </html>
