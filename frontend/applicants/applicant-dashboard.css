@@ -3,15 +3,13 @@
     --primary-blue: #007bff;
     --primary-blue-dark: #04284e;
     --glowing-white: #ffffff;
-    --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 body {
-    background-color: #f7f9fc;
+    background-color: #f7f7f7;
     font-family: 'Poppins', sans-serif;
     margin: 0;
     color: #333;
-    line-height: 1.6;
 }
 
 /* --- Dashboard Layout and General Styles --- */
@@ -20,30 +18,28 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar Styling */
 .sidebar {
     width: 250px;
     background-color: var(--primary-blue-dark);
     color: white;
-    padding: 20px 0;
-    box-shadow: var(--card-shadow);
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
 }
 
 .sidebar-header {
-    padding: 0 20px;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
+    text-align: center;
 }
 
 .sidebar-header h2 {
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: bold;
     color: white;
     margin: 0;
 }
 
+/* Hide toggle button by default on desktop */
 .toggle-btn {
     display: none;
     background: none;
@@ -51,6 +47,7 @@ body {
     font-size: 1.5rem;
     color: white;
     cursor: pointer;
+    padding: 0;
 }
 
 .sidebar-menu {
@@ -61,52 +58,50 @@ body {
 
 .sidebar-menu li a {
     display: block;
-    padding: 12px 20px;
+    padding: 12px 15px;
     color: white;
     text-decoration: none;
-    transition: background-color 0.3s, transform 0.2s;
+    border-radius: 5px;
+    transition: background-color 0.3s;
 }
 
 .sidebar-menu li a:hover,
 .sidebar-menu li a.active {
-    background-color: rgba(255, 255, 255, 0.15);
-    border-left: 4px solid var(--primary-blue);
-    padding-left: 16px; /* Adjust padding to make up for border */
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Main Content Area */
 .main-content {
     flex-grow: 1;
-    padding: 40px;
+    padding: 30px;
 }
 
 .dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     padding-bottom: 20px;
     border-bottom: 1px solid #e0e0e0;
 }
 
 .dashboard-header h1 {
-    font-size: 2.2rem;
-    color: var(--primary-blue-dark);
+    font-size: 2rem;
+    color: var(--primary-blue);
     margin: 0;
 }
 
 .logout-btn {
-    background-color: #dc3545;
+    background-color: #f44336;
     color: white;
     padding: 10px 20px;
     text-decoration: none;
     border-radius: 5px;
-    font-weight: 600;
+    font-weight: bold;
     transition: background-color 0.3s;
 }
 
 .logout-btn:hover {
-    background-color: #c82333;
+    background-color: #d32f2f;
 }
 
 /* --- Modal Styles --- */
@@ -116,43 +111,31 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    animation: fadeIn 0.3s ease-out;
 }
 
 .modal-content {
     background: white;
     padding: 2.5rem;
     border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
     width: 90%;
-    max-width: 650px;
+    max-width: 600px;
     text-align: center;
-    animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes slideIn {
-    from { transform: translateY(-50px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
 }
 
 .modal-title {
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: var(--primary-blue-dark);
     margin-bottom: 1rem;
-    font-weight: 700;
 }
 
 .applicant-name {
+    font-weight: bold;
     color: var(--primary-blue);
 }
 
@@ -160,19 +143,24 @@ body {
     font-size: 1.1rem;
     line-height: 1.6;
     color: #555;
-    margin-bottom: 1.5rem;
+}
+
+.proceed-message {
+    margin-top: 1.5rem;
+    color: #333;
 }
 
 .modal-proceed-btn {
     display: inline-block;
-    padding: 12px 30px;
+    padding: 12px 25px;
+    margin-top: 1rem;
     background-color: var(--primary-blue);
     color: white;
     text-decoration: none;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: bold;
     transition: background-color 0.3s, transform 0.2s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: none;
 }
 
 .modal-proceed-btn:hover {
@@ -180,56 +168,45 @@ body {
     transform: translateY(-2px);
 }
 
-/* --- Card Styles (Profile, Agent, Status) --- */
-.profile-card,
-.agent-card,
-.status-section {
+/* --- Profile Card Styles --- */
+.profile-card {
     background-color: white;
     border-radius: 12px;
-    box-shadow: var(--card-shadow);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     padding: 2.5rem;
-    margin-bottom: 2rem;
-}
-
-.profile-card {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 30px;
+    margin-bottom: 2rem;
     text-align: center;
 }
 
-.agent-card {
-    display: flex;
-    align-items: center;
-    gap: 30px;
-    border: 2px solid var(--primary-blue);
-    box-shadow: 0 0 15px rgba(2, 11, 61, 0.15);
-}
-
-.profile-img, .agent-img {
-    width: 150px;
-    height: 150px;
+.profile-img {
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     object-fit: cover;
     border: 4px solid var(--primary-blue);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.profile-details {
+    flex-grow: 1;
+    width: 100%;
 }
 
 .profile-details h2 {
-    margin-top: 10px;
+    margin-top: 0;
     margin-bottom: 1.5rem;
     color: var(--primary-blue-dark);
     font-size: 2rem;
-    font-weight: 700;
 }
 
 .info-group {
-    display: flex;
-    flex-direction: column;
     margin-bottom: 15px;
     padding-bottom: 15px;
     border-bottom: 1px dashed #e0e0e0;
-    text-align: left;
 }
 
 .info-group:last-child {
@@ -237,74 +214,172 @@ body {
 }
 
 .info-label {
-    font-weight: 600;
+    display: block;
+    font-weight: bold;
     color: #555;
     margin-bottom: 5px;
 }
 
 .info-value {
     color: #333;
+    display: block;
     font-size: 1.1rem;
-    word-wrap: break-word;
 }
 
-/* Status & Progress Bar Styles */
+/* --- Application Status & Progress Bar Styles --- */
+.status-section {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+}
+
 .status-section h3 {
     color: var(--primary-blue-dark);
     margin-bottom: 20px;
-    font-size: 1.5rem;
 }
 
-.status-pending { color: #ffc107; font-weight: bold; }
-.status-in-review { color: #17a2b8; font-weight: bold; }
-.status-approved { color: #28a745; font-weight: bold; }
-.status-rejected { color: #dc3545; font-weight: bold; }
+.status-section .info-group {
+    margin-bottom: 15px;
+}
 
+/* Conditional styling for status text */
+.status-pending {
+    color: #f44336;
+    font-weight: bold;
+}
+.status-in-review {
+    color: #ff9800;
+    font-weight: bold;
+}
+.status-approved {
+    color: #4caf50;
+    font-weight: bold;
+}
+.status-rejected {
+    color: #d32f2f;
+    font-weight: bold;
+}
+
+/* Progress bar styles */
 .progress-bar-container {
     width: 100%;
-    height: 12px;
+    height: 1rem;
     background-color: #e9ecef;
     border-radius: 5px;
-    margin-top: 10px;
+    margin-top: 0.5rem;
     position: relative;
     overflow: hidden;
+    display: flex;
+    align-items: center;
 }
 
 .progress-line {
     height: 100%;
     transition: width 0.3s ease;
-    border-radius: 5px;
 }
 
 .progress-text {
     position: absolute;
-    right: 8px;
+    right: 0.5rem;
     color: white;
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
-/* Grant Approved Section */
+/* --- Assigned Agent Details Styles --- */
+.agent-card {
+    background: var(--glowing-white);
+    border-radius: 12px;
+    border: 2px solid var(--primary-blue);
+    box-shadow: 0 0 15px rgba(2, 11, 61, 0.5);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.agent-card h3 {
+    font-size: 1.5rem;
+    color: var(--primary-blue-dark);
+    margin: 0 0 1rem 0;
+}
+
+.agent-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-blue);
+}
+
+.agent-details {
+    flex-grow: 1;
+}
+
+.agent-details .info-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+.agent-details .info-group .info-label {
+    font-weight: 600;
+}
+
+.agent-details .info-group .info-value {
+    color: #333;
+}
+
+.agent-details .info-value a {
+    color: var(--primary-blue);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* --- Facebook Button Styles --- */
+.facebook-btn {
+    display: inline-block;
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    border: 1px solid var(--primary-blue);
+    font-size: 0.8rem;
+}
+
+.facebook-btn:hover {
+    background-color: var(--primary-blue-dark);
+}
+
+/* --- Grant Approved Amount Section --- */
 .grant-approved-card {
-    background-color: #f0f8ff;
+    background-color: #fcfcfc;
     border: 2px solid var(--primary-blue);
     border-radius: 12px;
-    padding: 40px 30px;
+    padding: 30px;
     margin-top: 30px;
-    box-shadow: 0 0 20px rgba(4, 40, 78, 0.15);
+    box-shadow: 0 0 15px rgba(5, 4, 85, 0.4);
     text-align: center;
 }
 
 .grant-approved-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 600;
     color: var(--primary-blue-dark);
     margin-bottom: 10px;
 }
 
 .grant-amount {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: bold;
     color: var(--primary-blue);
     margin-bottom: 15px;
@@ -313,20 +388,22 @@ body {
 
 .grant-news {
     color: #555;
-    font-size: 1.1rem;
+    margin-bottom: 20px;
+    font-size: 1rem;
     line-height: 1.5;
-    margin-bottom: 25px;
 }
 
 .proceed-button {
     display: inline-block;
     background-color: var(--primary-blue);
-    color: white;
-    padding: 12px 30px;
+    color: #fcfcfc;
+    padding: 12px 25px;
     border-radius: 8px;
     text-decoration: none;
     font-weight: bold;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: none;
+    cursor: pointer;
 }
 
 .proceed-button:hover {
@@ -334,13 +411,57 @@ body {
     transform: translateY(-2px);
 }
 
-/* Help Center & Form Styles */
+/* --- Grant Award Letter Styles --- */
+.letter-container {
+    background-color: white;
+    border-radius: 8px;
+    padding: 30px;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    line-height: 1.8;
+}
+
+.letter-header h2 {
+    font-size: 1.8rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.letter-date,
+.letter-recipient,
+.letter-greeting,
+.letter-body p,
+.letter-closing,
+.letter-signature,
+.letter-sender {
+    margin-bottom: 15px;
+    color: #555;
+    font-size: 1rem;
+}
+
+.letter-body p {
+    text-indent: 20px;
+}
+
+.letter-signature {
+    margin-top: 50px;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.letter-sender {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* --- Help Center and Messages Section Styles --- */
 .inquiry-form {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .form-group {
@@ -351,15 +472,15 @@ body {
 
 .form-group label {
     font-weight: 600;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
     color: #333;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-    padding: 12px;
-    border: 1px solid #ddd;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
     border-radius: 5px;
     font-family: 'Poppins', sans-serif;
     font-size: 1rem;
@@ -370,7 +491,7 @@ body {
 .form-group select:focus,
 .form-group textarea:focus {
     border-color: var(--primary-blue);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
     outline: none;
 }
 
@@ -382,12 +503,12 @@ body {
     align-self: flex-start;
     background-color: var(--primary-blue);
     color: white;
-    padding: 12px 30px;
+    padding: 12px 25px;
     border: none;
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .submit-btn:hover {
@@ -403,51 +524,57 @@ body {
 
     .sidebar {
         width: 100%;
-        padding: 15px 20px;
+        height: auto;
+        padding: 10px 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         position: relative;
     }
 
     .sidebar-header {
         display: flex;
-        justify-content: space-between;
+        justify-content: space-between; /* Aligns button and title */
         align-items: center;
-        margin-bottom: 0;
+        margin-bottom: 0; /* Remove bottom margin for better alignment */
+        text-align: left;
+        width: 100%;
     }
-    
+
     .sidebar-header h2 {
         font-size: 1.2rem;
     }
 
     .toggle-btn {
-        display: block;
+        display: block; /* Show the button on mobile */
     }
 
     .sidebar-menu {
         display: none;
         position: absolute;
-        top: 100%;
+        top: 60px; /* Position below the header */
         left: 0;
         width: 100%;
         background-color: var(--primary-blue-dark);
-        z-index: 900;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 10px 0;
+        transition: transform 0.3s ease-in-out;
     }
     
     .sidebar-menu.active {
         display: block;
     }
     
-    .sidebar-menu li a {
+    .sidebar-menu li {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .sidebar-menu li:last-child {
+        border-bottom: none;
+    }
+    
+    .sidebar-menu a {
         padding: 15px 20px;
         font-size: 1rem;
-        border-left: none;
-    }
-
-    .sidebar-menu li a:hover,
-    .sidebar-menu li a.active {
-        background-color: rgba(255, 255, 255, 0.15);
-        border-left: none;
-        padding-left: 20px;
     }
 
     .main-content {
@@ -457,13 +584,13 @@ body {
     .dashboard-header {
         flex-direction: column;
         align-items: flex-start;
-        padding-bottom: 15px;
-        margin-bottom: 20px;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
     }
 
     .dashboard-header h1 {
         margin-bottom: 10px;
-        font-size: 1.8rem;
+        font-size: 1.5rem;
     }
 
     .logout-btn {
@@ -471,63 +598,114 @@ body {
         font-size: 0.9rem;
     }
 
-    /* Mobile Card Styles */
-    .profile-card,
-    .agent-card,
-    .status-section,
-    .grant-approved-card {
-        padding: 1.5rem;
-    }
-    
-    .profile-card, .agent-card {
-        flex-direction: column;
-        text-align: center;
-        gap: 20px;
+    /* Modal-specific styles for mobile */
+    .modal-content {
+        padding: 1.2rem;
     }
 
-    .profile-img, .agent-img {
+    .modal-title {
+        font-size: 1.4rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .modal-content p {
+        font-size: 0.7rem;
+    }
+
+    .proceed-message {
+        margin-top: 1rem;
+    }
+
+    .modal-proceed-btn {
+        padding: 10px 20px;
+        margin-top: 0.8rem;
+    }
+
+    /* Profile card and agent card */
+    .profile-card,
+    .agent-card,
+    .letter-container,
+    .status-section {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0.8rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .profile-img,
+    .agent-img {
         width: 120px;
         height: 120px;
     }
 
-    .profile-details h2 {
-        font-size: 1.5rem;
+    .profile-details,
+    .agent-details {
+        margin-top: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
 
     .info-group {
-        text-align: center;
-        padding-bottom: 10px;
         margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #e0e0e0;
     }
-
+    
     .info-label {
+        margin-right: 0;
+        margin-bottom: 3px;
         font-size: 0.9rem;
     }
-
-    .info-value {
-        font-size: 1rem;
-    }
-
-    .grant-amount {
-        font-size: 2rem;
+ .inquiry-form {
+        gap: 10px;
+        margin-top: 10px;
     }
     
-    .grant-news {
-        font-size: 0.95rem;
-    }
-    
-    .inquiry-form {
-        gap: 15px;
+    .form-group label {
+        font-size: 0.9rem;
     }
     
     .form-group input,
     .form-group select,
     .form-group textarea {
         font-size: 0.9rem;
+        padding: 8px 10px;
     }
     
     .submit-btn {
         padding: 10px 20px;
         font-size: 0.9rem;
+    }
+
+    .info-value {
+        font-size: 0.9rem;
+        text-align: center;
+    }
+    
+    /* Additional Mobile-specific styles */
+    .status-section {
+        text-align: left;
+    }
+
+    .status-section .info-group {
+        justify-content: flex-start;
+    }
+
+    /* Adjusted progress bar for mobile */
+    .progress-bar-container {
+        height: 1.25rem;
+        width: 100%;
+    }
+
+    .progress-text {
+        font-size: 0.8rem;
+        right: 0.5rem;
+    }
+    
+    .info-group .facebook-btn {
+        margin-top: 0;
     }
 }
