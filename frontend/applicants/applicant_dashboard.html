@@ -186,6 +186,14 @@
             const sidebarMenu = document.querySelector('.sidebar-menu');
             const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
             const toggleBtn = document.querySelector('.toggle-btn');
+            
+            // The modal should be visible by default in the HTML.
+            // When the page loads, ensure the other sections are hidden.
+            dashboardSection.style.display = 'none';
+            profileSection.style.display = 'none';
+            messagesSection.style.display = 'none';
+            helpCenterSection.style.display = 'none';
+
 
             proceedButton.addEventListener('click', function(event) {
                 event.preventDefault();
