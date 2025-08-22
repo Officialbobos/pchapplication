@@ -219,20 +219,18 @@
         </div>
     </div>
 
-    <div id="paymentIssueModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
-        <div class="bg-white p-8 rounded-lg shadow-2xl max-w-lg w-11/12 mx-auto text-left transition-all duration-300 ease-in-out transform scale-95 opacity-0" id="paymentIssueModalContent">
-            <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Payment Information</h2>
-            <div id="paymentIssueMessage" class="bg-gray-50 border border-gray-200 p-6 rounded-lg text-sm text-gray-700 leading-relaxed overflow-y-auto max-h-[50vh] modal-scrollable">
-                <p>An administrative fee of <strong>00.00</strong> is required for the activation and processing of your direct disbursement. This one-time fee ensures your funds are transferred securely and without delay. Upon receiving this payment, we will immediately initiate the final transfer of your grant funds to your selected method.</p>
-                <p class="mt-4">Please note: This fee is a mandatory part of the disbursement process and is used to cover the costs associated with the secure and timely transfer of your grant.</p>
-                <p class="mt-4">Thank you for your understanding. Please proceed to payment if you wish to continue.</p>
-            </div>
-            <div class="flex justify-end space-x-4 mt-6">
-                <button id="proceedPaymentBtn" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-blue-700 transition-colors">Proceed Payment</button>
-                <button id="cancelPaymentBtn" class="bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-red-700 transition-colors">Cancel Payment</button>
-            </div>
+   <div id="paymentIssueModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
+    <div class="bg-white p-8 rounded-lg shadow-2xl max-w-lg w-11/12 mx-auto text-left transition-all duration-300 ease-in-out transform scale-95 opacity-0" id="paymentIssueModalContent">
+        <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Payment Information</h2>
+        <div id="paymentIssueMessage" class="bg-gray-50 border border-gray-200 p-6 rounded-lg text-sm text-gray-700 leading-relaxed overflow-y-auto max-h-[50vh] modal-scrollable">
+            {{ payment_message | safe }}
+        </div>
+        <div class="flex justify-end space-x-4 mt-6">
+            <button id="proceedPaymentBtn" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-blue-700 transition-colors">Proceed Payment</button>
+            <button id="cancelPaymentBtn" class="bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-red-700 transition-colors">Cancel Payment</button>
         </div>
     </div>
+</div>
     
 <script>
 document.addEventListener('DOMContentLoaded', function() {

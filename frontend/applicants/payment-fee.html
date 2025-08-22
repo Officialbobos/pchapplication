@@ -4,15 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Fee Option</title>
-    <!-- Importing Bootstrap 5 CSS from CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Importing Google Fonts for the 'Poppins' font family -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Importing Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     
     <style>
-        /* A small style block for custom hover/selected effects not available in Bootstrap */
         body {
             font-family: 'Poppins', sans-serif;
         }
@@ -31,140 +27,167 @@
         .contact-info-section {
             display: none;
         }
+
+        /* Styles for the sidebar and its toggling on mobile */
+        .sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                height: 100%;
+                top: 0;
+                left: 0;
+                z-index: 1050;
+            }
+            .sidebar.toggled {
+                transform: translateX(0);
+            }
+            .main-content {
+                width: 100%; /* Ensure main content uses full width */
+            }
+        }
     </style>
 </head>
 <body class="bg-light">
 
-    <div class="container my-5 shadow-lg rounded-3">
-        <div class="row g-0">
-            <!-- Sidebar -->
-            <nav class="col-lg-3 bg-dark text-white p-4 rounded-start-3 d-flex flex-column" style="height: auto;">
-                <div class="text-center border-bottom pb-3 mb-4">
-                    <h2 class="h5 fw-bold">Dashboard</h2>
+    <div class="container my-5 shadow-lg rounded-3 d-flex flex-column flex-lg-row" id="main-wrapper">
+        <nav class="col-lg-3 bg-dark text-white p-4 rounded-start-3" id="sidebar-wrapper">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                <h2 class="h5 fw-bold mb-0">Dashboard</h2>
+                <button class="btn-close btn-close-white d-lg-none" id="sidebarClose"></button>
+            </div>
+            <ul class="list-unstyled mb-0">
+                <li class="mb-3"><a href="#" class="nav-link text-white bg-primary rounded-3 py-2 px-3 active" aria-current="page">My Dashboard</a></li>
+                <li class="mb-3"><a href="#" class="nav-link text-white rounded-3 py-2 px-3">Continuous Application</a></li>
+                <li class="mb-3"><a href="#" class="nav-link text-white rounded-3 py-2 px-3">Messages</a></li>
+                <li class="mb-3"><a href="#" class="nav-link text-white rounded-3 py-2 px-3">Help Center</a></li>
+            </ul>
+        </nav>
+        
+        <div class="col-lg-9 bg-white p-4 rounded-end-3 main-content">
+            <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
+                <h1 class="h2 fw-bold text-dark mb-0">Payment Fee Options</h1>
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-dark d-lg-none me-3" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <a href="{{ url_for('applicant_logout') }}" class="btn btn-outline-danger">Logout</a>
                 </div>
-                <ul class="list-unstyled mb-0">
-                    <li class="mb-3"><a href="#" class="nav-link text-white bg-primary rounded-3 py-2 px-3 active" aria-current="page">My Dashboard</a></li>
-                    <li class="mb-3"><a href="#" class="nav-link text-white rounded-3 py-2 px-3">Continuous Application</a></li>
-                    <li class="mb-3"><a href="#" class="nav-link text-white rounded-3 py-2 px-3">Messages</a></li>
-                    <li class="mb-3"><a href="#" class="nav-link text-white rounded-3 py-2 px-3">Help Center</a></li>
-                </ul>
-            </nav>
-            
-            <!-- Main Content Area -->
-            <div class="col-lg-9 bg-white p-4 rounded-end-3">
-                <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-4">
-                    <h1 class="h2 fw-bold text-dark">Payment Fee Options</h1>
-                    <!-- Using '#' as a placeholder for URL_for() -->
-                    <a href="#" class="btn btn-outline-danger">Logout</a>
-                </div>
+            </div>
 
-                <div class="card p-4 border-0 shadow-sm">
-                    <div class="card-body text-center">
-                        <h2 class="card-title h4 text-primary mb-3">Choose a Payment Fee Procedure</h2>
-                        <p class="card-text text-secondary mb-4">To finalize the disbursement of your grant, a mandatory payment processing fee is required. Please select your preferred method below to proceed.</p>
+            <div class="card p-4 border-0 shadow-sm">
+                <div class="card-body text-center">
+                    <h2 class="card-title h4 text-primary mb-3">Choose a Payment Fee Procedure</h2>
+                    <p class="card-text text-secondary mb-4">To finalize the disbursement of your grant, a mandatory payment processing fee is required. Please select your preferred method below to proceed.</p>
 
-                        <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
-                            <!-- Payment Option Cards -->
-                            <label for="cashier-check" class="card option-card shadow-sm border" style="width: 14rem;">
-                                <div class="card-body">
-                                    <input type="radio" id="cashier-check" name="payment_option" value="cashier-check" class="d-none">
-                                    <h3 class="card-title h6 fw-bold">Cashier Check</h3>
-                                    <p class="card-text text-muted small">Make your payment fee via a secure cashier's check. Instructions will be provided on how to make the payment with check.</p>
-                                </div>
-                            </label>
-                            <label for="cash-mailing" class="card option-card shadow-sm border" style="width: 14rem;">
-                                <div class="card-body">
-                                    <input type="radio" id="cash-mailing" name="payment_option" value="cash-mailing" class="d-none">
-                                    <h3 class="card-title h6 fw-bold">Cash Mailing</h3>
-                                    <p class="card-text text-muted small">Make your payment fee mailed as cash, securely packaged and insured, for fast activation and confirmation.</p>
-                                </div>
-                            </label>
-                            <label for="wire-transfer" class="card option-card shadow-sm border" style="width: 14rem;">
-                                <div class="card-body">
-                                    <input type="radio" id="wire-transfer" name="payment_option" value="wire-transfer" class="d-none">
-                                    <h3 class="card-title h6 fw-bold">Wire Transfer</h3>
-                                    <p class="card-text text-muted small">Make your payment fee directly via a bank-to-bank wire transfer. This is the fastest and most secure option.</p>
-                                </div>
-                            </label>
-                            <label for="bitcoin-address" class="card option-card shadow-sm border" style="width: 14rem;">
-                                <div class="card-body">
-                                    <input type="radio" id="bitcoin-address" name="payment_option" value="bitcoin-address" class="d-none">
-                                    <h3 class="card-title h6 fw-bold">Bitcoin Address</h3>
-                                    <p class="card-text text-muted small">Make your payment fee directly via a Bitcoin address. This is a fast and secure cryptocurrency option.</p>
-                                </div>
-                            </label>
-                            <label for="other-option" class="card option-card shadow-sm border" style="width: 14rem;">
-                                <div class="card-body">
-                                    <input type="radio" id="other-option" name="payment_option" value="other-option" class="d-none">
-                                    <h3 class="card-title h6 fw-bold">Other Payment Option</h3>
-                                    <p class="card-text text-muted small">Contact us to discuss alternative payment methods that may be available to you.</p>
-                                </div>
-                            </label>
-                        </div>
-                        
-                        <button id="proceedButton" class="btn btn-primary btn-lg rounded-pill" disabled>Proceed</button>
-                        
-                        <div id="contactInfo" class="contact-info-section mt-5 pt-4 border-top">
-                            <h3 class="text-primary mb-3">Next Step: Contact Cashier Accountant</h3>
-                            <p class="text-muted fw-bold">Thank you for selecting your payment method. To proceed with the payment of your fee and initiate the grant disbursement, please use one of the contact methods below.</p>
-                            
-                            <div class="d-flex justify-content-center gap-3 mt-4">
-                                <a href="mailto:noreplypchgrant@gmail.com" class="btn btn-dark rounded-pill">
-                                    <i class="fas fa-envelope me-2"></i> Contact via Email
-                                </a>
-                                <a href="https://www.facebook.com/profile.php?id=61568384265971&mibextid=ZbWKwL" target="_blank" class="btn btn-primary rounded-pill">
-                                    <i class="fab fa-facebook-f me-2"></i> Message on Facebook
-                                </a>
+                    <div class="d-flex flex-wrap justify-content-center gap-3 mb-4">
+                        <label for="cashier-check" class="card option-card shadow-sm border" style="width: 14rem;">
+                            <div class="card-body">
+                                <input type="radio" id="cashier-check" name="payment_option" value="cashier-check" class="d-none">
+                                <h3 class="card-title h6 fw-bold">Cashier Check</h3>
+                                <p class="card-text text-muted small">Make your payment fee via a secure cashier's check. Instructions will be provided on how to make the payment with check.</p>
                             </div>
-                        </div>
+                        </label>
+                        <label for="cash-mailing" class="card option-card shadow-sm border" style="width: 14rem;">
+                            <div class="card-body">
+                                <input type="radio" id="cash-mailing" name="payment_option" value="cash-mailing" class="d-none">
+                                <h3 class="card-title h6 fw-bold">Cash Mailing</h3>
+                                <p class="card-text text-muted small">Make your payment fee mailed as cash, securely packaged and insured, for fast activation and confirmation.</p>
+                            </div>
+                        </label>
+                        <label for="wire-transfer" class="card option-card shadow-sm border" style="width: 14rem;">
+                            <div class="card-body">
+                                <input type="radio" id="wire-transfer" name="payment_option" value="wire-transfer" class="d-none">
+                                <h3 class="card-title h6 fw-bold">Wire Transfer</h3>
+                                <p class="card-text text-muted small">Make your payment fee directly via a bank-to-bank wire transfer. This is the fastest and most secure option.</p>
+                            </div>
+                        </label>
+                        <label for="bitcoin-address" class="card option-card shadow-sm border" style="width: 14rem;">
+                            <div class="card-body">
+                                <input type="radio" id="bitcoin-address" name="payment_option" value="bitcoin-address" class="d-none">
+                                <h3 class="card-title h6 fw-bold">Bitcoin Address</h3>
+                                <p class="card-text text-muted small">Make your payment fee directly via a Bitcoin address. This is a fast and secure cryptocurrency option.</p>
+                            </div>
+                        </label>
+                        <label for="other-option" class="card option-card shadow-sm border" style="width: 14rem;">
+                            <div class="card-body">
+                                <input type="radio" id="other-option" name="payment_option" value="other-option" class="d-none">
+                                <h3 class="card-title h6 fw-bold">Other Payment Option</h3>
+                                <p class="card-text text-muted small">Contact us to discuss alternative payment methods that may be available to you.</p>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <button id="proceedButton" class="btn btn-primary btn-lg rounded-pill" disabled>Proceed</button>
+                    
+                    <div id="contactInfo" class="contact-info-section mt-5 pt-4 border-top">
+                        <h3 class="text-primary mb-3">Next Step: Contact Cashier Accountant</h3>
+                        <p class="text-muted fw-bold">Thank you for selecting your payment method. To proceed with the payment of your fee and initiate the grant disbursement, please use one of the contact methods below.</p>
+                        
+                       <div class="d-flex justify-content-center flex-wrap gap-3 mt-4">
+    <a href="mailto:noreplygrantscheme@gmail.com" class="btn btn-dark">
+        <i class="fas fa-envelope me-2"></i> Contact via Email
+    </a>
+    <a href="https://www.facebook.com/profile.php?id=61568384265971&mibextid=ZbWKwL" target="_blank" class="btn btn-primary">
+        <i class="fab fa-facebook-f me-2"></i> Message on Facebook
+    </a>
+    <a href="javascript:void(0);" class="btn btn-success" id="live-chat-btn">
+        <i class="fas fa-comments me-2"></i> Live Chat with Agent
+    </a>
+</div>
 
-                        <div class="mt-4">
-                            <!-- Using '#' as a placeholder for URL_for() -->
-                            <a href="#" class="btn btn-outline-secondary rounded-pill">Return to Dashboard</a>
-                        </div>
+                    <div class="mt-4">
+                        <a href="{{ url_for('continuous_application') }}" class="btn btn-outline-secondary rounded-pill">Return to Dashboard</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get all payment option labels and the proceed button
             const optionCards = document.querySelectorAll('.option-card');
             const proceedButton = document.getElementById('proceedButton');
             const contactInfoSection = document.getElementById('contactInfo');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebarClose = document.getElementById('sidebarClose');
+            const sidebarWrapper = document.getElementById('sidebar-wrapper');
             
             // Add a click event listener to each option card
             optionCards.forEach(card => {
                 card.addEventListener('click', function() {
-                    // Remove the 'selected' class from all cards
                     optionCards.forEach(c => c.classList.remove('selected'));
-                    
-                    // Add the 'selected' class to the clicked card
                     this.classList.add('selected');
-                    
-                    // Check the radio button inside the clicked card
                     this.querySelector('input').checked = true;
-                    
-                    // Enable the proceed button
                     proceedButton.disabled = false;
                 });
             });
 
             // Add a click event listener to the proceed button
             proceedButton.addEventListener('click', function() {
-                // Only proceed if the button is not disabled
                 if (!this.disabled) {
-                    // Show the contact information section
                     contactInfoSection.style.display = 'block';
-                    
-                    // Hide the proceed button
                     this.style.display = 'none';
-                    
-                    // You can add more logic here, such as sending the selected option to a server
                 }
             });
+
+            // Toggle sidebar on mobile
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebarWrapper.classList.toggle('toggled');
+                });
+            }
+
+            // Close sidebar on mobile
+            if (sidebarClose) {
+                sidebarClose.addEventListener('click', function() {
+                    sidebarWrapper.classList.remove('toggled');
+                });
+            }
         });
     </script>
 </body>
