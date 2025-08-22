@@ -219,14 +219,26 @@
         </div>
     </div>
 
-   <div id="paymentIssueModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
+   <!-- The main modal backdrop, with Tailwind classes for full-screen overlay and centering -->
+<div id="paymentIssueModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
+    <!-- The modal content container, with classes for styling, shadow, and responsive size -->
     <div class="bg-white p-8 rounded-lg shadow-2xl max-w-lg w-11/12 mx-auto text-left transition-all duration-300 ease-in-out transform scale-95 opacity-0" id="paymentIssueModalContent">
+        
+        <!-- Modal title with Tailwind styling -->
         <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Payment Information</h2>
+        
+        <!-- The message display area, styled with a background, border, padding, and a scrollbar. -->
+        <!-- The `payment_message` variable is used here to display the admin's message from the backend. -->
         <div id="paymentIssueMessage" class="bg-gray-50 border border-gray-200 p-6 rounded-lg text-sm text-gray-700 leading-relaxed overflow-y-auto max-h-[50vh] modal-scrollable">
-            {{ payment_message | safe }}
+            {{ user.get('payment_issue_message', 'No specific message has been set by the admin. Please contact your assigned agent for more details.') | safe }}
         </div>
+        
+        <!-- The button container, using flexbox to align buttons to the right with spacing -->
         <div class="flex justify-end space-x-4 mt-6">
+            <!-- Proceed button with Tailwind styling for color, shape, and hover effects -->
             <button id="proceedPaymentBtn" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-blue-700 transition-colors">Proceed Payment</button>
+            
+            <!-- Cancel button with Tailwind styling -->
             <button id="cancelPaymentBtn" class="bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-red-700 transition-colors">Cancel Payment</button>
         </div>
     </div>
