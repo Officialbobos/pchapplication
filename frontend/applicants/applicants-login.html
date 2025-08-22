@@ -3,256 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Applicant Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='applicants/applicant-dashboard.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/images/pch.png') }}">
+    <title>Applicant Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='applicants/applicant-login.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div class="d-flex" id="dashboard-wrapper">
-        <nav class="sidebar bg-dark text-white d-flex flex-column" id="sidebar-wrapper">
-            <div class="sidebar-header d-flex justify-content-between align-items-center p-3 mb-4">
-                <h2 class="fs-4 fw-bold mb-0">Dashboard</h2>
-                <button class="btn btn-dark d-md-none" id="sidebarToggle">☰</button>
+    <header class="main-header">
+        <div class="container header-container">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='assets/images/pch.png') }}" alt="PCH Funding Applications Logo">
             </div>
-            <ul class="sidebar-menu list-group list-group-flush flex-grow-1 p-2">
-                <li class="list-group-item bg-transparent border-0 p-0 mb-1"><a href="#" id="dashboardLink" class="list-group-item-action py-2 active rounded">My Dashboard</a></li>
-                <li class="list-group-item bg-transparent border-0 p-0 mb-1"><a href="#" id="profileLink" class="list-group-item-action py-2 rounded">My Profile</a></li>
-                <li class="list-group-item bg-transparent border-0 p-0 mb-1"><a href="#" id="messagesLink" class="list-group-item-action py-2 rounded">Messages</a></li>
-                <li class="list-group-item bg-transparent border-0 p-0 mb-1"><a href="#" id="helpCenterLink" class="list-group-item-action py-2 rounded">Help Center</a></li>
-            </ul>
-        </nav>
-
-        <div class="main-content flex-grow-1 p-4 custom-main-content">
-            <header class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
-                <h1 class="fs-2 text-primary fw-bold mb-0">Applicant Dashboard</h1>
-                <a href="{{ url_for('applicant_logout') }}" class="btn btn-danger btn-sm fw-bold">Logout</a>
-            </header>
-
-            <div id="welcomeModal" class="modal-backdrop">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content text-center p-4">
-                        <h2 class="modal-title fs-3 fw-bold mb-3">Welcome, <span class="applicant-name text-primary">{{ user.get('full_name', 'Applicant') }}</span>!</h2>
-                        <p class="lead mb-4">Congratulations! We are thrilled to tell you that your grant application has been approved by the Department of Human Health and Services!</p>
-                        <a href="#" id="proceedButton" class="btn btn-primary btn-lg fw-bold px-4">Proceed to Dashboard</a>
-                    </div>
-                </div>
-            </div>
-
-            <div id="dashboardSection" class="container-fluid" style="display: none;">
-                {% if user.get('agent_name') %}
-                <div class="card border-primary mb-4 shadow-sm">
-                    <div class="card-body p-4 d-flex align-items-center flex-column flex-md-row text-center text-md-start">
-                        <img src="{% if user.get('agent_image_url') %}{{ url_for('static', filename='uploads/' + user.get('agent_image_url')) }}{% else %}{{ url_for('static', filename='assets/images/default-agent.png') }}{% endif %}" alt="Agent Profile Image" class="rounded-circle me-md-4 mb-3 mb-md-0" style="width: 120px; height: 120px; object-fit: cover;">
-                        <div class="flex-grow-1">
-                            <h3 class="card-title fw-bold text-dark mb-3">Your Assigned Agent</h3>
-                            <div class="row g-2">
-                                <div class="col-12 col-md-6 text-md-start">
-                                    <span class="info-label fw-semibold">Agent Name:</span>
-                                    <span class="info-value d-block">{{ user.get('agent_name', 'Not assigned') }}</span>
-                                </div>
-                                <div class="col-12 col-md-6 text-md-start">
-                                    <span class="info-label fw-semibold">Email:</span>
-                                    <span class="info-value d-block">{{ user.get('agent_email', 'N/A') }}</span>
-                                </div>
-                                <div class="col-12 col-md-6 text-md-start">
-                                    <span class="info-label fw-semibold">Phone:</span>
-                                    <span class="info-value d-block">{{ user.get('agent_phone', 'N/A') }}</span>
-                                </div>
-                                <div class="col-12 col-md-6 text-md-start">
-                                    <span class="info-label fw-semibold">Facebook:</span>
-                                    {% if user.get('agent_facebook') %}
-                                        <a href="{{ user.get('agent_facebook') }}" target="_blank" class="btn btn-sm btn-primary mt-2">Agent Facebook Page</a>
-                                    {% else %}
-                                        <span class="info-value d-block">N/A</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-body p-4 text-center">
-                        <h3 class="card-title fw-bold text-dark mb-3">Application Status</h3>
-                        <div class="row g-3">
-                            <div class="col-12 col-md-6 text-md-start">
-                                <span class="info-label fw-semibold">Application ID:</span>
-                                <span class="info-value d-block">{{ user.get('application_id', 'Not assigned') }}</span>
-                            </div>
-                            <div class="col-12 col-md-6 text-md-start">
-                                <span class="info-label fw-semibold">Current Status:</span>
-                                <span class="info-value d-block status-{{ user.get('application_status', 'Pending') | lower | replace(' ', '-') }}">{{ user.get('application_status', 'Pending') }}</span>
-                            </div>
-                            <div class="col-12 text-md-start">
-                                <span class="info-label fw-semibold">Status Notes:</span>
-                                <span class="info-value d-block">{{ user.get('status_notes', 'N/A') }}</span>
-                            </div>
-                            <div class="col-12">
-                                <span class="info-label fw-semibold d-block mb-2 text-start">Application Progress:</span>
-                                <div class="progress" style="height: 1.25rem;">
-                                    <div class="progress-bar" role="progressbar" style="width: {{ user.get('progress_value', 0) }}%; background-color: {{ user.get('progress_color', '#007bff') }};" aria-valuenow="{{ user.get('progress_value', 0) }}" aria-valuemin="0" aria-valuemax="100">
-                                        {{ user.get('progress_value', 0) }}%
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {% if user.get('grant_amount') %}
-                <div class="card bg-light border-primary mb-4 shadow-sm text-center">
-                    <div class="card-body p-4">
-                        <h3 class="card-title fs-4 fw-bold text-dark mb-2">Approved Grant Amount:</h3>
-                        <p class="fs-1 fw-bold text-primary mb-3">{{ user.get('grant_amount') }}</p>
-                        <p class="lead mb-4">Great News! Your grant application has been approved.</p>
-                        <a href="{{ url_for('continuous_application') }}" class="btn btn-primary btn-lg fw-bold">Proceed</a>
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-
-            <div id="profileSection" class="container-fluid" style="display: none;">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-body p-4 text-center">
-                        <img src="{% if user.get('image_url') %}{{ url_for('static', filename='uploads/' + user.get('image_url')) }}{% else %}{{ url_for('static', filename='assets/images/default-profile.png') }}{% endif %}" alt="Profile Image" class="rounded-circle mb-4" style="width: 150px; height: 150px; object-fit: cover;">
-                        <h2 class="card-title fs-3 fw-bold text-dark mb-4">{{ user.get('full_name', 'Not provided') }}</h2>
-                        
-                        <div class="row g-3">
-                            <div class="col-12 col-md-6 text-md-start">
-                                <span class="info-label fw-semibold">Email:</span>
-                                <span class="info-value d-block">{{ user.get('email', 'Not provided') }}</span>
-                            </div>
-                            <div class="col-12 col-md-6 text-md-start">
-                                <span class="info-label fw-semibold">Phone Number:</span>
-                                <span class="info-value d-block">{{ user.get('phone', 'Not provided') }}</span>
-                            </div>
-                            <div class="col-12 text-md-start">
-                                <span class="info-label fw-semibold">Home Address:</span>
-                                <span class="info-value d-block">{{ user.get('address', 'Not provided') }}</span>
-                            </div>
-                            <div class="col-12 col-md-6 text-md-start">
-                                <span class="info-label fw-semibold">Business:</span>
-                                <span class="info-value d-block">{{ user.get('business', 'Not provided') }}</span>
-                            </div>
-                            <div class="col-12 col-md-6 text-md-start">
-                                <span class="info-label fw-semibold">Date of Birth:</span>
-                                <span class="info-value d-block">{{ user.get('date_of_birth', 'Not provided') }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="messagesSection" class="container-fluid" style="display: none;">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-body p-4 text-center">
-                        <h3 class="card-title fw-bold text-dark mb-3">Messages</h3>
-                        <p class="text-muted">No recent messages.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div id="helpCenterSection" class="container-fluid" style="display: none;">
-                <div class="card mb-4 shadow-sm">
-                    <div class="card-body p-4">
-                        <h3 class="card-title fw-bold text-dark mb-3">Help Center</h3>
-                        <p class="text-muted">Please fill out the form below to submit an inquiry or complaint. Our support team will get back to you as soon as possible.</p>
-                        <form action="#" method="post" class="inquiry-form">
-                            <div class="mb-3">
-                                <label for="name" class="form-label fw-semibold">Your Name</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label fw-semibold">Email Address</label>
-                                <input type="email" class="form-control" id="email" name="email" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="type" class="form-label fw-semibold">Inquiry Type</label>
-                                <select id="type" name="type" class="form-select" required>
-                                    <option value="inquiry">General Inquiry</option>
-                                    <option value="complain">Complaint</option>
-                                    <option value="technical">Technical Support</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="message" class="form-label fw-semibold">Your Message</label>
-                                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
-                            </div>
-                            <button type="submit" class="btn btn-primary fw-bold">Submit</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
+            <a href="/" class="back-button">Back to Home</a>
         </div>
-    </div>
+    </header>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const proceedButton = document.getElementById('proceedButton');
-        const welcomeModal = document.getElementById('welcomeModal');
-        const dashboardSection = document.getElementById('dashboardSection');
-        const profileSection = document.getElementById('profileSection');
-        const messagesSection = document.getElementById('messagesSection');
-        const helpCenterSection = document.getElementById('helpCenterSection');
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        const sidebarWrapper = document.getElementById('sidebar-wrapper');
-        const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
-        
-        // Hide all content sections except the welcome modal on load
-        dashboardSection.style.display = 'none';
-        profileSection.style.display = 'none';
-        messagesSection.style.display = 'none';
-        helpCenterSection.style.display = 'none';
+    <main class="form-container">
+        <form id="loginForm" action="{{ url_for('applicant_login') }}" method="post">
+            <h2>Applicant Login</h2>
+            <p>Please enter your email and password to log in.</p>
 
-        proceedButton.addEventListener('click', function(event) {
-            event.preventDefault();
-            welcomeModal.style.display = 'none';
-            dashboardSection.style.display = 'block';
-        });
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+                </div>
+            {% endif %}
+            {% endwith %}
 
-        // Toggle sidebar on mobile
-        sidebarToggle.addEventListener('click', function() {
-            sidebarWrapper.classList.toggle('toggled');
-        });
+            <div class="form-section">
+                {% if error %}
+                <div class="error-message">{{ error }}</div>
+                {% endif %}
+                <div class="input-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-button">Login</button>
+        </form>
+    </main>
 
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', function(event) {
-                event.preventDefault();
-                
-                // Remove 'active' class from all links and add to the clicked one
-                sidebarLinks.forEach(item => item.classList.remove('active'));
-                link.classList.add('active');
-
-                // Hide all content sections
-                dashboardSection.style.display = 'none';
-                profileSection.style.display = 'none';
-                messagesSection.style.display = 'none';
-                helpCenterSection.style.display = 'none';
-
-                // Show the content section based on the clicked link's ID
-                if (link.id === 'dashboardLink') {
-                    dashboardSection.style.display = 'block';
-                } else if (link.id === 'profileLink') {
-                    profileSection.style.display = 'block';
-                } else if (link.id === 'messagesLink') {
-                    messagesSection.style.display = 'block';
-                } else if (link.id === 'helpCenterLink') {
-                    helpCenterSection.style.display = 'block';
-                }
-
-                // Hide the sidebar menu on mobile after a link is clicked
-                if (window.innerWidth <= 768) {
-                    sidebarWrapper.classList.remove('toggled');
-                }
-            });
-        });
-    });
-    </script>
 </body>
 </html>
