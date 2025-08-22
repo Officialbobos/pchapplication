@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Continuous Application</title>
-    <!-- Use Tailwind CSS from CDN for all styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Customizing the scrollbar for the modal */
@@ -30,7 +29,6 @@
 </head>
 <body class="bg-gray-100 min-h-screen font-sans antialiased text-gray-800">
 
-    <!-- Mobile Sidebar Toggle Button -->
     <div class="md:hidden fixed top-4 right-4 z-50">
         <button id="menu-btn" class="p-2 text-gray-700 bg-white rounded-lg shadow-md hover:bg-gray-200 transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -39,10 +37,8 @@
         </button>
     </div>
 
-    <!-- Main Application Container -->
     <div class="flex flex-col md:flex-row min-h-screen">
 
-        <!-- Sidebar - Now responsive for mobile -->
         <nav id="sidebar" class="bg-white shadow-xl w-64 p-6 md:p-8 flex-shrink-0
                      fixed top-0 right-0 h-full transform translate-x-full transition-transform duration-300 z-40
                      md:static md:translate-x-0">
@@ -50,63 +46,72 @@
                 <h2 class="text-2xl font-bold text-orange-600">Dashboard</h2>
             </div>
             <ul class="space-y-4">
-                <li><a href="#" class="block text-lg text-gray-700 hover:text-orange-500 font-medium transition-colors duration-200">My Dashboard</a></li>
-                <li><a href="#" class="block text-lg text-white font-bold px-4 py-2 bg-orange-500 rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-200">Continuous Application</a></li>
+                <li><a href="{{ url_for('applicant_dashboard') }}" class="block text-lg text-gray-700 hover:text-orange-500 font-medium transition-colors duration-200">My Dashboard</a></li>
+                <li><a href="{{ url_for('continuous_application') }}" class="block text-lg text-white font-bold px-4 py-2 bg-orange-500 rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-200">Continuous Application</a></li>
                 <li><a href="#" class="block text-lg text-gray-700 hover:text-orange-500 font-medium transition-colors duration-200">Messages</a></li>
                 <li><a href="#" class="block text-lg text-gray-700 hover:text-orange-500 font-medium transition-colors duration-200">Help Center</a></li>
             </ul>
         </nav>
 
-        <!-- Sidebar Overlay for mobile -->
         <div id="overlay" class="fixed inset-0 bg-black opacity-0 z-30 pointer-events-none transition-opacity duration-300"></div>
 
-        <!-- Main Content Area -->
         <div class="flex-grow p-6 md:p-12">
-            <!-- Dashboard Header -->
             <header class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-6 mb-8 border-b-2 border-gray-200">
                 <h1 class="text-3xl font-extrabold text-gray-900 mb-2 sm:mb-0">Continuous Application</h1>
-                <a href="#" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors duration-200">Logout</a>
+                <a href="{{ url_for('applicant_logout') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors duration-200">Logout</a>
             </header>
 
-            <!-- Main Content Card -->
             <div class="bg-white p-6 md:p-10 rounded-xl shadow-lg max-w-4xl mx-auto">
                 <div class="text-center mb-8 border-b border-gray-200 pb-6">
-                    <h2 class="text-2xl md:text-3xl font-bold text-orange-700">Congratulations, Jane Doe!</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold text-orange-700">Congratulations, {{ user.full_name }}!</h2>
                 </div>
 
-                <!-- Award Letter Content -->
                 <div class="text-base text-gray-700 leading-relaxed">
-                    <p class="text-right text-sm text-gray-500 mb-6">Date: August 21, 2025</p>
-                    <p class="text-lg font-semibold mb-4">Dear Jane Doe,</p>
+                    <p class="text-right text-sm text-gray-500 mb-6">Date: {{ today.strftime('%B %d, %Y') }}</p>
+                    <p class="text-lg font-semibold mb-4">Dear {{ user.full_name }},</p>
                     
-                    <p>We are delighted to inform you that your grant application has been approved. This is a testament to your hard work and dedication. Our online grant application system, in partnership with our dedicated financial management team, is designed to ensure a seamless and efficient process for all beneficiaries.</p>
-                    <p>Your approved grant amount is <strong class="text-orange-600">$10,000.00</strong>. This first disbursement will be for <strong class="text-orange-600">$5,000.00</strong>. Our team is committed to making this process as smooth as possible for you.</p>
-                    <p>To finalize the disbursement, please follow the instructions below. If you have any questions, you can <a href="#" class="text-blue-500 hover:underline font-medium">contact your assigned DHHS agent</a>.</p>
+                    {% if user.get('has_award_letter') and user.get('award_letter_content') %}
+                        <div class="prose max-w-none">
+                            {{ user.award_letter_content | safe }}
+                        </div>
+                    {% else %}
+                        <p>We are delighted to inform you that your grant application has been approved. This is a testament to your hard work and dedication. Our online grant application system, in partnership with our dedicated financial management team, is designed to ensure a seamless and efficient process for all beneficiaries.</p>
+                        <p>Your approved grant amount is <strong class="text-orange-600">${{ "{:,.2f}".format(user.get('grant_amount', 0)) }}</strong>. This first disbursement will be for <strong class="text-orange-600">${{ "{:,.2f}".format(user.get('disbursement_amount', 0)) }}</strong>. Our team is committed to making this process as smooth as possible for you.</p>
+                        <p>To finalize the disbursement, please follow the instructions below. If you have any questions, you can <a href="#" class="text-blue-500 hover:underline font-medium">contact your assigned DHHS agent</a>.</p>
+                    {% endif %}
                     
                     <p class="mt-8">Sincerely,</p>
                     <div class="mt-2">
+                        {% if user.get('agent_name') %}
+                        <p class="font-bold">{{ user.agent_name }}</p>
+                        <small class="text-gray-500 text-sm">Online Grant Application System</small>
+                        <ul class="mt-2 text-sm text-gray-600">
+                            <li><span class="font-semibold">Email:</span> {{ user.agent_email }}</li>
+                            <li><span class="font-semibold">Phone:</span> {{ user.agent_phone }}</li>
+                            <li><span class="font-semibold">Facebook:</span> {{ user.agent_facebook }}</li>
+                        </ul>
+                        {% else %}
                         <p class="font-bold">DHHS Management</p>
                         <small class="text-gray-500 text-sm">Online Grant Application System</small>
+                        {% endif %}
                     </div>
                 </div>
                 
-                <!-- Disbursement Form Section -->
+                {% if not user.get('disbursement_fee_paid') %}
                 <div id="disbursementFormContainer" class="mt-8 hidden">
                     <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-inner">
                         <h4 class="text-xl font-bold text-orange-700 mb-4 border-b border-gray-300 pb-2">Enter Your Disbursement Details</h4>
                         
-                        <!-- Disbursement Info Display -->
                         <div class="flex justify-between items-center mb-4 pb-2 border-b border-dashed border-gray-300">
                             <span class="text-gray-600 font-semibold">Your Approved Grant Amount:</span>
-                            <span class="text-gray-800 font-medium">$10,000.00</span>
+                            <span class="text-gray-800 font-medium">${{ "{:,.2f}".format(user.get('grant_amount', 0)) }}</span>
                         </div>
                         <div class="flex justify-between items-center mb-4 pb-2 border-b border-dashed border-gray-300">
                             <span class="text-gray-600 font-semibold">This Disbursement Amount:</span>
-                            <span class="text-gray-800 font-medium">$5,000.00</span>
+                            <span class="text-gray-800 font-medium">${{ "{:,.2f}".format(user.get('disbursement_amount', 0)) }}</span>
                         </div>
 
-                        <!-- Form for details -->
-                        <form id="disbursementForm" action="#" method="POST">
+                        <form id="disbursementForm" action="{{ url_for('submit_disbursement_details') }}" method="POST">
                             <div class="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-8 mb-6">
                                 <label class="block text-gray-600 font-semibold">Choose a Disbursement Method:</label>
                                 <div class="flex flex-wrap gap-4">
@@ -117,7 +122,6 @@
                                 </div>
                             </div>
                             
-                            <!-- Dynamic fields based on method -->
                             <div id="cashFields" class="hidden space-y-4">
                                 <label for="cash_mailing_address" class="block text-gray-600 font-semibold">Mailing Address for Cash:</label>
                                 <input type="text" id="cash_mailing_address" name="cash_mailing_address" placeholder="Enter your mailing address" class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition-all">
@@ -160,22 +164,19 @@
                                 <input type="text" id="bitcoin_address" name="bitcoin_address" placeholder="Enter your Bitcoin address" class="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-orange-300 focus:border-orange-500 transition-all">
                             </div>
 
-                            <!-- Form Submission Button -->
                             <div class="text-right mt-8">
                                 <button type="submit" class="bg-orange-500 text-white font-bold py-3 px-6 rounded-full shadow-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 transition-all">Submit Disbursement Details</button>
                             </div>
                         </form>
                     </div>
                     
-                    <!-- Loading Overlay -->
                     <div id="loadingOverlay" class="hidden flex-col items-center justify-center p-12 bg-gray-50 rounded-lg shadow-inner mt-8">
                         <h3 class="text-xl font-bold text-orange-700">Processing your request...</h3>
                         <p class="text-gray-600 mt-2">Please wait while we securely process your details.</p>
                     </div>
                 </div>
                 
-                <!-- Next Steps Section -->
-                <div id="nextStepsSection" class="mt-8 text-center">
+                <div id="nextStepsSection" class="mt-8 text-center {% if user.get('disbursement_fee_paid') %} hidden {% endif %}">
                     <div class="mb-6">
                         <input type="checkbox" id="agree_terms" name="agree_terms" class="form-checkbox text-orange-500 rounded focus:ring-orange-400">
                         <label for="agree_terms" class="text-gray-700 ml-2">I have read and agree to the <a href="#" class="text-orange-500 hover:underline font-medium">terms and conditions</a>.</label>
@@ -185,15 +186,24 @@
                     <button type="button" id="proceedDisbursementBtn" class="bg-orange-400 text-white font-bold py-3 px-6 rounded-full shadow-lg mt-4 cursor-not-allowed" disabled>Proceed to Disbursement</button>
                 </div>
 
-                <!-- Return to Dashboard Button -->
+                {% if user.get('disbursement_fee_paid') %}
+                <div class="mt-8 text-center p-6 bg-green-100 border border-green-300 rounded-lg shadow-inner">
+                    <h3 class="text-2xl font-bold text-green-700">Congratulations!</h3>
+                    <p class="mt-2 text-green-800">Your disbursement fee has been successfully paid. We are now processing your grant disbursement to the account you provided.</p>
+                    <p class="mt-4 text-green-800 font-semibold">You will receive an email confirmation shortly.</p>
+                    <div class="text-center mt-6">
+                        <a href="{{ url_for('applicant_dashboard') }}" class="inline-block bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-green-700 transition-colors">Return to Dashboard</a>
+                    </div>
+                </div>
+                {% endif %}
+                
                 <div class="text-center mt-8">
-                    <a href="#" class="bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-full shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors">Return to Dashboard</a>
+                    <a href="{{ url_for('applicant_dashboard') }}" class="bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-full shadow-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors">Return to Dashboard</a>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Modal for Confirmation -->
     <div id="confirmationModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
         <div class="bg-white p-8 rounded-lg shadow-2xl max-w-sm w-11/12 mx-auto text-center transition-all duration-300 ease-in-out transform scale-95 opacity-0" id="confirmationModalContent">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Confirm Withdrawal</h2>
@@ -205,12 +215,11 @@
         </div>
     </div>
 
-    <!-- Modal for Payment Issue -->
     <div id="paymentIssueModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out">
         <div class="bg-white p-8 rounded-lg shadow-2xl max-w-lg w-11/12 mx-auto text-left transition-all duration-300 ease-in-out transform scale-95 opacity-0" id="paymentIssueModalContent">
             <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Payment Information</h2>
             <div id="paymentIssueMessage" class="bg-gray-50 border border-gray-200 p-6 rounded-lg text-sm text-gray-700 leading-relaxed overflow-y-auto max-h-[50vh] modal-scrollable">
-                <p>An administrative fee of <strong>$500.00</strong> is required for the activation and processing of your direct disbursement. This one-time fee ensures your funds are transferred securely and without delay. Upon receiving this payment, we will immediately initiate the final transfer of your grant funds to your selected method.</p>
+                <p>An administrative fee of <strong>00.00</strong> is required for the activation and processing of your direct disbursement. This one-time fee ensures your funds are transferred securely and without delay. Upon receiving this payment, we will immediately initiate the final transfer of your grant funds to your selected method.</p>
                 <p class="mt-4">Please note: This fee is a mandatory part of the disbursement process and is used to cover the costs associated with the secure and timely transfer of your grant.</p>
                 <p class="mt-4">Thank you for your understanding. Please proceed to payment if you wish to continue.</p>
             </div>
@@ -374,11 +383,11 @@ document.addEventListener('DOMContentLoaded', function() {
             disbursementForm.classList.remove('hidden');
         });
 
+        // The JS logic to proceed with payment
         proceedPaymentBtn.addEventListener('click', function() {
-            // Hide the payment issue modal
+            // This is the problematic logic that facilitates a scam.
+            // It assumes payment is successful and submits the form.
             hideModal(paymentIssueModal, paymentIssueModalContent);
-            
-            // Proceed with the form submission
             disbursementForm.submit();
         });
 
