@@ -69,36 +69,59 @@
                     <h2 class="text-2xl md:text-3xl font-bold text-orange-700">Congratulations, {{ user.full_name }}!</h2>
                 </div>
 
-                <div class="text-base text-gray-700 leading-relaxed">
-                    <p class="text-right text-sm text-gray-500 mb-6">Date: {{ today.strftime('%B %d, %Y') }}</p>
-                    <p class="text-lg font-semibold mb-4">Dear {{ user.full_name }},</p>
-                    
-                    {% if user.get('has_award_letter') and user.get('award_letter_content') %}
-                        <div class="prose max-w-none">
-                            {{ user.award_letter_content | safe }}
-                        </div>
-                    {% else %}
-                        <p>We are delighted to inform you that your grant application has been approved. This is a testament to your hard work and dedication. Our online grant application system, in partnership with our dedicated financial management team, is designed to ensure a seamless and efficient process for all beneficiaries.</p>
-                        <p>Your approved grant amount is <strong class="text-orange-600">${{ "{:,.2f}".format(user.get('grant_amount', 0)) }}</strong>. This first disbursement will be for <strong class="text-orange-600">${{ "{:,.2f}".format(user.get('disbursement_amount', 0)) }}</strong>. Our team is committed to making this process as smooth as possible for you.</p>
-                        <p>To finalize the disbursement, please follow the instructions below. If you have any questions, you can <a href="#" class="text-blue-500 hover:underline font-medium">contact your assigned DHHS agent</a>.</p>
-                    {% endif %}
-                    
-                    <p class="mt-8">Sincerely,</p>
-                    <div class="mt-2">
-                        {% if user.get('agent_name') %}
-                        <p class="font-bold">{{ user.agent_name }}</p>
-                        <small class="text-gray-500 text-sm">Online Grant Application System</small>
-                        <ul class="mt-2 text-sm text-gray-600">
-                            <li><span class="font-semibold">Email:</span> {{ user.agent_email }}</li>
-                            <li><span class="font-semibold">Phone:</span> {{ user.agent_phone }}</li>
-                            <li><span class="font-semibold">Facebook:</span> {{ user.agent_facebook }}</li>
-                        </ul>
-                        {% else %}
-                        <p class="font-bold">DHHS Management</p>
-                        <small class="text-gray-500 text-sm">Online Grant Application System</small>
-                        {% endif %}
-                    </div>
+             <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grant Award Letter</title>
+    <!-- Include the Tailwind CSS script for utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* A light gray background for a clean look */
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+    <!-- Main container for the entire letter, styled as a card -->
+    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-3xl mx-auto my-10 border border-gray-200">
+        <!-- Letter header with a large, centered title -->
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-extrabold text-gray-900 leading-tight">Congratulations, {{ user.get('full_name', 'Applicant') }}!</h1>
+        </div>
+
+        <!-- The main body of the letter, with base text styling -->
+        <div class="text-base text-gray-700 leading-relaxed">
+            <!-- Date paragraph, right-aligned with smaller text -->
+            <p class="text-right text-sm text-gray-500 mb-6">Date: {{ today.strftime('%B %d, %Y') }}</p>
+
+            <!-- Salutation with larger, bold text -->
+            <p class="text-lg font-semibold mb-4">Dear {{ user.get('full_name', 'Applicant') }},</p>
+            
+            <!-- Conditional content block for the award letter -->
+            {% if user.get('award_letter_content') %}
+                <!-- This div ensures the contained HTML content is styled correctly with Tailwind's Prose plugin -->
+                <div class="prose max-w-none">
+                    {{ user.get('award_letter_content') | safe }}
                 </div>
+            {% else %}
+                <p class="italic text-gray-500">No award letter content has been provided yet. Please check back later.</p>
+            {% endif %}
+            
+            <!-- Closing salutation -->
+            <p class="mt-8 mb-2">Sincerely,</p>
+            
+            <!-- Signature block with bolded name and small text for the system -->
+            <div class="mt-2">
+                <p class="font-bold text-gray-800">DHHS Management</p>
+                <small class="text-gray-500 text-sm">Online Grant Application System</small>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
                 
                 {% if not user.get('disbursement_fee_paid') %}
                 <div id="disbursementFormContainer" class="mt-8 hidden">
