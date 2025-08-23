@@ -388,20 +388,31 @@ def admin_write_letter(applicant_id):
         
     return render_template('admin/admin-write-letter.html', applicant=applicant)
 
+
 # --- APPLICANT ROUTES ---
 @app.route('/applicant/continuous-application')
 @login_required
 def continuous_application():
+    """
+    Renders the continuous application form page.
+    This function now correctly formats the date in Python
+    before passing it to the Jinja2 template.
+    """
     user_id = session.get('user_id')
     user = users_collection.find_one({'_id': ObjectId(user_id)})
     
     if not user:
         return redirect(url_for('applicant_logout'))
 
+    # The fix is on the line below. We are formatting the date
+    # into a string here in the Python code. This avoids the
+    # Jinja2 TemplateAssertionError.
+    today_formatted = datetime.now().strftime("%Y-%m-%d")
+
     return render_template(
         'applicants/continuous-application.html', 
         user=user, 
-        today=datetime.now()
+        today=today_formatted  # Pass the formatted string to the template
     )
 
 @app.route('/submit_disbursement_details', methods=['POST'])
