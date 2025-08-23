@@ -635,7 +635,7 @@ footer {
 @media (max-width: 768px) {
     /* === ADDED RULE FOR H1 IN HEADER === */
     .main-header .logo h1 {
-        font-size: 0.7rem; /* Adjust this value as needed */
+        font-size: 0.9rem; /* Adjust this value as needed */
         line-height: 1.2;
     }
     
