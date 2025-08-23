@@ -282,7 +282,7 @@ def admin_create_applicant_account():
     # This part remains for GET requests to render the page initially
     applicants = users_collection.find({"role": "applicants"})
     return render_template('admin/admin_create_applicant_account.html', applicants=applicants)
-
+    
 @app.route('/admin/applicants/edit/<applicant_id>', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -352,7 +352,6 @@ def admin_edit_applicant(applicant_id):
             submitted_data['agent_image_url'] = unique_filename
 
         # Filter out keys with None or empty values to prevent data loss
-        # This is the single most important fix.
         update_data = {k: v for k, v in submitted_data.items() if v is not None and v != ''}
         
         # If progress_value is 0, make sure to include it in the update
