@@ -5,92 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='admin/style.css') }}">
-    <style>
-        .login-container {
-            /* Styles for the main container */
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .login-container h2 {
-            text-align: center;
-            color: #333;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box; /* Ensures padding doesn't affect total width */
-        }
-        
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .error-message {
-            color: #dc3545;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .success-message {
-            color: #28a745;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        
-        .forgot-password-link {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            color: #007bff;
-            text-decoration: none;
-        }
-        
-        .forgot-password-link:hover {
-            text-decoration: underline;
-        }
-    </style>
 </head>
 <body>
     <div class="login-container">
         <h2>Admin Login</h2>
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <div class="flashes">
-                    {% for category, message in messages %}
-                        <p class="alert alert-{{ category }}">{{ message }}</p>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        {% endwith %}
         {% if error %}
             <p class="error-message">{{ error }}</p>
         {% endif %}
@@ -106,7 +24,6 @@
             </div>
             <button type="submit">Login</button>
         </form>
-        <a href="{{ url_for('admin_forgot_password') }}" class="forgot-password-link">Forgot Password?</a>
     </div>
 </body>
 </html>
