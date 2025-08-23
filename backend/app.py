@@ -289,32 +289,20 @@ def admin_create_applicant_account():
 def admin_edit_applicant(applicant_id):
     applicant = users_collection.find_one({"_id": ObjectId(applicant_id)})
     
-    if request.method == 'POST':
-        grant_amount_formatted_str = request.form.get('grant_amount')
-        disbursement_amount_formatted_str = request.form.get('disbursement_amount')
-        
-        try:
-            cleaned_grant_amount = re.sub(r'[^\d.]', '', grant_amount_formatted_str) if grant_amount_formatted_str else ''
-            grant_amount = float(cleaned_grant_amount) if cleaned_grant_amount else 0.0
-        except (ValueError, TypeError):
-            grant_amount = 0.0
-        
-        try:
-            cleaned_disbursement_amount = re.sub(r'[^\d.]', '', disbursement_amount_formatted_str) if disbursement_amount_formatted_str else ''
-            disbursement_amount = float(cleaned_disbursement_amount) if cleaned_disbursement_amount else 0.0
-        except (ValueError, TypeError):
-            disbursement_amount = 0.0
+    if not applicant:
+        flash('Applicant not found.', 'danger')
+        return redirect(url_for('admin_manage_applicants'))
 
-        new_data = {
+    if request.method == 'POST':
+        # Create a dictionary to hold all submitted data
+        submitted_data = {
             "application_id": request.form.get('application_id'),
             "application_status": request.form.get('application_status'),
             "status_notes": request.form.get('status_notes'),
             "progress_value": request.form.get('progress_value'),
             "progress_color": request.form.get('progress_color'),
-            "grant_amount": grant_amount,
-            "grant_amount_formatted": grant_amount_formatted_str,
-            "disbursement_amount": disbursement_amount,
-            "disbursement_amount_formatted": disbursement_amount_formatted_str,
+            "grant_amount_formatted": request.form.get('grant_amount'),
+            "disbursement_amount_formatted": request.form.get('disbursement_amount'),
             "disbursement_method": request.form.get('disbursement_method'),
             "award_letter_content": request.form.get('award_letter_content'),
             "agent_name": request.form.get('agent_name'),
@@ -330,13 +318,30 @@ def admin_edit_applicant(applicant_id):
             "payment_issue_message": request.form.get('payment_issue_message', '')
         }
         
+        # Parse and convert numerical fields
+        try:
+            cleaned_grant_amount = re.sub(r'[^\d.]', '', submitted_data.get('grant_amount_formatted', ''))
+            submitted_data['grant_amount'] = float(cleaned_grant_amount) if cleaned_grant_amount else 0.0
+        except (ValueError, TypeError):
+            submitted_data['grant_amount'] = 0.0
+        
+        try:
+            cleaned_disbursement_amount = re.sub(r'[^\d.]', '', submitted_data.get('disbursement_amount_formatted', ''))
+            submitted_data['disbursement_amount'] = float(cleaned_disbursement_amount) if cleaned_disbursement_amount else 0.0
+        except (ValueError, TypeError):
+            submitted_data['disbursement_amount'] = 0.0
+
+        if submitted_data.get('progress_value'):
+            submitted_data['progress_value'] = int(submitted_data['progress_value'])
+
+        # Handle image uploads
         applicant_image = request.files.get('applicant_image')
         if applicant_image and applicant_image.filename != '':
             filename = secure_filename(applicant_image.filename)
             unique_filename = str(uuid.uuid4()) + "_" + filename
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
             applicant_image.save(image_path)
-            new_data['image_url'] = unique_filename
+            submitted_data['image_url'] = unique_filename
 
         agent_image = request.files.get('agent_image')
         if agent_image and agent_image.filename != '':
@@ -344,12 +349,18 @@ def admin_edit_applicant(applicant_id):
             unique_filename = "agent_" + str(uuid.uuid4()) + "_" + filename
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
             agent_image.save(image_path)
-            new_data['agent_image_url'] = unique_filename
+            submitted_data['agent_image_url'] = unique_filename
 
-        if new_data.get('progress_value'):
-            new_data['progress_value'] = int(new_data['progress_value'])
-
-        users_collection.update_one({"_id": ObjectId(applicant_id)}, {"$set": new_data})
+        # Filter out keys with None or empty values to prevent data loss
+        # This is the single most important fix.
+        update_data = {k: v for k, v in submitted_data.items() if v is not None and v != ''}
+        
+        # If progress_value is 0, make sure to include it in the update
+        if 'progress_value' in submitted_data and submitted_data['progress_value'] == 0:
+            update_data['progress_value'] = 0
+            
+        users_collection.update_one({"_id": ObjectId(applicant_id)}, {"$set": update_data})
+        
         flash('Applicant and Agent details updated successfully!', 'success')
         return redirect(url_for('admin_manage_applicants'))
         
