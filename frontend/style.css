@@ -205,12 +205,12 @@ p {
     margin-bottom: 1rem;
 }
 
-.how-it-works > p {
+.how-it-works p {
     font-size: 1.8rem;
-    color: var(--dark-gray);
+    color: #333; /* Adjusted to a darker color for better contrast */
     max-width: 800px;
     margin: 0 auto 3rem auto;
-    font-weight: 800;
+    font-weight: 700; /* Made the font bolder */
 }
 
 .funding-types {
@@ -631,9 +631,14 @@ footer {
     line-height: 1.4;
     color: var(--medium-gray);
 }
-
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
+    /* === ADDED RULE FOR H1 IN HEADER === */
+    .main-header .logo h1 {
+        font-size: 0.7rem; /* Adjust this value as needed */
+        line-height: 1.2;
+    }
+    
     .hero-section .container,
     .grant-content,
     .contact-details,
