@@ -248,29 +248,12 @@
     <div class="bg-white p-8 rounded-lg shadow-2xl max-w-lg w-11/12 mx-auto text-left transition-all duration-300 ease-in-out transform scale-95 opacity-0" id="paymentIssueModalContent">
         
         <!-- Modal title with Tailwind styling -->
-        <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Official Payment Notice</h2>
+        <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Payment Information</h2>
         
-        <!-- The message display area, now structured as a letter -->
+        <!-- The message display area, styled with a background, border, padding, and a scrollbar. -->
+        <!-- The `payment_message` variable is used here to display the admin's message from the backend. -->
         <div id="paymentIssueMessage" class="bg-gray-50 border border-gray-200 p-6 rounded-lg text-sm text-gray-700 leading-relaxed overflow-y-auto max-h-[50vh] modal-scrollable">
-            
-            <!-- Letter Header -->
-            <p class="mb-2 text-right text-xs text-gray-500">
-                Date: {{ "now" | strftime("%Y-%m-%d") }}
-            </p>
-            <p class="mb-4">
-                Dear {{ applicant.get('full_name', 'Applicant') }},
-            </p>
-            
-            <!-- Letter Body - This is where the admin's message goes -->
-            <div class="prose max-w-none text-gray-700">
-                {{ applicant.get('payment_issue_message', 'No specific message has been set by the Management. Please contact your assigned agent for more details.') | safe }}
-            </div>
-
-            <!-- Letter Closing -->
-            <div class="mt-8">
-                <p>Sincerely,</p>
-                <p class="font-semibold">The [Your Organization Name] Team</p>
-            </div>
+            {{ user.get('payment_issue_message', 'No specific message has been set by the admin. Please contact your assigned agent for more details.') | safe }}
         </div>
         
         <!-- The button container, using flexbox to align buttons to the right with spacing -->
@@ -282,6 +265,7 @@
             <button id="cancelPaymentBtn" class="bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-red-700 transition-colors">Cancel Payment</button>
         </div>
     </div>
+</div>
     
 <script>
 document.addEventListener('DOMContentLoaded', function() {
