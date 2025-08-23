@@ -221,15 +221,203 @@ def admin_login():
         user = users_collection.find_one({"username": username})
 
         if user and check_password_hash(user['password_hash'], password) and user['role'] == 'admins':
-            session['user_id'] = str(user['_id'])
-            session['role'] = user['role']
-            session['username'] = user['username']
-            return redirect(url_for('admin_dashboard'))
+            # Authentication successful, now initiate 2FA
+            session['temp_user_id'] = str(user['_id'])
+            
+            # Generate and send 2FA code
+            code = ''.join(random.choices(string.digits, k=6))
+            two_factor_codes.insert_one({
+                "user_id": user['_id'],
+                "code": code,
+                "created_at": datetime.utcnow()
+            })
+            
+            # Email content
+            subject = "PCH Funding - Two-Factor Authentication Code"
+            html_body = f"""
+            <html>
+            <body>
+                <p>Hello {user.get('username', 'Admin')},</p>
+                <p>Your two-factor authentication code is:</p>
+                <h3>{code}</h3>
+                <p>This code is valid for 5 minutes. Do not share it with anyone.</p>
+                <p>Thank you,</p>
+                <p>DHHS Funding Team</p>
+            </body>
+            </html>
+            """
+            text_body = f"Hello {user.get('username', 'Admin')},\n\n" \
+                        f"Your two-factor authentication code is: {code}\n\n" \
+                        f"This code is valid for 5 minutes. Do not share it with anyone.\n\n" \
+                        f"Thank you,\n" \
+                        f"PCH Funding Team"
+            
+            send_user_message_email(user['email'], subject, html_body, text_body)
+            flash('A 2FA code has been sent to your email. Please enter it to log in.', 'info')
+            
+            return redirect(url_for('admin_2fa'))
         else:
             error = 'Invalid credentials'
             return render_template('admin/admin_login.html', form=form, error=error)
 
     return render_template('admin/admin_login.html', form=form)
+
+
+@app.route('/admin/2fa', methods=['GET', 'POST'])
+def admin_2fa():
+    if 'temp_user_id' not in session:
+        flash('Please log in first.', 'danger')
+        return redirect(url_for('admin_login'))
+        
+    if request.method == 'POST':
+        code = request.form.get('code')
+        user_id = session.get('temp_user_id')
+        
+        if not code:
+            flash('Please enter the 2FA code.', 'danger')
+            return render_template('admin/admin_2fa.html')
+
+        # Check for a valid, non-expired code for the user
+        valid_code = two_factor_codes.find_one({
+            "user_id": ObjectId(user_id),
+            "code": code
+        })
+
+        if valid_code:
+            # Code is correct, finalize login
+            user = users_collection.find_one({"_id": ObjectId(user_id)})
+            session['user_id'] = str(user['_id'])
+            session['role'] = user['role']
+            session['username'] = user['username']
+            session.pop('temp_user_id', None) # Clean up temp session variable
+            
+            # Delete the code to prevent reuse
+            two_factor_codes.delete_one({"_id": valid_code['_id']})
+            
+            flash('Login successful!', 'success')
+            return redirect(url_for('admin_dashboard'))
+        else:
+            flash('Invalid or expired 2FA code.', 'danger')
+            return render_template('admin/admin_2fa.html')
+            
+    return render_template('admin/admin_2fa.html')
+
+@app.route('/admin/change-password', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def admin_change_password():
+    if request.method == 'POST':
+        user_id = session.get('user_id')
+        old_password = request.form.get('old_password')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        
+        user = users_collection.find_one({"_id": ObjectId(user_id)})
+        
+        if not user or not check_password_hash(user['password_hash'], old_password):
+            flash('Invalid old password.', 'danger')
+            return render_template('admin/admin_change_password.html')
+            
+        if new_password != confirm_password:
+            flash('New passwords do not match.', 'danger')
+            return render_template('admin/admin_change_password.html')
+            
+        hashed_password = generate_password_hash(new_password)
+        
+        users_collection.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {"password_hash": hashed_password}}
+        )
+        
+        flash('Password updated successfully!', 'success')
+        return redirect(url_for('admin_dashboard'))
+        
+    return render_template('admin/admin_change_password.html')
+
+
+@app.route('/admin/forgot-password', methods=['GET', 'POST'])
+def admin_forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = users_collection.find_one({"email": email, "role": "admins"})
+
+        if user:
+            # Generate a unique, short-lived token
+            token = str(uuid.uuid4())
+            expires_at = datetime.utcnow() + timedelta(minutes=60) # Token expires in 60 minutes
+            
+            # Save the token to the database
+            password_reset_tokens.insert_one({
+                "token": token,
+                "user_id": user['_id'],
+                "created_at": datetime.utcnow()
+            })
+            
+            # Create the reset link
+            reset_url = url_for('admin_reset_password', token=token, _external=True)
+
+            # Email content
+            subject = "DHHS Funding - Password Reset Request"
+            html_body = f"""
+            <html>
+            <body>
+                <p>Hello {user.get('username', 'Admin')},</p>
+                <p>You have requested to reset your password. Click the link below to set a new password:</p>
+                <p><a href="{reset_url}">Reset My Password</a></p>
+                <p>This link is valid for 60 minutes. If you did not request a password reset, please ignore this email.</p>
+                <p>Thank you,</p>
+                <p>DHHS Funding Team</p>
+            </body>
+            </html>
+            """
+            text_body = f"Hello {user.get('username', 'Admin')},\n\n" \
+                        f"You have requested to reset your password. Click the link below to set a new password:\n\n" \
+                        f"{reset_url}\n\n" \
+                        f"This link is valid for 60 minutes. If you did not request a password reset, please ignore this email.\n\n" \
+                        f"Thank you,\n" \
+                        f"PCH Funding Team"
+            
+            send_user_message_email(email, subject, html_body, text_body)
+            flash('A password reset link has been sent to your email. It may take a few minutes to arrive.', 'success')
+            return redirect(url_for('admin_login'))
+        else:
+            flash('No account found with that email address.', 'danger')
+            return redirect(url_for('admin_forgot_password'))
+            
+    return render_template('admin/admin_forgot_password.html')
+
+@app.route('/admin/reset-password/<token>', methods=['GET', 'POST'])
+def admin_reset_password(token):
+    reset_request = password_reset_tokens.find_one({"token": token})
+
+    # Check if the token exists and is not expired (we use MongoDB's TTL index for expiration)
+    if not reset_request:
+        flash('Invalid or expired password reset link.', 'danger')
+        return redirect(url_for('admin_login'))
+    
+    if request.method == 'POST':
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+
+        if new_password != confirm_password:
+            flash('Passwords do not match.', 'danger')
+            return render_template('admin/admin_reset_password.html', token=token)
+            
+        hashed_password = generate_password_hash(new_password)
+        
+        # Update the user's password in the users_collection
+        users_collection.update_one(
+            {"_id": reset_request['user_id']},
+            {"$set": {"password_hash": hashed_password}}
+        )
+        
+        # Delete the token to prevent reuse
+        password_reset_tokens.delete_one({"_id": reset_request['_id']})
+        
+        flash('Your password has been reset successfully. You can now log in with your new password.', 'success')
+        return redirect(url_for('admin_login'))
+
+    return render_template('admin/admin_reset_password.html', token=token)
 
 
 @app.route('/admin/dashboard')
