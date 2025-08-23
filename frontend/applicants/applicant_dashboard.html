@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Applicant Dashboard</title>
-    <!-- Use Tailwind CSS for a modern, responsive design -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Use Inter font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -28,16 +26,18 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #64748b;
         }
+        /* Active link styling */
+        .active-link {
+            background-color: #3f51b5; /* A darker shade of the sidebar color */
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
 
     <div class="flex flex-col md:flex-row min-h-screen" id="dashboard-wrapper">
-        <!-- Sidebar -->
         <nav id="sidebar-wrapper" class="bg-[#1a237e] text-white p-6 md:p-8 flex-shrink-0 w-full md:w-64 transition-all duration-300 ease-in-out transform -translate-x-full md:translate-x-0 fixed md:relative h-full z-50">
             <div class="flex justify-between items-center mb-6 md:mb-8">
                 <h2 class="text-2xl font-bold">Dashboard</h2>
-                <!-- Mobile close button -->
                 <button id="sidebar-close" class="md:hidden text-white focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
@@ -47,129 +47,135 @@
                 <li><a href="#" id="profileLink" class="block py-3 px-4 rounded-lg font-semibold text-white/70 transition duration-200 hover:bg-white/10">My Profile</a></li>
                 <li><a href="#" id="messagesLink" class="block py-3 px-4 rounded-lg font-semibold text-white/70 transition duration-200 hover:bg-white/10">Messages</a></li>
                 <li><a href="#" id="helpCenterLink" class="block py-3 px-4 rounded-lg font-semibold text-white/70 transition duration-200 hover:bg-white/10">Help Center</a></li>
+                <li><a href="{{ url_for('applicant_logout') }}" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition duration-200">Logout</a></li>
             </ul>
         </nav>
 
-        <!-- Main Content -->
         <div class="flex-grow p-4 md:p-8 overflow-y-auto">
             <header class="flex justify-between items-center pb-4 mb-6 border-b border-gray-200">
                 <h1 class="text-2xl md:text-3xl font-bold text-blue-600">Applicant Dashboard</h1>
-                <!-- Mobile menu button -->
                 <button id="sidebar-open" class="md:hidden text-gray-800 focus:outline-none">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                 </button>
-                <a href="#" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition duration-200">Logout</a>
+                <a href="{{ url_for('applicant_logout') }}" class="md:block hidden bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition duration-200">Logout</a>
             </header>
 
-            <!-- Welcome Modal -->
+            {% if user.get('application_status') == 'Approved' %}
             <div id="welcomeModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-[100]">
                 <div class="bg-white p-8 rounded-2xl shadow-xl max-w-lg text-center mx-4">
-                    <h2 class="text-3xl font-bold text-blue-600 mb-3">Welcome, <span class="applicant-name">Applicant</span>!</h2>
+                    <h2 class="text-3xl font-bold text-blue-600 mb-3">Welcome, <span class="applicant-name">{{ user.get('full_name') }}</span>!</h2>
                     <p class="text-lg text-gray-700 mb-6">Congratulations! We are thrilled to tell you that your grant application has been approved by the Department of Human Health and Services!</p>
                     <button id="proceedButton" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-blue-700 transition duration-200">Proceed to Dashboard</button>
                 </div>
             </div>
+            {% endif %}
 
-            <!-- Dashboard Section -->
-            <section id="dashboardSection" class="space-y-6 hidden">
-                <!-- Assigned Agent Card -->
+            <section id="dashboardSection" class="space-y-6 {% if user.get('application_status') == 'Approved' %}hidden{% endif %}">
+                {% if user.get('agent_name') %}
                 <div id="agent-card" class="bg-white p-6 rounded-2xl shadow-md border border-blue-500">
                     <div class="flex flex-col md:flex-row items-center text-center md:text-left">
-                        <img id="agent-image" src="" alt="Agent Profile Image" class="w-32 h-32 rounded-full object-cover mb-4 md:mb-0 md:mr-6">
+                        <img id="agent-image" src="{{ url_for('static', filename='uploads/' + user.agent_image_url) if user.get('agent_image_url') else 'https://placehold.co/120x120/E5E7EB/4B5563?text=Agent' }}" alt="Agent Profile Image" class="w-32 h-32 rounded-full object-cover mb-4 md:mb-0 md:mr-6">
                         <div>
                             <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Your Assigned Agent</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="text-left">
                                     <span class="block text-gray-500 font-semibold text-sm">Agent Name:</span>
-                                    <span id="agent-name" class="block text-gray-800 text-base">N/A</span>
+                                    <span id="agent-name" class="block text-gray-800 text-base">{{ user.get('agent_name', 'N/A') }}</span>
                                 </div>
                                 <div class="text-left">
                                     <span class="block text-gray-500 font-semibold text-sm">Email:</span>
-                                    <span id="agent-email" class="block text-gray-800 text-base">N/A</span>
+                                    <span id="agent-email" class="block text-gray-800 text-base">{{ user.get('agent_email', 'N/A') }}</span>
                                 </div>
                                 <div class="text-left">
                                     <span class="block text-gray-500 font-semibold text-sm">Phone:</span>
-                                    <span id="agent-phone" class="block text-gray-800 text-base">N/A</span>
+                                    <span id="agent-phone" class="block text-gray-800 text-base">{{ user.get('agent_phone', 'N/A') }}</span>
                                 </div>
                                 <div class="text-left">
                                     <span class="block text-gray-500 font-semibold text-sm">Facebook:</span>
-                                    <span id="agent-facebook" class="block text-gray-800 text-base">N/A</span>
+                                    <span id="agent-facebook" class="block text-gray-800 text-base">
+                                        {% if user.get('agent_facebook') %}
+                                            <a href="{{ user.agent_facebook }}" target="_blank" class="text-blue-500 hover:underline">Agent Facebook Page</a>
+                                        {% else %}
+                                            N/A
+                                        {% endif %}
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                {% endif %}
 
-                <!-- Application Status Card -->
                 <div class="bg-white p-6 rounded-2xl shadow-md">
                     <div class="text-center">
                         <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Application Status</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
                             <div>
                                 <span class="block text-gray-500 font-semibold text-sm">Application ID:</span>
-                                <span id="application-id" class="block text-gray-800 text-lg">N/A</span>
+                                <span id="application-id" class="block text-gray-800 text-lg">{{ user.get('application_id', 'N/A') }}</span>
                             </div>
                             <div>
                                 <span class="block text-gray-500 font-semibold text-sm">Current Status:</span>
-                                <span id="application-status" class="block text-lg font-bold">N/A</span>
+                                {% set status_class = 'text-green-500' if user.get('application_status') == 'Approved' else 'text-yellow-500' if user.get('application_status') == 'Pending' else 'text-red-500' %}
+                                <span id="application-status" class="block text-lg font-bold {{ status_class }}">{{ user.get('application_status', 'Pending') }}</span>
                             </div>
                             <div class="col-span-1 md:col-span-2">
                                 <span class="block text-gray-500 font-semibold text-sm">Status Notes:</span>
-                                <span id="status-notes" class="block text-gray-800 text-lg">N/A</span>
+                                <span id="status-notes" class="block text-gray-800 text-lg">{{ user.get('status_notes', 'N/A') }}</span>
                             </div>
                             <div class="col-span-1 md:col-span-2">
                                 <span class="block text-gray-500 font-semibold text-sm mb-2">Application Progress:</span>
                                 <div class="bg-gray-200 rounded-full h-4 relative">
-                                    <div id="progress-bar" class="bg-blue-500 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                                    {% set progress_color = '#22c55e' if user.get('progress_color') == 'green' else '#f59e0b' if user.get('progress_color') == 'yellow' else '#ef4444' if user.get('progress_color') == 'red' else '#3b82f6' %}
+                                    <div id="progress-bar" class="h-full rounded-full transition-all duration-500" style="width: {{ user.get('progress_value', 0) }}%; background-color: {{ progress_color }};"></div>
                                 </div>
-                                <div id="progress-text" class="text-right text-gray-600 mt-2 text-sm">0%</div>
+                                <div id="progress-text" class="text-right text-gray-600 mt-2 text-sm">{{ user.get('progress_value', 0) }}%</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Approved Grant Amount Card -->
+                {% if user.get('has_grant_award') %}
                 <div id="grant-amount-card" class="bg-white p-6 rounded-2xl shadow-md border border-blue-500 text-center">
                     <h3 class="text-2xl font-bold text-gray-800 mb-2">Approved Grant Amount:</h3>
-                    <p id="grant-amount" class="text-5xl font-extrabold text-blue-600 mb-4"></p>
+                    <p id="grant-amount" class="text-5xl font-extrabold text-blue-600 mb-4">{{ user.get('grant_amount') }}</p>
                     <p class="text-lg text-gray-700 mb-6">Great News! Your grant application has been approved.</p>
-                    <a href="#" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-blue-700 transition duration-200">Proceed</a>
+                    <a href="{{ url_for('continuous_application') }}" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-blue-700 transition duration-200">Proceed</a>
                 </div>
+                {% endif %}
             </section>
 
-            <!-- Profile Section -->
             <section id="profileSection" class="space-y-6 hidden">
                 <div class="bg-white p-6 rounded-2xl shadow-md">
                     <div class="flex flex-col items-center text-center">
-                        <img id="profile-image" src="" alt="Profile Image" class="w-40 h-40 rounded-full object-cover mb-4">
-                        <h2 id="full-name" class="text-2xl font-bold text-gray-800 mb-4"></h2>
+                        <img id="profile-image" src="{{ url_for('static', filename='uploads/' + user.image_url) if user.get('image_url') else 'https://placehold.co/160x160/E5E7EB/4B5563?text=User' }}" alt="Profile Image" class="w-40 h-40 rounded-full object-cover mb-4">
+                        <h2 id="full-name" class="text-2xl font-bold text-gray-800 mb-4">{{ user.get('full_name', 'N/A') }}</h2>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-xl text-left">
                             <div>
                                 <span class="block text-gray-500 font-semibold text-sm">Email:</span>
-                                <span id="user-email" class="block text-gray-800 text-lg">N/A</span>
+                                <span id="user-email" class="block text-gray-800 text-lg">{{ user.get('email', 'N/A') }}</span>
                             </div>
                             <div>
                                 <span class="block text-gray-500 font-semibold text-sm">Phone Number:</span>
-                                <span id="user-phone" class="block text-gray-800 text-lg">N/A</span>
+                                <span id="user-phone" class="block text-gray-800 text-lg">{{ user.get('phone', 'N/A') }}</span>
                             </div>
                             <div class="col-span-1 md:col-span-2">
                                 <span class="block text-gray-500 font-semibold text-sm">Home Address:</span>
-                                <span id="user-address" class="block text-gray-800 text-lg">N/A</span>
+                                <span id="user-address" class="block text-gray-800 text-lg">{{ user.get('address', 'N/A') }}</span>
                             </div>
                             <div>
                                 <span class="block text-gray-500 font-semibold text-sm">Occupation:</span>
-                                <span id="user-occupation" class="block text-gray-800 text-lg">N/A</span>
+                                <span id="user-occupation" class="block text-gray-800 text-lg">{{ user.get('business', 'N/A') }}</span>
                             </div>
                             <div>
                                 <span class="block text-gray-500 font-semibold text-sm">Date of Birth:</span>
-                                <span id="user-dob" class="block text-gray-800 text-lg">N/A</span>
+                                <span id="user-dob" class="block text-gray-800 text-lg">{{ user.get('date_of_birth', 'N/A') }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- Messages Section -->
             <section id="messagesSection" class="space-y-6 hidden">
                 <div class="bg-white p-6 rounded-2xl shadow-md text-center">
                     <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Messages</h3>
@@ -177,7 +183,6 @@
                 </div>
             </section>
 
-            <!-- Help Center Section -->
             <section id="helpCenterSection" class="space-y-6 hidden">
                 <div class="bg-white p-6 rounded-2xl shadow-md">
                     <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Help Center</h3>
@@ -213,29 +218,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mock user data to simulate backend response
-            const userData = {
-                fullName: "Jane Doe",
-                email: "jane.doe@example.com",
-                phone: "(555) 123-4567",
-                address: "123 Main Street, Anytown, USA",
-                business: "Marketing Specialist",
-                dateOfBirth: "1988-05-20",
-                applicationId: "APP-987654",
-                applicationStatus: "Approved", // Can be 'Approved', 'Pending', or 'Declined'
-                statusNotes: "Your application has been reviewed and approved. Awaiting further documentation.",
-                progressValue: 100,
-                progressColor: '#22c55e', // Tailwind's green-500
-                grantAmount: "$50,000",
-                agentName: "John Smith",
-                agentEmail: "john.smith@example.com",
-                agentPhone: "(555) 987-6543",
-                agentFacebook: "https://www.facebook.com/johnsmith",
-            };
-
-            // Set up DOM element references
-            const proceedButton = document.getElementById('proceedButton');
-            const welcomeModal = document.getElementById('welcomeModal');
             const sections = {
                 dashboard: document.getElementById('dashboardSection'),
                 profile: document.getElementById('profileSection'),
@@ -246,78 +228,35 @@
             const sidebarWrapper = document.getElementById('sidebar-wrapper');
             const sidebarOpen = document.getElementById('sidebar-open');
             const sidebarClose = document.getElementById('sidebar-close');
+            const welcomeModal = document.getElementById('welcomeModal');
+            const proceedButton = document.getElementById('proceedButton');
 
-            // Function to populate data from the mock object
-            function populateData(user) {
-                // Populate applicant name in modal
-                document.querySelector('.applicant-name').textContent = user.fullName;
-                // Populate dashboard
-                const statusElement = document.getElementById('application-status');
-                statusElement.textContent = user.applicationStatus;
-                if (user.applicationStatus === 'Approved') {
-                    statusElement.classList.add('text-green-500');
-                    document.getElementById('grant-amount-card').style.display = 'block';
-                    document.getElementById('progress-bar').style.backgroundColor = '#22c55e'; // green
-                } else if (user.applicationStatus === 'Pending') {
-                    statusElement.classList.add('text-yellow-500');
-                    document.getElementById('grant-amount-card').style.display = 'none';
-                    document.getElementById('progress-bar').style.backgroundColor = '#f59e0b'; // yellow
-                } else if (user.applicationStatus === 'Declined') {
-                    statusElement.classList.add('text-red-500');
-                    document.getElementById('grant-amount-card').style.display = 'none';
-                    document.getElementById('progress-bar').style.backgroundColor = '#ef4444'; // red
-                }
-
-                document.getElementById('application-id').textContent = user.applicationId;
-                document.getElementById('status-notes').textContent = user.statusNotes;
-                
-                const progressBar = document.getElementById('progress-bar');
-                progressBar.style.width = user.progressValue + '%';
-                document.getElementById('progress-text').textContent = user.progressValue + '%';
-                document.getElementById('grant-amount').textContent = user.grantAmount;
-
-                // Populate agent details
-                if (user.agentName) {
-                    document.getElementById('agent-card').style.display = 'block';
-                    document.getElementById('agent-name').textContent = user.agentName;
-                    document.getElementById('agent-email').textContent = user.agentEmail;
-                    document.getElementById('agent-phone').textContent = user.agentPhone;
-                    const facebookElement = document.getElementById('agent-facebook');
-                    if (user.agentFacebook) {
-                        facebookElement.innerHTML = `<a href="${user.agentFacebook}" target="_blank" class="text-blue-500 hover:underline">Agent Facebook Page</a>`;
-                    } else {
-                        facebookElement.textContent = 'N/A';
-                    }
-                    // Placeholder images for agent and user
-                    document.getElementById('agent-image').src = `https://placehold.co/120x120/E5E7EB/4B5563?text=Agent`;
-                } else {
-                    document.getElementById('agent-card').style.display = 'none';
-                }
-
-                // Populate profile section
-                document.getElementById('full-name').textContent = user.fullName;
-                document.getElementById('user-email').textContent = user.email;
-                document.getElementById('user-phone').textContent = user.phone;
-                document.getElementById('user-address').textContent = user.address;
-                document.getElementById('user-occupation').textContent = user.business;
-                document.getElementById('user-dob').textContent = user.dateOfBirth;
-                document.getElementById('profile-image').src = `https://placehold.co/160x160/E5E7EB/4B5563?text=User`;
+            // Handle initial view state based on the presence of the welcome modal
+            if (welcomeModal) {
+                // If the modal exists, show it and hide the main dashboard content
+                sections.dashboard.classList.add('hidden');
+            } else {
+                // If no modal, show the dashboard by default
+                sections.dashboard.classList.remove('hidden');
             }
-            
-            // Initial call to populate data
-            populateData(userData);
 
             // Event listener for the "Proceed" button on the welcome modal
-            proceedButton.addEventListener('click', function() {
-                welcomeModal.classList.add('hidden');
-                sections.dashboard.classList.remove('hidden');
-            });
+            if (proceedButton) {
+                proceedButton.addEventListener('click', function() {
+                    welcomeModal.classList.add('hidden');
+                    sections.dashboard.classList.remove('hidden');
+                });
+            }
 
             // Event listener for sidebar links
             sidebarLinks.forEach(link => {
                 link.addEventListener('click', function(event) {
-                    event.preventDefault();
-                    
+                    // Prevent the default link behavior for internal navigation
+                    const targetId = this.id;
+                    if (targetId.endsWith('Link')) {
+                        event.preventDefault();
+                    }
+
                     // Remove active class from all links and add to the clicked one
                     sidebarLinks.forEach(item => item.classList.remove('active-link'));
                     link.classList.add('active-link');
@@ -351,12 +290,6 @@
             sidebarClose.addEventListener('click', function() {
                 sidebarWrapper.classList.add('-translate-x-full');
             });
-
-            // Initial state: hide main content until modal is dismissed
-            sections.dashboard.classList.add('hidden');
-            sections.profile.classList.add('hidden');
-            sections.messages.classList.add('hidden');
-            sections.helpCenter.classList.add('hidden');
         });
     </script>
 </body>
