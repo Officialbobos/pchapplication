@@ -393,23 +393,18 @@ def admin_write_letter(applicant_id):
 @app.route('/applicant/continuous-application')
 @login_required
 def continuous_application():
-    """
-    Renders the continuous application form page.
-    """
     user_id = session.get('user_id')
     user = users_collection.find_one({'_id': ObjectId(user_id)})
-
+    
     if not user:
         return redirect(url_for('applicant_logout'))
-
-    # The date formatting is correct.
-    today_formatted = datetime.now().strftime("%B %d, %Y")
 
     return render_template(
         'applicants/continuous-application.html', 
         user=user, 
-        today=today_formatted
+        today=datetime.now()
     )
+
 
 @app.route('/submit_disbursement_details', methods=['POST'])
 @login_required
