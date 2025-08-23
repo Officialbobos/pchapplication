@@ -638,6 +638,26 @@ def applicant_dashboard():
         session.clear()
         return redirect(url_for('applicant_login'))
 
+    # --- Start of the added code for formatting ---
+    # Check if 'grant_amount' exists in the user dictionary
+    if user.get('grant_amount'):
+        try:
+            # Convert the stored amount to a float
+            raw_amount = float(user['grant_amount'])
+            
+            # Format the number as a currency string with a dollar sign, commas, and two decimal places
+            # This is the modern and recommended way to format currency in Python
+            formatted_amount = f"${raw_amount:,.2f}"
+            
+            # Update the user dictionary with the new formatted string
+            user['grant_amount'] = formatted_amount
+            
+        except (ValueError, TypeError):
+            # If the value is not a number, set it to a default message
+            user['grant_amount'] = "Amount not available"
+    # --- End of the added code ---
+
+    # The template will now receive the user object with the formatted grant_amount
     return render_template('applicants/applicant_dashboard.html', user=user)
 
 @app.route('/applicant/logout')
