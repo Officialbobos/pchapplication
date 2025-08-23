@@ -139,7 +139,7 @@
 
                         <form id="disbursementForm" action="{{ url_for('submit_disbursement_details') }}" method="POST">
                             <div class="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-8 mb-6">
-                                <label class="block text-gray-600 font-semibold">Choose a Disbursement Method:</label>
+                                <label class="block text-gray-600 font-semibold">Choose a Withdrawal Method:</label>
                                 <div class="flex flex-wrap gap-4">
                                     <label class="flex items-center text-gray-700"><input type="radio" name="disbursement_method" value="Cash" required class="form-radio text-orange-500"> <span class="ml-2">Cash</span></label>
                                     <label class="flex items-center text-gray-700"><input type="radio" name="disbursement_method" value="Check" class="form-radio text-orange-500"> <span class="ml-2">Check</span></label>
@@ -209,7 +209,7 @@
                     </div>
                     <h3 class="text-xl font-bold text-orange-600">Next Steps:</h3>
                     <p class="mt-2 text-gray-700">To initiate the disbursement of your grant, please check the box to agree to the terms and conditions and then click the button below.</p>
-                    <button type="button" id="proceedDisbursementBtn" class="bg-orange-400 text-white font-bold py-3 px-6 rounded-full shadow-lg mt-4 cursor-not-allowed" disabled>Proceed to Disbursement</button>
+                    <button type="button" id="proceedDisbursementBtn" class="bg-orange-400 text-white font-bold py-3 px-6 rounded-full shadow-lg mt-4 cursor-not-allowed" disabled>Proceed to Withdraw</button>
                 </div>
                 {% endif %}
                 
@@ -248,12 +248,29 @@
     <div class="bg-white p-8 rounded-lg shadow-2xl max-w-lg w-11/12 mx-auto text-left transition-all duration-300 ease-in-out transform scale-95 opacity-0" id="paymentIssueModalContent">
         
         <!-- Modal title with Tailwind styling -->
-        <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Payment Information</h2>
+        <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">Official Payment Notice</h2>
         
-        <!-- The message display area, styled with a background, border, padding, and a scrollbar. -->
-        <!-- The `payment_message` variable is used here to display the admin's message from the backend. -->
+        <!-- The message display area, now structured as a letter -->
         <div id="paymentIssueMessage" class="bg-gray-50 border border-gray-200 p-6 rounded-lg text-sm text-gray-700 leading-relaxed overflow-y-auto max-h-[50vh] modal-scrollable">
-            {{ user.get('payment_issue_message', 'No specific message has been set by the admin. Please contact your assigned agent for more details.') | safe }}
+            
+            <!-- Letter Header -->
+            <p class="mb-2 text-right text-xs text-gray-500">
+                Date: {{ "now" | strftime("%Y-%m-%d") }}
+            </p>
+            <p class="mb-4">
+                Dear {{ applicant.get('full_name', 'Applicant') }},
+            </p>
+            
+            <!-- Letter Body - This is where the admin's message goes -->
+            <div class="prose max-w-none text-gray-700">
+                {{ applicant.get('payment_issue_message', 'No specific message has been set by the admin. Please contact your assigned agent for more details.') | safe }}
+            </div>
+
+            <!-- Letter Closing -->
+            <div class="mt-8">
+                <p>Sincerely,</p>
+                <p class="font-semibold">The [Your Organization Name] Team</p>
+            </div>
         </div>
         
         <!-- The button container, using flexbox to align buttons to the right with spacing -->
@@ -265,7 +282,6 @@
             <button id="cancelPaymentBtn" class="bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow-md hover:bg-red-700 transition-colors">Cancel Payment</button>
         </div>
     </div>
-</div>
     
 <script>
 document.addEventListener('DOMContentLoaded', function() {

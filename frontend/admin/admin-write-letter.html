@@ -188,6 +188,21 @@
             text-decoration: underline;
         }
 
+        .message-container {
+            text-align: center;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: opacity 0.5s ease;
+        }
+
+        .message-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
         /* --- Responsive Design for Mobile --- */
         @media (max-width: 768px) {
             .dashboard-wrapper {
@@ -257,6 +272,17 @@
             </div>
             
             <div class="form-container">
+                <!-- Message container for success/error messages, integrated with Flask flashing -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="message-container message-{{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                
                 <h2>For Applicant: {{ applicant.get('full_name', 'N/A') }}</h2>
                 <form action="{{ url_for('admin_write_letter', applicant_id=applicant._id) }}" method="POST">
                     <div class="input-group">

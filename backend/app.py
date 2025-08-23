@@ -282,12 +282,15 @@ def admin_create_applicant_account():
     # This part remains for GET requests to render the page initially
     applicants = users_collection.find({"role": "applicants"})
     return render_template('admin/admin_create_applicant_account.html', applicants=applicants)
-
 @app.route('/admin/applicants/edit/<applicant_id>', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def admin_edit_applicant(applicant_id):
     applicant = users_collection.find_one({"_id": ObjectId(applicant_id)})
+
+    if not applicant:
+        flash('Applicant not found.', 'danger')
+        return redirect(url_for('admin_manage_applicants'))
     
     if request.method == 'POST':
         grant_amount_formatted_str = request.form.get('grant_amount')
@@ -309,7 +312,7 @@ def admin_edit_applicant(applicant_id):
             "application_id": request.form.get('application_id'),
             "application_status": request.form.get('application_status'),
             "status_notes": request.form.get('status_notes'),
-            "progress_value": request.form.get('progress_value'),
+            "progress_value": int(request.form.get('progress_value', 0)), # Ensure this is an integer
             "progress_color": request.form.get('progress_color'),
             "grant_amount": grant_amount,
             "grant_amount_formatted": grant_amount_formatted_str,
@@ -330,14 +333,19 @@ def admin_edit_applicant(applicant_id):
             "payment_issue_message": request.form.get('payment_issue_message', '')
         }
         
-        applicant_image = request.files.get('applicant_image')
-        if applicant_image and applicant_image.filename != '':
-            filename = secure_filename(applicant_image.filename)
+        # --- Start of updated image upload code ---
+        # Handle applicant profile image upload
+        # NOTE: The name 'profile_image' must match the 'name' attribute in your HTML input field.
+        profile_image = request.files.get('profile_image')
+        if profile_image and profile_image.filename != '':
+            filename = secure_filename(profile_image.filename)
             unique_filename = str(uuid.uuid4()) + "_" + filename
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            applicant_image.save(image_path)
-            new_data['image_url'] = unique_filename
+            profile_image.save(image_path)
+            # Update the dictionary key to be consistent with the HTML
+            new_data['profile_image_url'] = unique_filename
 
+        # Handle agent image upload
         agent_image = request.files.get('agent_image')
         if agent_image and agent_image.filename != '':
             filename = secure_filename(agent_image.filename)
@@ -345,10 +353,8 @@ def admin_edit_applicant(applicant_id):
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
             agent_image.save(image_path)
             new_data['agent_image_url'] = unique_filename
-
-        if new_data.get('progress_value'):
-            new_data['progress_value'] = int(new_data['progress_value'])
-
+        # --- End of updated image upload code ---
+        
         users_collection.update_one({"_id": ObjectId(applicant_id)}, {"$set": new_data})
         flash('Applicant and Agent details updated successfully!', 'success')
         return redirect(url_for('admin_manage_applicants'))
