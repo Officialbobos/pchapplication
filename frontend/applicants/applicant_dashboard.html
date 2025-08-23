@@ -4,102 +4,179 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Applicant Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/images/pch.png') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: #f0f2f5;
         }
-        /* A custom scrollbar for better aesthetics */
-        ::-webkit-scrollbar {
-            width: 8px;
+        #dashboard-wrapper {
+            display: flex;
+            min-height: 100vh;
         }
-        ::-webkit-scrollbar-track {
-            background: #e2e8f0;
-            border-radius: 10px;
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background-color: #1a237e !important; /* Dark Blue Background */
+            color: #ffffff;
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(0);
         }
-        ::-webkit-scrollbar-thumb {
-            background: #94a3b8;
-            border-radius: 10px;
+        /* Mobile sidebar styles */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                position: fixed;
+                height: 100vh;
+                z-index: 1050;
+            }
+            .sidebar.toggled {
+                transform: translateX(0);
+            }
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
+        .sidebar .list-group-item-action {
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.2s;
         }
-        /* Active link styling */
-        .active-link {
-            background-color: #3f51b5; /* A darker shade of the sidebar color */
+        .sidebar .list-group-item-action:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .list-group-item-action.active {
+            color: #ffffff;
+            background-color: #0d6efd; /* Active link color */
+        }
+        .main-content {
+            background-color: #f0f2f5;
+            padding: 2rem;
+            flex-grow: 1;
+        }
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1040;
+        }
+        .modal-dialog {
+            max-width: 500px;
+        }
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 1rem;
+        }
+        .status-approved {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .status-declined {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .info-label {
+            display: block;
+            color: #6c757d;
+            margin-bottom: 0.25rem;
+        }
+        .info-value {
+            font-size: 1.1rem;
+            color: #343a40;
+        }
+        .card {
+            border-radius: 1rem;
+        }
+        .card-body.p-4 {
+            padding: 1.5rem !important;
+        }
+        
+        /* Mobile Specific Styles */
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 1rem;
+            }
+            .card-body.p-4 {
+                padding: 1rem !important;
+            }
+            .card-title, h1 {
+                font-size: 1.5rem !important;
+            }
+            .fs-1 {
+                font-size: 2rem !important;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body>
 
-    <div class="flex flex-col md:flex-row min-h-screen" id="dashboard-wrapper">
-        <nav id="sidebar-wrapper" class="bg-[#1a237e] text-white p-6 md:p-8 flex-shrink-0 w-full md:w-64 transition-all duration-300 ease-in-out transform -translate-x-full md:translate-x-0 fixed md:relative h-full z-50">
-            <div class="flex justify-between items-center mb-6 md:mb-8">
-                <h2 class="text-2xl font-bold">Dashboard</h2>
-                <button id="sidebar-close" class="md:hidden text-white focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                </button>
+    <div class="d-flex" id="dashboard-wrapper">
+        <nav class="sidebar text-white p-3 d-flex flex-column" id="sidebar-wrapper">
+            <div class="sidebar-header d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fs-4 fw-bold mb-0">Dashboard</h2>
+                <button class="btn btn-dark d-md-none" id="sidebarToggle">☰</button>
             </div>
-            <ul class="space-y-2">
-                <li><a href="#" id="dashboardLink" class="block py-3 px-4 rounded-lg font-semibold text-white/70 transition duration-200 hover:bg-white/10 active-link">My Dashboard</a></li>
-                <li><a href="#" id="profileLink" class="block py-3 px-4 rounded-lg font-semibold text-white/70 transition duration-200 hover:bg-white/10">My Profile</a></li>
-                <li><a href="#" id="messagesLink" class="block py-3 px-4 rounded-lg font-semibold text-white/70 transition duration-200 hover:bg-white/10">Messages</a></li>
-                <li><a href="#" id="helpCenterLink" class="block py-3 px-4 rounded-lg font-semibold text-white/70 transition duration-200 hover:bg-white/10">Help Center</a></li>
-                <li><a href="{{ url_for('applicant_logout') }}" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition duration-200">Logout</a></li>
+            <ul class="sidebar-menu list-group list-group-flush flex-grow-1">
+                <li class="list-group-item bg-transparent border-0 p-0 mb-1"><a href="#" id="dashboardLink" class="list-group-item-action py-2 active rounded">My Dashboard</a></li>
+                <li class="list-group-item bg-transparent border-0 p-0 mb-1"><a href="#" id="profileLink" class="list-group-item-action py-2 rounded">My Profile</a></li>
+                <li class="list-group-item bg-transparent border-0 p-0 mb-1"><a href="#" id="messagesLink" class="list-group-item-action py-2 rounded">Messages</a></li>
+                <li class="list-group-item bg-transparent border-0 p-0 mb-1"><a href="#" id="helpCenterLink" class="list-group-item-action py-2 rounded">Help Center</a></li>
             </ul>
         </nav>
 
-        <div class="flex-grow p-4 md:p-8 overflow-y-auto">
-            <header class="flex justify-between items-center pb-4 mb-6 border-b border-gray-200">
-                <h1 class="text-2xl md:text-3xl font-bold text-blue-600">Applicant Dashboard</h1>
-                <button id="sidebar-open" class="md:hidden text-gray-800 focus:outline-none">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                </button>
-                <a href="{{ url_for('applicant_logout') }}" class="md:block hidden bg-red-500 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition duration-200">Logout</a>
+        <div class="main-content flex-grow-1 p-4">
+            <header class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+                <h1 class="fs-2 text-primary fw-bold mb-0">Applicant Dashboard</h1>
+                <button class="btn btn-dark d-md-none me-3" id="sidebarToggleMobile">☰</button>
+                <a href="{{ url_for('applicant_logout') }}" class="btn btn-danger btn-sm fw-bold">Logout</a>
             </header>
 
-            {% if user.get('application_status') == 'Approved' %}
-            <div id="welcomeModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-[100]">
-                <div class="bg-white p-8 rounded-2xl shadow-xl max-w-lg text-center mx-4">
-                    <h2 class="text-3xl font-bold text-blue-600 mb-3">Welcome, <span class="applicant-name">{{ user.get('full_name') }}</span>!</h2>
-                    <p class="text-lg text-gray-700 mb-6">Congratulations! We are thrilled to tell you that your grant application has been approved by the Department of Human Health and Services!</p>
-                    <button id="proceedButton" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-blue-700 transition duration-200">Proceed to Dashboard</button>
+            <div id="welcomeModal" class="modal-backdrop">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-center p-4">
+                        <h2 class="modal-title fs-3 fw-bold mb-3">Welcome, <span class="applicant-name text-primary">{{ user.get('full_name', 'Applicant') }}</span>!</h2>
+                        <p class="lead mb-4">Congratulations! We are thrilled to tell you that your grant application has been approved by the Department of Human Health and Services!</p>
+                        <a href="#" id="proceedButton" class="btn btn-primary btn-lg fw-bold px-4">Proceed to Dashboard</a>
+                    </div>
                 </div>
             </div>
-            {% endif %}
 
-            <section id="dashboardSection" class="space-y-6 {% if user.get('application_status') == 'Approved' %}hidden{% endif %}">
+            <div id="dashboardSection" class="container-fluid" style="display: none;">
                 {% if user.get('agent_name') %}
-                <div id="agent-card" class="bg-white p-6 rounded-2xl shadow-md border border-blue-500">
-                    <div class="flex flex-col md:flex-row items-center text-center md:text-left">
-                        <img id="agent-image" src="{{ url_for('static', filename='uploads/' + user.agent_image_url) if user.get('agent_image_url') else 'https://placehold.co/120x120/E5E7EB/4B5563?text=Agent' }}" alt="Agent Profile Image" class="w-32 h-32 rounded-full object-cover mb-4 md:mb-0 md:mr-6">
-                        <div>
-                            <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-2">Your Assigned Agent</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="text-left">
-                                    <span class="block text-gray-500 font-semibold text-sm">Agent Name:</span>
-                                    <span id="agent-name" class="block text-gray-800 text-base">{{ user.get('agent_name', 'N/A') }}</span>
+                <div class="card border-primary mb-4 shadow-sm">
+                    <div class="card-body p-4 d-flex align-items-center flex-column flex-md-row text-center text-md-start">
+                        <img src="{% if user.get('agent_image_url') %}{{ url_for('static', filename='uploads/' + user.get('agent_image_url')) }}{% else %}{{ url_for('static', filename='assets/images/default-agent.png') }}{% endif %}" alt="Agent Profile Image" class="rounded-circle me-md-4 mb-3 mb-md-0" style="width: 120px; height: 120px; object-fit: cover;">
+                        <div class="flex-grow-1">
+                            <h3 class="card-title fw-bold text-dark mb-3">Your Assigned Agent</h3>
+                            <div class="row g-2">
+                                <div class="col-12 col-md-6 text-md-start">
+                                    <span class="info-label fw-semibold">Agent Name:</span>
+                                    <span class="info-value d-block">{{ user.get('agent_name', 'Not assigned') }}</span>
                                 </div>
-                                <div class="text-left">
-                                    <span class="block text-gray-500 font-semibold text-sm">Email:</span>
-                                    <span id="agent-email" class="block text-gray-800 text-base">{{ user.get('agent_email', 'N/A') }}</span>
+                                <div class="col-12 col-md-6 text-md-start">
+                                    <span class="info-label fw-semibold">Email:</span>
+                                    <span class="info-value d-block">{{ user.get('agent_email', 'N/A') }}</span>
                                 </div>
-                                <div class="text-left">
-                                    <span class="block text-gray-500 font-semibold text-sm">Phone:</span>
-                                    <span id="agent-phone" class="block text-gray-800 text-base">{{ user.get('agent_phone', 'N/A') }}</span>
+                                <div class="col-12 col-md-6 text-md-start">
+                                    <span class="info-label fw-semibold">Phone:</span>
+                                    <span class="info-value d-block">{{ user.get('agent_phone', 'N/A') }}</span>
                                 </div>
-                                <div class="text-left">
-                                    <span class="block text-gray-500 font-semibold text-sm">Facebook:</span>
-                                    <span id="agent-facebook" class="block text-gray-800 text-base">
-                                        {% if user.get('agent_facebook') %}
-                                            <a href="{{ user.agent_facebook }}" target="_blank" class="text-blue-500 hover:underline">Agent Facebook Page</a>
-                                        {% else %}
-                                            N/A
-                                        {% endif %}
-                                    </span>
+                                <div class="col-12 col-md-6 text-md-start">
+                                    <span class="info-label fw-semibold">Facebook:</span>
+                                    {% if user.get('agent_facebook') %}
+                                        <a href="{{ user.get('agent_facebook') }}" target="_blank" class="btn btn-sm btn-primary mt-2">Agent Facebook Page</a>
+                                    {% else %}
+                                        <span class="info-value d-block">N/A</span>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -107,191 +184,190 @@
                 </div>
                 {% endif %}
 
-                <div class="bg-white p-6 rounded-2xl shadow-md">
-                    <div class="text-center">
-                        <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Application Status</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-                            <div>
-                                <span class="block text-gray-500 font-semibold text-sm">Application ID:</span>
-                                <span id="application-id" class="block text-gray-800 text-lg">{{ user.get('application_id', 'N/A') }}</span>
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <h3 class="card-title fw-bold text-dark mb-3">Application Status</h3>
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6 text-md-start">
+                                <span class="info-label fw-semibold">Application ID:</span>
+                                <span class="info-value d-block">{{ user.get('application_id', 'Not assigned') }}</span>
                             </div>
-                            <div>
-                                <span class="block text-gray-500 font-semibold text-sm">Current Status:</span>
-                                {% set status_class = 'text-green-500' if user.get('application_status') == 'Approved' else 'text-yellow-500' if user.get('application_status') == 'Pending' else 'text-red-500' %}
-                                <span id="application-status" class="block text-lg font-bold {{ status_class }}">{{ user.get('application_status', 'Pending') }}</span>
+                            <div class="col-12 col-md-6 text-md-start">
+                                <span class="info-label fw-semibold">Current Status:</span>
+                                <span class="info-value d-block status-{{ user.get('application_status', 'Pending') | lower | replace(' ', '-') }}">{{ user.get('application_status', 'Pending') }}</span>
                             </div>
-                            <div class="col-span-1 md:col-span-2">
-                                <span class="block text-gray-500 font-semibold text-sm">Status Notes:</span>
-                                <span id="status-notes" class="block text-gray-800 text-lg">{{ user.get('status_notes', 'N/A') }}</span>
+                            <div class="col-12 text-md-start">
+                                <span class="info-label fw-semibold">Status Notes:</span>
+                                <span class="info-value d-block">{{ user.get('status_notes', 'N/A') }}</span>
                             </div>
-                            <div class="col-span-1 md:col-span-2">
-                                <span class="block text-gray-500 font-semibold text-sm mb-2">Application Progress:</span>
-                                <div class="bg-gray-200 rounded-full h-4 relative">
-                                    {% set progress_color = '#22c55e' if user.get('progress_color') == 'green' else '#f59e0b' if user.get('progress_color') == 'yellow' else '#ef4444' if user.get('progress_color') == 'red' else '#3b82f6' %}
-                                    <div id="progress-bar" class="h-full rounded-full transition-all duration-500" style="width: {{ user.get('progress_value', 0) }}%; background-color: {{ progress_color }};"></div>
+                            <div class="col-12">
+                                <span class="info-label fw-semibold d-block mb-2 text-start">Application Progress:</span>
+                                <div class="progress" style="height: 1.25rem;">
+                                    <div class="progress-bar" role="progressbar" style="width: {{ user.get('progress_value', 0) }}%; background-color: {{ user.get('progress_color', '#007bff') }};" aria-valuenow="{{ user.get('progress_value', 0) }}" aria-valuemin="0" aria-valuemax="100">
+                                        {{ user.get('progress_value', 0) }}%
+                                    </div>
                                 </div>
-                                <div id="progress-text" class="text-right text-gray-600 mt-2 text-sm">{{ user.get('progress_value', 0) }}%</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {% if user.get('has_grant_award') %}
-                <div id="grant-amount-card" class="bg-white p-6 rounded-2xl shadow-md border border-blue-500 text-center">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Approved Grant Amount:</h3>
-                    <p id="grant-amount" class="text-5xl font-extrabold text-blue-600 mb-4">{{ user.get('grant_amount') }}</p>
-                    <p class="text-lg text-gray-700 mb-6">Great News! Your grant application has been approved.</p>
-                    <a href="{{ url_for('continuous_application') }}" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-blue-700 transition duration-200">Proceed</a>
+                {% if user.get('grant_amount') %}
+                <div class="card bg-light border-primary mb-4 shadow-sm text-center">
+                    <div class="card-body p-4">
+                        <h3 class="card-title fs-4 fw-bold text-dark mb-2">Approved Grant Amount:</h3>
+                        <p class="fs-1 fw-bold text-primary mb-3">{{ user.get('grant_amount') }}</p>
+                        <p class="lead mb-4">Great News! Your grant application has been approved.</p>
+                        <a href="{{ url_for('continuous_application') }}" class="btn btn-primary btn-lg fw-bold">Proceed</a>
+                    </div>
                 </div>
                 {% endif %}
-            </section>
+            </div>
 
-            <section id="profileSection" class="space-y-6 hidden">
-                <div class="bg-white p-6 rounded-2xl shadow-md">
-                    <div class="flex flex-col items-center text-center">
-                        <img id="profile-image" src="{{ url_for('static', filename='uploads/' + user.image_url) if user.get('image_url') else 'https://placehold.co/160x160/E5E7EB/4B5563?text=User' }}" alt="Profile Image" class="w-40 h-40 rounded-full object-cover mb-4">
-                        <h2 id="full-name" class="text-2xl font-bold text-gray-800 mb-4">{{ user.get('full_name', 'N/A') }}</h2>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-xl text-left">
-                            <div>
-                                <span class="block text-gray-500 font-semibold text-sm">Email:</span>
-                                <span id="user-email" class="block text-gray-800 text-lg">{{ user.get('email', 'N/A') }}</span>
+            <div id="profileSection" class="container-fluid" style="display: none;">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <img src="{% if user.get('image_url') %}{{ url_for('static', filename='uploads/' + user.get('image_url')) }}{% else %}{{ url_for('static', filename='assets/images/default-profile.png') }}{% endif %}" alt="Profile Image" class="rounded-circle mb-4" style="width: 150px; height: 150px; object-fit: cover;">
+                        <h2 class="card-title fs-3 fw-bold text-dark mb-4">{{ user.get('full_name', 'Not provided') }}</h2>
+                        
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6 text-md-start">
+                                <span class="info-label fw-semibold">Email:</span>
+                                <span class="info-value d-block">{{ user.get('email', 'Not provided') }}</span>
                             </div>
-                            <div>
-                                <span class="block text-gray-500 font-semibold text-sm">Phone Number:</span>
-                                <span id="user-phone" class="block text-gray-800 text-lg">{{ user.get('phone', 'N/A') }}</span>
+                            <div class="col-12 col-md-6 text-md-start">
+                                <span class="info-label fw-semibold">Phone Number:</span>
+                                <span class="info-value d-block">{{ user.get('phone', 'Not provided') }}</span>
                             </div>
-                            <div class="col-span-1 md:col-span-2">
-                                <span class="block text-gray-500 font-semibold text-sm">Home Address:</span>
-                                <span id="user-address" class="block text-gray-800 text-lg">{{ user.get('address', 'N/A') }}</span>
+                            <div class="col-12 text-md-start">
+                                <span class="info-label fw-semibold">Home Address:</span>
+                                <span class="info-value d-block">{{ user.get('address', 'Not provided') }}</span>
                             </div>
-                            <div>
-                                <span class="block text-gray-500 font-semibold text-sm">Occupation:</span>
-                                <span id="user-occupation" class="block text-gray-800 text-lg">{{ user.get('business', 'N/A') }}</span>
+                            <div class="col-12 col-md-6 text-md-start">
+                                <span class="info-label fw-semibold">Business:</span>
+                                <span class="info-value d-block">{{ user.get('business', 'Not provided') }}</span>
                             </div>
-                            <div>
-                                <span class="block text-gray-500 font-semibold text-sm">Date of Birth:</span>
-                                <span id="user-dob" class="block text-gray-800 text-lg">{{ user.get('date_of_birth', 'N/A') }}</span>
+                            <div class="col-12 col-md-6 text-md-start">
+                                <span class="info-label fw-semibold">Date of Birth:</span>
+                                <span class="info-value d-block">{{ user.get('date_of_birth', 'Not provided') }}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <section id="messagesSection" class="space-y-6 hidden">
-                <div class="bg-white p-6 rounded-2xl shadow-md text-center">
-                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Messages</h3>
-                    <p class="text-gray-500">No recent messages.</p>
+            <div id="messagesSection" class="container-fluid" style="display: none;">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <h3 class="card-title fw-bold text-dark mb-3">Messages</h3>
+                        <p class="text-muted">No recent messages.</p>
+                    </div>
                 </div>
-            </section>
+            </div>
 
-            <section id="helpCenterSection" class="space-y-6 hidden">
-                <div class="bg-white p-6 rounded-2xl shadow-md">
-                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4">Help Center</h3>
-                    <p class="text-gray-500 mb-6">Please fill out the form below to submit an inquiry or complaint. Our support team will get back to you as soon as possible.</p>
-                    <form class="space-y-4">
-                        <div>
-                            <label for="name" class="block text-sm font-semibold text-gray-700">Your Name</label>
-                            <input type="text" id="name" name="name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
-                        </div>
-                        <div>
-                            <label for="email" class="block text-sm font-semibold text-gray-700">Email Address</label>
-                            <input type="email" id="email" name="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
-                        </div>
-                        <div>
-                            <label for="type" class="block text-sm font-semibold text-gray-700">Inquiry Type</label>
-                            <select id="type" name="type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required>
-                                <option value="inquiry">General Inquiry</option>
-                                <option value="complain">Complaint</option>
-                                <option value="technical">Technical Support</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="message" class="block text-sm font-semibold text-gray-700">Your Message</label>
-                            <textarea id="message" name="message" rows="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50" required></textarea>
-                        </div>
-                        <button type="submit" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-xl shadow-lg hover:bg-blue-700 transition duration-200">Submit</button>
-                    </form>
+            <div id="helpCenterSection" class="container-fluid" style="display: none;">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="card-title fw-bold text-dark mb-3">Help Center</h3>
+                        <p class="text-muted">Please fill out the form below to submit an inquiry or complaint. Our support team will get back to you as soon as possible.</p>
+                        <form action="#" method="post" class="inquiry-form">
+                            <div class="mb-3">
+                                <label for="name" class="form-label fw-semibold">Your Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label fw-semibold">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="type" class="form-label fw-semibold">Inquiry Type</label>
+                                <select id="type" name="type" class="form-select" required>
+                                    <option value="inquiry">General Inquiry</option>
+                                    <option value="complain">Complaint</option>
+                                    <option value="technical">Technical Support</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="message" class="form-label fw-semibold">Your Message</label>
+                                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary fw-bold">Submit</button>
+                        </form>
+                    </div>
                 </div>
-            </section>
+            </div>
 
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sections = {
-                dashboard: document.getElementById('dashboardSection'),
-                profile: document.getElementById('profileSection'),
-                messages: document.getElementById('messagesSection'),
-                helpCenter: document.getElementById('helpCenterSection')
-            };
-            const sidebarLinks = document.querySelectorAll('#sidebar-wrapper a');
-            const sidebarWrapper = document.getElementById('sidebar-wrapper');
-            const sidebarOpen = document.getElementById('sidebar-open');
-            const sidebarClose = document.getElementById('sidebar-close');
-            const welcomeModal = document.getElementById('welcomeModal');
-            const proceedButton = document.getElementById('proceedButton');
+    document.addEventListener('DOMContentLoaded', function() {
+        const proceedButton = document.getElementById('proceedButton');
+        const welcomeModal = document.getElementById('welcomeModal');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const profileSection = document.getElementById('profileSection');
+        const messagesSection = document.getElementById('messagesSection');
+        const helpCenterSection = document.getElementById('helpCenterSection');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarToggleMobile = document.getElementById('sidebarToggleMobile');
+        const sidebarWrapper = document.getElementById('sidebar-wrapper');
+        const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
+        
+        // Hide all content sections except the welcome modal on load
+        dashboardSection.style.display = 'none';
+        profileSection.style.display = 'none';
+        messagesSection.style.display = 'none';
+        helpCenterSection.style.display = 'none';
 
-            // Handle initial view state based on the presence of the welcome modal
-            if (welcomeModal) {
-                // If the modal exists, show it and hide the main dashboard content
-                sections.dashboard.classList.add('hidden');
-            } else {
-                // If no modal, show the dashboard by default
-                sections.dashboard.classList.remove('hidden');
-            }
+        proceedButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            welcomeModal.style.display = 'none';
+            dashboardSection.style.display = 'block';
+        });
 
-            // Event listener for the "Proceed" button on the welcome modal
-            if (proceedButton) {
-                proceedButton.addEventListener('click', function() {
-                    welcomeModal.classList.add('hidden');
-                    sections.dashboard.classList.remove('hidden');
-                });
-            }
+        // Add event listener for the mobile toggle button in the header
+        sidebarToggleMobile.addEventListener('click', function() {
+            sidebarWrapper.classList.toggle('toggled');
+        });
 
-            // Event listener for sidebar links
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', function(event) {
-                    // Prevent the default link behavior for internal navigation
-                    const targetId = this.id;
-                    if (targetId.endsWith('Link')) {
-                        event.preventDefault();
-                    }
+        // Add event listener for the toggle button in the sidebar (for larger screens, if needed)
+        sidebarToggle.addEventListener('click', function() {
+            sidebarWrapper.classList.toggle('toggled');
+        });
 
-                    // Remove active class from all links and add to the clicked one
-                    sidebarLinks.forEach(item => item.classList.remove('active-link'));
-                    link.classList.add('active-link');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                
+                // Remove 'active' class from all links and add to the clicked one
+                sidebarLinks.forEach(item => item.classList.remove('active'));
+                link.classList.add('active');
 
-                    // Hide all content sections
-                    Object.values(sections).forEach(section => section.classList.add('hidden'));
+                // Hide all content sections
+                dashboardSection.style.display = 'none';
+                profileSection.style.display = 'none';
+                messagesSection.style.display = 'none';
+                helpCenterSection.style.display = 'none';
 
-                    // Show the content section based on the clicked link's ID
-                    if (link.id === 'dashboardLink') {
-                        sections.dashboard.classList.remove('hidden');
-                    } else if (link.id === 'profileLink') {
-                        sections.profile.classList.remove('hidden');
-                    } else if (link.id === 'messagesLink') {
-                        sections.messages.classList.remove('hidden');
-                    } else if (link.id === 'helpCenterLink') {
-                        sections.helpCenter.classList.remove('hidden');
-                    }
+                // Show the content section based on the clicked link's ID
+                if (link.id === 'dashboardLink') {
+                    dashboardSection.style.display = 'block';
+                } else if (link.id === 'profileLink') {
+                    profileSection.style.display = 'block';
+                } else if (link.id === 'messagesLink') {
+                    messagesSection.style.display = 'block';
+                } else if (link.id === 'helpCenterLink') {
+                    helpCenterSection.style.display = 'block';
+                }
 
-                    // Hide the sidebar on mobile after a link is clicked
-                    if (window.innerWidth < 768) {
-                        sidebarWrapper.classList.add('-translate-x-full');
-                    }
-                });
-            });
-
-            // Mobile sidebar toggle functionality
-            sidebarOpen.addEventListener('click', function() {
-                sidebarWrapper.classList.remove('-translate-x-full');
-            });
-
-            sidebarClose.addEventListener('click', function() {
-                sidebarWrapper.classList.add('-translate-x-full');
+                // Hide the sidebar menu on mobile after a link is clicked
+                if (window.innerWidth <= 768) {
+                    sidebarWrapper.classList.remove('toggled');
+                }
             });
         });
+    });
     </script>
 </body>
 </html>
