@@ -14,9 +14,9 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import uuid
-from .decorators import login_required, admin_required
 import re
 from functools import wraps
+import traceback
 from backend.forms import AdminLoginForm
 from flask_wtf.csrf import generate_csrf
 
@@ -70,6 +70,25 @@ client = MongoClient(MONGO_URI)
 db = client.get_database('pch_funding_db')
 users_collection = db['users']
 
+# Custom decorators
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            flash('Please log in to access this page.', 'warning')
+            return redirect(url_for('applicant_login')) # Or to the appropriate login page
+        return f(*args, **kwargs)
+    return decorated_function
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not is_admin():
+            flash('You do not have permission to access this page.', 'danger')
+            return redirect(url_for('admin_login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 def create_initial_data():
     users_collection.create_index("username", unique=True, sparse=True)
     users_collection.create_index("email", unique=True)
@@ -90,16 +109,18 @@ def generate_password(length=8):
     characters = string.ascii_letters + string.digits
     return ''.join(random.choice(characters) for i in range(length))
 
-def send_system_email(form_data, files):
+def send_system_email(form_data, application_data, files):
     """Sends a system-level email with a plain text and HTML body, and attachments."""
     try:
         print("Attempting to send admin email...")
         plain_text_body = "A new application has been submitted. Here are the details:\n\n"
+        # Use the flattened form_data for the plain text part
         for key, value in form_data.items():
-            if key != 'terms':
+            if key not in ['terms', 'social_platform[]', 'social_handle[]', 'needs[]']:
                 plain_text_body += f"{key.replace('_', ' ').title()}: {value}\n"
         
-        html_body = render_template('email_template.html', form_data=form_data, current_year=datetime.now().year)
+        # Use the structured application_data for the HTML part
+        html_body = render_template('email_template.html', form_data=application_data, current_year=datetime.now().year)
         
         msg = MIMEMultipart('alternative')
         msg['From'] = MAIL_USERNAME_SYSTEM
@@ -123,7 +144,6 @@ def send_system_email(form_data, files):
             )
             msg.attach(part)
 
-        # Use 'with' statement for safe server connection
         with smtplib.SMTP(MAIL_SERVER_SYSTEM, MAIL_PORT_SYSTEM) as server:
             if MAIL_USE_TLS_SYSTEM:
                 server.starttls()
@@ -150,6 +170,7 @@ def send_user_message_email(recipient_email, subject, html_body, text_body, atta
     This function uses the standard library email and smtplib modules.
     """
     try:
+        print(f"Attempting to send user email to {recipient_email}...")
         msg = MIMEMultipart('mixed')
         msg['From'] = MAIL_USERNAME_USER
         msg['To'] = recipient_email
@@ -179,9 +200,10 @@ def send_user_message_email(recipient_email, subject, html_body, text_body, atta
             server.login(MAIL_USERNAME_USER, MAIL_PASSWORD_USER)
             server.send_message(msg)
         
+        print("User email sent successfully!")
         return True
     except Exception as e:
-        print(f"Error sending user message email: {e}")
+        print(f"Error sending user message email to {recipient_email}: {e}")
         return False
 
 # Admin routes
@@ -193,10 +215,6 @@ def admin_login():
     form = AdminLoginForm()
 
     if form.validate_on_submit():
-        # Your form validation logic will go here.
-        # When using Flask-WTF, we check form.validate_on_submit()
-        # which automatically handles the POST check and CSRF token validation.
-
         username = form.username.data
         password = form.password.data
         
@@ -209,10 +227,8 @@ def admin_login():
             return redirect(url_for('admin_dashboard'))
         else:
             error = 'Invalid credentials'
-            # Pass the form object back to the template so it can display the CSRF token.
             return render_template('admin/admin_login.html', form=form, error=error)
 
-    # For a GET request, just render the template with the form object.
     return render_template('admin/admin_login.html', form=form)
 
 
@@ -238,7 +254,6 @@ def admin_create_applicant_account():
 
             # Check if user already exists
             if users_collection.find_one({"email": email}):
-                # Return a JSON error response for the frontend
                 return jsonify({'status': 'error', 'message': 'Error: An account with this email already exists.'}), 409
 
             # Hash the password
@@ -275,11 +290,9 @@ def admin_create_applicant_account():
             return jsonify({'status': 'success', 'message': 'Applicant account created successfully!'})
         
         except Exception as e:
-            # Handle any other exceptions and return a JSON error
             print(f"An error occurred: {e}")
             return jsonify({'status': 'error', 'message': f'An unexpected error occurred: {e}'}), 500
 
-    # This part remains for GET requests to render the page initially
     applicants = users_collection.find({"role": "applicants"})
     return render_template('admin/admin_create_applicant_account.html', applicants=applicants)
     
@@ -294,7 +307,6 @@ def admin_edit_applicant(applicant_id):
         return redirect(url_for('admin_manage_applicants'))
 
     if request.method == 'POST':
-        # Create a dictionary to hold all submitted data
         submitted_data = {
             "application_id": request.form.get('application_id'),
             "application_status": request.form.get('application_status'),
@@ -318,7 +330,6 @@ def admin_edit_applicant(applicant_id):
             "payment_issue_message": request.form.get('payment_issue_message', '')
         }
         
-        # Parse and convert numerical fields
         try:
             cleaned_grant_amount = re.sub(r'[^\d.]', '', submitted_data.get('grant_amount_formatted', ''))
             submitted_data['grant_amount'] = float(cleaned_grant_amount) if cleaned_grant_amount else 0.0
@@ -334,7 +345,6 @@ def admin_edit_applicant(applicant_id):
         if submitted_data.get('progress_value'):
             submitted_data['progress_value'] = int(submitted_data['progress_value'])
 
-        # Handle image uploads
         applicant_image = request.files.get('applicant_image')
         if applicant_image and applicant_image.filename != '':
             filename = secure_filename(applicant_image.filename)
@@ -351,10 +361,8 @@ def admin_edit_applicant(applicant_id):
             agent_image.save(image_path)
             submitted_data['agent_image_url'] = unique_filename
 
-        # Filter out keys with None or empty values to prevent data loss
         update_data = {k: v for k, v in submitted_data.items() if v is not None and v != ''}
         
-        # If progress_value is 0, make sure to include it in the update
         if 'progress_value' in submitted_data and submitted_data['progress_value'] == 0:
             update_data['progress_value'] = 0
             
@@ -378,13 +386,8 @@ def admin_write_letter(applicant_id):
     
     if request.method == 'POST':
         letter_content = request.form.get('award_letter_content')
-        
-        # Check if a grant amount has been set for this applicant
-        # This is a good way to track if a letter is for an actual award
         has_grant = applicant.get('grant_amount') is not None
         
-        # Update the MongoDB document with the new letter content
-        # and set the flags to indicate a letter and grant exist
         users_collection.update_one(
             {"_id": ObjectId(applicant_id)},
             {"$set": {
@@ -395,10 +398,8 @@ def admin_write_letter(applicant_id):
         )
         
         flash('Grant award letter saved successfully!', 'success')
-        # Redirect back to the edit page to see the saved changes
         return redirect(url_for('admin_edit_applicant', applicant_id=applicant_id))
     
-    # For a GET request, just render the template with the applicant data
     return render_template('admin/admin-write-letter.html', applicant=applicant)
 
 
@@ -535,7 +536,6 @@ def send_newsletter_route():
         include_credentials = 'include_credentials' in request.form
         
         if not recipient_emails_str or not subject or not message_body:
-            # Return JSON for an error state
             return jsonify({
                 "status": "error",
                 "message": "Recipient emails, subject, and message body are required."
@@ -543,7 +543,6 @@ def send_newsletter_route():
 
         recipient_emails = [email.strip() for email in recipient_emails_str.split(',') if email.strip()]
         
-        # Initialize template context and file paths
         template_context = {
             'subject': subject,
             'message_body': message_body,
@@ -557,13 +556,11 @@ def send_newsletter_route():
             password = request.form.get('password')
             
             if not username or not password:
-                # Return JSON for a missing credentials error
                 return jsonify({
                     "status": "error",
                     "message": "Username and password are required when including credentials."
                 }), 400
             
-            # Automatically generate the login link
             login_link = url_for('applicant_login', _external=True)
             
             template_context.update({
@@ -574,21 +571,19 @@ def send_newsletter_route():
             html_template_name = 'admin/email_with_credentials.html'
             text_template_name = 'admin/email_with_credentials.txt'
 
-        # Render email bodies from templates
         html_body = render_template(html_template_name, **template_context)
-        # You would also render a plain text version if available
+        # Assuming a plain text template exists for a cleaner email.
         # text_body = render_template(text_template_name, **template_context)
-        text_body = message_body # Fallback if no text template exists
+        text_body = message_body
 
-        # Handle attachment
+        # Handle attachment using the dedicated ATTACHMENT_FOLDER
         attachment_path = None
         file = request.files.get('attachment')
         if file and file.filename != '':
             filename = secure_filename(file.filename)
-            attachment_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            attachment_path = os.path.join(ATTACHMENT_FOLDER, filename)
             file.save(attachment_path)
 
-        # Send the email to each recipient
         success_count = 0
         fail_count = 0
         for email in recipient_emails:
@@ -597,11 +592,10 @@ def send_newsletter_route():
             else:
                 fail_count += 1
         
-        # Clean up the attachment file
+        # Clean up the temporary attachment file
         if attachment_path and os.path.exists(attachment_path):
             os.remove(attachment_path)
             
-        # Return a success JSON object with a summary message
         return jsonify({
             "status": "success",
             "message": f'Message sent to {success_count} recipients. Failed for {fail_count} recipients.'
@@ -618,8 +612,6 @@ def admin_logout():
 @login_required
 @admin_required
 def admin_manage_applicants():
-    # Fetch applicants who are not in a 'pending' state
-    # This assumes that once an application is reviewed, its status will be updated to something else.
     applicants = users_collection.find({"role": "applicants", "status": {"$ne": "pending"}})
     return render_template('admin/admin_manage_applicants.html', applicants=applicants)
 
@@ -659,26 +651,14 @@ def applicant_dashboard():
         session.clear()
         return redirect(url_for('applicant_login'))
 
-    # --- Start of the added code for formatting ---
-    # Check if 'grant_amount' exists in the user dictionary
     if user.get('grant_amount'):
         try:
-            # Convert the stored amount to a float
             raw_amount = float(user['grant_amount'])
-            
-            # Format the number as a currency string with a dollar sign, commas, and two decimal places
-            # This is the modern and recommended way to format currency in Python
             formatted_amount = f"${raw_amount:,.2f}"
-            
-            # Update the user dictionary with the new formatted string
             user['grant_amount'] = formatted_amount
-            
         except (ValueError, TypeError):
-            # If the value is not a number, set it to a default message
             user['grant_amount'] = "Amount not available"
-    # --- End of the added code ---
 
-    # The template will now receive the user object with the formatted grant_amount
     return render_template('applicants/applicant_dashboard.html', user=user)
 
 @app.route('/applicant/logout')
@@ -695,13 +675,9 @@ def main_homepage():
 def registration_form():
     if request.method == 'POST':
         try:
-            # Retrieve all form data
             form_data = request.form.to_dict()
-            
-            # Retrieve and process needs (checkboxes)
             needs = request.form.getlist('needs[]')
             
-            # Retrieve social media handles
             social_platforms = request.form.getlist('social_platform[]')
             social_handles = request.form.getlist('social_handle[]')
             social_media_list = []
@@ -711,11 +687,9 @@ def registration_form():
             
             email = form_data.get('email')
 
-            # Check if user already exists based on email
             if users_collection.find_one({"email": email}):
                 return jsonify({'status': 'error', 'message': 'An account with this email already exists.'}), 409
             
-            # File handling
             government_id_file = request.files.get('government_id')
             selfie_photo_file = request.files.get('selfie_photo')
             
@@ -727,7 +701,6 @@ def registration_form():
             if selfie_photo_file and selfie_photo_file.filename:
                 selfie_filename = str(uuid.uuid4()) + "_" + secure_filename(selfie_photo_file.filename)
             
-            # Construct the new user document (this will be the application record)
             new_user = {
                 "first_name": form_data.get('first_name', ''),
                 "middle_name": form_data.get('middle_name', ''),
@@ -760,7 +733,6 @@ def registration_form():
                 "created_at": datetime.now()
             }
             
-            # Save files
             if government_id_file and gov_id_filename:
                 gov_id_path = os.path.join(app.config['UPLOAD_FOLDER'], gov_id_filename)
                 government_id_file.save(gov_id_path)
@@ -771,19 +743,16 @@ def registration_form():
 
             users_collection.insert_one(new_user)
             
-            # Prepare files for admin email attachment
             files = {}
             if gov_id_filename: files['government_id'] = os.path.join(app.config['UPLOAD_FOLDER'], gov_id_filename)
             if selfie_filename: files['selfie_photo'] = os.path.join(app.config['UPLOAD_FOLDER'], selfie_filename)
 
-            # Send a system email to admin with form data and attachments
-            send_system_email(new_user, files)
+            # Pass the original form data and the new user document to the email function
+            send_system_email(form_data, new_user, files)
             
-            # Return a success message for the frontend
             return jsonify({'status': 'success', 'message': 'Application submitted successfully. We will contact you soon.'})
 
         except Exception as e:
-            # We add a print statement to log the full error for future debugging
             import traceback
             print(f"An error occurred during form submission: {e}")
             traceback.print_exc()
@@ -791,10 +760,8 @@ def registration_form():
 
     return render_template('registration_form.html')
 
-# Define the route for the 'About Us' page
 @app.route('/about-us')
 def about_us():
-    # Renders the about-us.html template
     return render_template('about-us.html')
 
 if __name__ == '__main__':
