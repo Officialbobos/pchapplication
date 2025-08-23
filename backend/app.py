@@ -282,6 +282,7 @@ def admin_create_applicant_account():
     # This part remains for GET requests to render the page initially
     applicants = users_collection.find({"role": "applicants"})
     return render_template('admin/admin_create_applicant_account.html', applicants=applicants)
+
 @app.route('/admin/applicants/edit/<applicant_id>', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -361,20 +362,26 @@ def admin_edit_applicant(applicant_id):
         
     return render_template('admin/admin-edit-applicant.html', applicant=applicant)
 
+
 @app.route('/admin/applicants/write-letter/<applicant_id>', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def admin_write_letter(applicant_id):
     applicant = users_collection.find_one({"_id": ObjectId(applicant_id)})
+    
     if not applicant:
         flash('Applicant not found.', 'danger')
         return redirect(url_for('admin_manage_applicants'))
-        
+    
     if request.method == 'POST':
         letter_content = request.form.get('award_letter_content')
         
+        # Check if a grant amount has been set for this applicant
+        # This is a good way to track if a letter is for an actual award
         has_grant = applicant.get('grant_amount') is not None
         
+        # Update the MongoDB document with the new letter content
+        # and set the flags to indicate a letter and grant exist
         users_collection.update_one(
             {"_id": ObjectId(applicant_id)},
             {"$set": {
@@ -383,9 +390,12 @@ def admin_write_letter(applicant_id):
                 "has_grant_award": has_grant
             }}
         )
-        flash('Grant award letter saved successfully!', 'success')
-        return redirect(url_for('admin_edit_applicant', applicant_id=applicant_id))
         
+        flash('Grant award letter saved successfully!', 'success')
+        # Redirect back to the edit page to see the saved changes
+        return redirect(url_for('admin_edit_applicant', applicant_id=applicant_id))
+    
+    # For a GET request, just render the template with the applicant data
     return render_template('admin/admin-write-letter.html', applicant=applicant)
 
 
