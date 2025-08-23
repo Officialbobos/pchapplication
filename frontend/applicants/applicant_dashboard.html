@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/images/pch.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -154,28 +155,28 @@
                 {% if user.get('agent_name') %}
                 <div class="card border-primary mb-4 shadow-sm">
                     <div class="card-body p-4 d-flex align-items-center flex-column flex-md-row text-center text-md-start">
-                        <img src="{% if user.get('agent_image_url') %}{{ url_for('static', filename='uploads/' + user.get('agent_image_url')) }}{% else %}{{ url_for('static', filename='assets/images/default-agent.png') }}{% endif %}" alt="Agent Profile Image" class="rounded-circle me-md-4 mb-3 mb-md-0" style="width: 120px; height: 120px; object-fit: cover;">
+                        <img id="agent-image" src="{% if user.get('agent_image_url') %}{{ url_for('static', filename='uploads/' + user.get('agent_image_url')) }}{% else %}{{ url_for('static', filename='assets/images/default-agent.png') }}{% endif %}" alt="Agent Profile Image" class="rounded-circle me-md-4 mb-3 mb-md-0" style="width: 120px; height: 120px; object-fit: cover;">
                         <div class="flex-grow-1">
                             <h3 class="card-title fw-bold text-dark mb-3">Your Assigned Agent</h3>
                             <div class="row g-2">
                                 <div class="col-12 col-md-6 text-md-start">
                                     <span class="info-label fw-semibold">Agent Name:</span>
-                                    <span class="info-value d-block">{{ user.get('agent_name', 'Not assigned') }}</span>
+                                    <span id="agent-name" class="info-value d-block">{{ user.get('agent_name', 'Not assigned') }}</span>
                                 </div>
                                 <div class="col-12 col-md-6 text-md-start">
                                     <span class="info-label fw-semibold">Email:</span>
-                                    <span class="info-value d-block">{{ user.get('agent_email', 'N/A') }}</span>
+                                    <span id="agent-email" class="info-value d-block">{{ user.get('agent_email', 'N/A') }}</span>
                                 </div>
                                 <div class="col-12 col-md-6 text-md-start">
                                     <span class="info-label fw-semibold">Phone:</span>
-                                    <span class="info-value d-block">{{ user.get('agent_phone', 'N/A') }}</span>
+                                    <span id="agent-phone" class="info-value d-block">{{ user.get('agent_phone', 'N/A') }}</span>
                                 </div>
                                 <div class="col-12 col-md-6 text-md-start">
                                     <span class="info-label fw-semibold">Facebook:</span>
                                     {% if user.get('agent_facebook') %}
                                         <a href="{{ user.get('agent_facebook') }}" target="_blank" class="btn btn-sm btn-primary mt-2">Agent Facebook Page</a>
                                     {% else %}
-                                        <span class="info-value d-block">N/A</span>
+                                        <span id="agent-facebook" class="info-value d-block">N/A</span>
                                     {% endif %}
                                 </div>
                             </div>
@@ -190,21 +191,21 @@
                         <div class="row g-3">
                             <div class="col-12 col-md-6 text-md-start">
                                 <span class="info-label fw-semibold">Application ID:</span>
-                                <span class="info-value d-block">{{ user.get('application_id', 'Not assigned') }}</span>
+                                <span id="application-id" class="info-value d-block">{{ user.get('application_id', 'Not assigned') }}</span>
                             </div>
                             <div class="col-12 col-md-6 text-md-start">
                                 <span class="info-label fw-semibold">Current Status:</span>
-                                <span class="info-value d-block status-{{ user.get('application_status', 'Pending') | lower | replace(' ', '-') }}">{{ user.get('application_status', 'Pending') }}</span>
+                                <span id="application-status" class="info-value d-block status-{{ user.get('application_status', 'Pending') | lower | replace(' ', '-') }}">{{ user.get('application_status', 'Pending') }}</span>
                             </div>
                             <div class="col-12 text-md-start">
                                 <span class="info-label fw-semibold">Status Notes:</span>
-                                <span class="info-value d-block">{{ user.get('status_notes', 'N/A') }}</span>
+                                <span id="status-notes" class="info-value d-block">{{ user.get('status_notes', 'N/A') }}</span>
                             </div>
                             <div class="col-12">
                                 <span class="info-label fw-semibold d-block mb-2 text-start">Application Progress:</span>
                                 <div class="progress" style="height: 1.25rem;">
-                                    <div class="progress-bar" role="progressbar" style="width: {{ user.get('progress_value', 0) }}%; background-color: {{ user.get('progress_color', '#007bff') }};" aria-valuenow="{{ user.get('progress_value', 0) }}" aria-valuemin="0" aria-valuemax="100">
-                                        {{ user.get('progress_value', 0) }}%
+                                    <div id="progress-bar" class="progress-bar" role="progressbar" style="width: {{ user.get('progress_value', 0) }}%; background-color: {{ user.get('progress_color', '#007bff') }};" aria-valuenow="{{ user.get('progress_value', 0) }}" aria-valuemin="0" aria-valuemax="100">
+                                        <span id="progress-value">{{ user.get('progress_value', 0) }}%</span>
                                     </div>
                                 </div>
                             </div>
@@ -216,7 +217,7 @@
                 <div class="card bg-light border-primary mb-4 shadow-sm text-center">
                     <div class="card-body p-4">
                         <h3 class="card-title fs-4 fw-bold text-dark mb-2">Approved Grant Amount:</h3>
-                        <p class="fs-1 fw-bold text-primary mb-3">{{ user.get('grant_amount') }}</p>
+                        <p id="grant-amount" class="fs-1 fw-bold text-primary mb-3">{{ user.get('grant_amount') }}</p>
                         <p class="lead mb-4">Great News! Your grant application has been approved.</p>
                         <a href="{{ url_for('continuous_application') }}" class="btn btn-primary btn-lg fw-bold">Proceed</a>
                     </div>
@@ -227,29 +228,29 @@
             <div id="profileSection" class="container-fluid" style="display: none;">
                 <div class="card mb-4 shadow-sm">
                     <div class="card-body p-4 text-center">
-                        <img src="{% if user.get('image_url') %}{{ url_for('static', filename='uploads/' + user.get('image_url')) }}{% else %}{{ url_for('static', filename='assets/images/default-profile.png') }}{% endif %}" alt="Profile Image" class="rounded-circle mb-4" style="width: 150px; height: 150px; object-fit: cover;">
-                        <h2 class="card-title fs-3 fw-bold text-dark mb-4">{{ user.get('full_name', 'Not provided') }}</h2>
+                        <img id="profile-image" src="{% if user.get('image_url') %}{{ url_for('static', filename='uploads/' + user.get('image_url')) }}{% else %}{{ url_for('static', filename='assets/images/default-profile.png') }}{% endif %}" alt="Profile Image" class="rounded-circle mb-4" style="width: 150px; height: 150px; object-fit: cover;">
+                        <h2 id="full-name" class="card-title fs-3 fw-bold text-dark mb-4">{{ user.get('full_name', 'Not provided') }}</h2>
                         
                         <div class="row g-3">
                             <div class="col-12 col-md-6 text-md-start">
                                 <span class="info-label fw-semibold">Email:</span>
-                                <span class="info-value d-block">{{ user.get('email', 'Not provided') }}</span>
+                                <span id="email" class="info-value d-block">{{ user.get('email', 'Not provided') }}</span>
                             </div>
                             <div class="col-12 col-md-6 text-md-start">
                                 <span class="info-label fw-semibold">Phone Number:</span>
-                                <span class="info-value d-block">{{ user.get('phone', 'Not provided') }}</span>
+                                <span id="phone" class="info-value d-block">{{ user.get('phone', 'Not provided') }}</span>
                             </div>
                             <div class="col-12 text-md-start">
                                 <span class="info-label fw-semibold">Home Address:</span>
-                                <span class="info-value d-block">{{ user.get('address', 'Not provided') }}</span>
+                                <span id="address" class="info-value d-block">{{ user.get('address', 'Not provided') }}</span>
                             </div>
                             <div class="col-12 col-md-6 text-md-start">
                                 <span class="info-label fw-semibold">Occupation:</span>
-                                <span class="info-value d-block">{{ user.get('business', 'Not provided') }}</span>
+                                <span id="business" class="info-value d-block">{{ user.get('business', 'Not provided') }}</span>
                             </div>
                             <div class="col-12 col-md-6 text-md-start">
                                 <span class="info-label fw-semibold">Date of Birth:</span>
-                                <span class="info-value d-block">{{ user.get('date_of_birth', 'Not provided') }}</span>
+                                <span id="date-of-birth" class="info-value d-block">{{ user.get('date_of_birth', 'Not provided') }}</span>
                             </div>
                         </div>
                     </div>
@@ -366,6 +367,75 @@
                     sidebarWrapper.classList.remove('toggled');
                 }
             });
+        });
+
+        // ** WebSocket Logic for Real-time Updates **
+        // This connects to the server and listens for changes
+        const socket = io();
+
+        // Tell the server which user's updates to listen for
+        socket.on('connect', function() {
+            socket.emit('join', { room: '{{ user._id }}' });
+        });
+
+        // Listen for the 'applicant_updated' event from the server
+        socket.on('applicant_updated', function(data) {
+            console.log('Update received:', data);
+            
+            // Dynamically update the HTML elements with new data
+            const new_data = data.new_data;
+
+            // Update Agent Details
+            if (new_data.agent_name) {
+                document.getElementById('agent-name').textContent = new_data.agent_name;
+                document.getElementById('agent-email').textContent = new_data.agent_email;
+                document.getElementById('agent-phone').textContent = new_data.agent_phone;
+                // You'll need to create a link for the Facebook URL if it's not "N/A"
+            }
+
+            // Update Application Status
+            if (new_data.application_id) {
+                document.getElementById('application-id').textContent = new_data.application_id;
+            }
+            if (new_data.application_status) {
+                const statusElement = document.getElementById('application-status');
+                statusElement.textContent = new_data.application_status;
+                statusElement.className = `info-value d-block status-${new_data.application_status.toLowerCase().replace(' ', '-')}`;
+            }
+            if (new_data.status_notes) {
+                document.getElementById('status-notes').textContent = new_data.status_notes;
+            }
+
+            // Update Progress Bar
+            if (new_data.progress_value !== undefined) {
+                const progressBar = document.getElementById('progress-bar');
+                const progressValueText = document.getElementById('progress-value');
+                progressBar.style.width = `${new_data.progress_value}%`;
+                progressBar.style.backgroundColor = new_data.progress_color;
+                progressValueText.textContent = `${new_data.progress_value}%`;
+            }
+
+            // Update Grant Amount (if it exists)
+            if (new_data.grant_amount) {
+                const grantAmountElement = document.getElementById('grant-amount');
+                if (grantAmountElement) {
+                    grantAmountElement.textContent = new_data.grant_amount;
+                }
+            }
+            
+            // Update Profile Section
+            if (new_data.image_url) {
+                document.getElementById('profile-image').src = `/static/uploads/${new_data.image_url}`;
+            }
+            if (new_data.full_name) {
+                document.getElementById('full-name').textContent = new_data.full_name;
+            }
+            // Continue for other profile fields
+            document.getElementById('email').textContent = new_data.email;
+            document.getElementById('phone').textContent = new_data.phone;
+            document.getElementById('address').textContent = new_data.address;
+            document.getElementById('business').textContent = new_data.business;
+            document.getElementById('date-of-birth').textContent = new_data.date_of_birth;
         });
     });
     </script>
