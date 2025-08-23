@@ -4,11 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HHS Funding Applications</title>
+    
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/images/pch.png') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
+    
+    <meta property="og:title" content="HHS Funding Applications" />
+    <meta property="og:description" content="Access resources and guides to help you apply for grants and funding." />
+    <meta property="og:image" content="{{ url_for('static', filename='assets/images/pch.png') }}" />
+    <meta property="og:url" content="https://pchfundingapplication.onrender.com/" />
+    <meta property="og:type" content="website" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="HHS Funding Applications" />
+    <meta name="twitter:description" content="Access resources and guides to help you apply for grants and funding." />
+    <meta name="twitter:image" content="{{ url_for('static', filename='assets/images/pch.png') }}" />
 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <style>
         /* SCAM ALERT MODAL STYLES */
         .scam-alert-modal-backdrop {
             position: fixed;
@@ -87,33 +101,27 @@
         /* --- Mobile Responsiveness --- */
         @media (max-width: 768px) {
             .scam-alert-modal-content {
-                /* Reduce padding for smaller screens */
                 padding: 1.5rem;
-                /* Make the modal slightly narrower to fit better */
                 width: 95%;
             }
 
             .scam-alert-modal-content .caution-icon {
-                /* Reduce icon size on mobile */
                 width: 60px;
                 height: 60px;
                 margin-bottom: 1rem;
             }
 
             .scam-alert-modal-content h2 {
-                /* Decrease font size for the heading */
                 font-size: 1.5rem;
                 margin-bottom: 0.75rem;
             }
 
             .scam-alert-modal-content p {
-                /* Reduce font size and margin for paragraphs */
                 font-size: 0.9rem;
                 margin-bottom: 1.5rem;
             }
 
             .scam-alert-modal-content .close-button {
-                /* Adjust button padding to fit on smaller screens */
                 padding: 10px 20px;
                 font-size: 0.9rem;
             }
@@ -122,24 +130,15 @@
 </head>
 <body>
 
-    <div id="scam-alert-modal" class="scam-alert-modal-backdrop">
-        <div class="scam-alert-modal-content">
-            <img src="{{ url_for('static', filename='assets/images/caution.png') }}" alt="Caution Icon" class="caution-icon">
-            <h2>SCAM ALERT!</h2>
-            <p><strong>Warning:</strong> Be cautious of potential scams and phishing attempts. HHS Funding Applications will never ask for your personal or financial information via unofficial channels. Only use our official website to apply. Report any suspicious activity immediately.</p>
-            <button class="close-button" id="close-scam-alert">I Understand</button>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='assets/images/pch.png') }}" alt="PCH Funding Applications Logo">
+                <h1>U.S Department of Health and Human Services</h1>
+            </div>
+            <a href="{{ url_for('applicant_login') }}" class="login-button">APPLICANT LOGIN</a>
         </div>
-    </div>
-
-<header class="main-header">
-    <div class="container">
-        <div class="logo">
-            <img src="{{ url_for('static', filename='assets/images/pch.png') }}" alt="PCH Funding Applications Logo">
-            <h1>U.S Department of Health and Human Services</h1>
-        </div>
-        <a href="{{ url_for('applicant_login') }}" class="login-button">APPLICANT LOGIN</a>
-    </div>
-</header>
+    </header>
 
     <main>
         <section class="hero-section">
@@ -240,12 +239,11 @@
                 <h2>HHS GRANTS & CONTRACTS </h2>
                 <div class="content-row">
                     <p>HHS is the largest grant-making agency in the US. Most HHS grants are provided directly to states, territories, tribes, and educational and community organizations, then given to people and organizations who are eligible to receive funding.</p>
-                  <P>On this site you will find information for prospective and current grantees about HHS grant programs, the grant application processes, and grant management.</P>
+                    <p>On this site you will find information for prospective and current grantees about HHS grant programs, the grant application processes, and grant management.</P>
                 </div>
                 <a href="{{ url_for('registration_form') }}" class="cta-button">Start the Application Process Today!</a>
             </div>
         </section>
-
 
         <section class="contact-us">
             <div class="container">
@@ -291,7 +289,7 @@
                 </div>
             </div>
         </section>
-<section>
+        
         <section class="funding-pie">
             <div class="container">
                 <h2>Get your piece of the funding pie.</h2>
@@ -301,18 +299,18 @@
             </div>
         </section>
 
-<section class="about-us">
-    <div class="container">
-        <h2>About Us</h2>
-        <div class="about-us-content">
-            <div class="text-content">
-                <p>HHS Funding Applications is here to help you get the info you need today, not next year. "Change your future in 2025." If FREE FUNDING to start a new business, expand your business or complete a worthwhile project, would change your life and benefit you for the rest of your life, what are you waiting for?</p>
-                <p>We are Funding Seeking Specialists, dedicated to helping you find and apply for the money you need to change your life forever. We provide the essential information and tools to make your funding search successful.</p>
-                <a href="{{ url_for('about_us') }}" class="cta-button">Learn More</a>
+        <section class="about-us">
+            <div class="container">
+                <h2>About Us</h2>
+                <div class="about-us-content">
+                    <div class="text-content">
+                        <p>HHS Funding Applications is here to help you get the info you need today, not next year. "Change your future in 2025." If FREE FUNDING to start a new business, expand your business or complete a worthwhile project, would change your life and benefit you for the rest of your life, what are you waiting for?</p>
+                        <p>We are Funding Seeking Specialists, dedicated to helping you find and apply for the money you need to change your life forever. We provide the essential information and tools to make your funding search successful.</p>
+                        <a href="{{ url_for('about_us') }}" class="cta-button">Learn More</a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
 
         <section class="sign-up-today">
             <div class="container">
@@ -323,7 +321,6 @@
                 </div>
             </div>
         </section>
-
     </main>
 
     <footer>
@@ -337,29 +334,9 @@
                 <a href="#">Contact 1-888-281-4837</a>
             </div>
             <p class="copyright">Copyright 2019 USA Funding Applications</p>
-            <p class="disclaimer">HHS Funding Applications is a government agency and is not affiliated with the United States Government or any other funding agency.HHS Grant Applications supplies training materials on how to apply for funding. We are not a government agency.</p>
+            <p class="disclaimer">HHS Funding Applications provides training and resources on how to apply for funding. We are not a government agency and are not affiliated with the United States Government or any other government entity.</p>
         </div>
     </footer>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('scam-alert-modal');
-            const closeButton = document.getElementById('close-scam-alert');
-
-            // Function to close the modal
-            function closeModal() {
-                modal.classList.add('hidden');
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                }, 300); // Wait for the transition to finish before hiding
-            }
-
-            // Close modal automatically after 5 seconds
-            setTimeout(closeModal, 5000);
-
-            // Close modal when the button is clicked
-            closeButton.addEventListener('click', closeModal);
-        });
-    </script>
-</body>
+    </body>
 </html>
