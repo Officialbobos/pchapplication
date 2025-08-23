@@ -206,10 +206,11 @@ p {
 }
 
 .how-it-works > p {
-    font-size: 1.1rem;
+    font-size: 1.8rem;
     color: var(--dark-gray);
     max-width: 800px;
     margin: 0 auto 3rem auto;
+    font-weight: 800;
 }
 
 .funding-types {

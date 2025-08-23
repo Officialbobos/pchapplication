@@ -23,109 +23,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     
     <style>
-        /* SCAM ALERT MODAL STYLES */
-        .scam-alert-modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 9999;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: opacity 0.3s ease;
-        }
-
-        .scam-alert-modal-content {
-            background-color: #ffffff;
-            padding: 2.5rem;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 5px 25px rgba(17, 2, 80, 0.3);
-            border: 2px solid var(--primary-blue);
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        .scam-alert-modal-content .caution-icon {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 1.5rem;
-        }
-
-        .scam-alert-modal-content h2 {
-            font-family: 'Montserrat', sans-serif;
-            color: var(--primary-blue);
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 5px rgba(17, 2, 80, 0.3);
-        }
-
-        .scam-alert-modal-content p {
-            color: var(--text-color);
-            line-height: 1.6;
-            margin-bottom: 2rem;
-        }
-
-        .scam-alert-modal-content .close-button {
-            padding: 12px 30px;
-            background-color: var(--primary-blue);
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .scam-alert-modal-content .close-button:hover {
-            background-color: var(--cta-red);
-            transform: translateY(-2px);
-        }
-
-        .scam-alert-modal-backdrop.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* --- Mobile Responsiveness --- */
-        @media (max-width: 768px) {
-            .scam-alert-modal-content {
-                padding: 1.5rem;
-                width: 95%;
-            }
-
-            .scam-alert-modal-content .caution-icon {
-                width: 60px;
-                height: 60px;
-                margin-bottom: 1rem;
-            }
-
-            .scam-alert-modal-content h2 {
-                font-size: 1.5rem;
-                margin-bottom: 0.75rem;
-            }
-
-            .scam-alert-modal-content p {
-                font-size: 0.9rem;
-                margin-bottom: 1.5rem;
-            }
-
-            .scam-alert-modal-content .close-button {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
-        }
+        /* All SCAM ALERT MODAL STYLES have been removed from this file. */
     </style>
 </head>
 <body>
@@ -151,19 +49,25 @@
                         <p>This is a newly HHS Grant program scheme by the Federal government to ensure all qualify citizen live a standard life and a better future ahead. </p>
                         <div class="hero-steps-grid">
                             <div class="hero-step">
-                                <img src="{{ url_for('static', filename='assets/images/register.png') }}" alt="Register Icon">
-                                <h3>REGISTER</h3>
-                                <p>Easy to fill out. Your information is secure.</p>
+                                <a href="#how-it-works" class="hero-step-link">
+                                    <img src="{{ url_for('static', filename='assets/images/register.png') }}" alt="Register Icon">
+                                    <h3>REGISTER</h3>
+                                    <p>Easy to fill out. Your information is secure.</p>
+                                </a>
                             </div>
                             <div class="hero-step">
-                                <img src="{{ url_for('static', filename='assets/images/research.png') }}" alt="Research Icon">
-                                <h3>RESEARCH</h3>
-                                <p>We provide the application sources and teach you how to apply.</p>
+                                <a href="#how-it-works" class="hero-step-link">
+                                    <img src="{{ url_for('static', filename='assets/images/research.png') }}" alt="Research Icon">
+                                    <h3>RESEARCH</h3>
+                                    <p>We provide the application sources and teach you how to apply.</p>
+                                </a>
                             </div>
                             <div class="hero-step">
-                                <img src="{{ url_for('static', filename='assets/images/apply.png') }}" alt="Apply Icon">
-                                <h3>APPLY</h3>
-                                <p>There's no limit to the number of grants and other sources you can apply to.</p>
+                                <a href="#how-it-works" class="hero-step-link">
+                                    <img src="{{ url_for('static', filename='assets/images/apply.png') }}" alt="Apply Icon">
+                                    <h3>APPLY</h3>
+                                    <p>There's no limit to the number of grants and other sources you can apply to.</p>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -171,7 +75,7 @@
             </div>
         </section>
 
-        <section class="how-it-works">
+        <section class="how-it-works" id="how-it-works">
             <div class="container">
                 <h2>LET'S GET STARTED! APPLY NOW</h2>
                 <p>WHICH OF THE GRANT WOULD YOU LIKE TO APPLY FOR?</p>
@@ -337,6 +241,5 @@
             <p class="disclaimer">HHS Funding Applications provides training and resources on how to apply for funding. We are not a government agency and are not affiliated with the United States Government or any other government entity.</p>
         </div>
     </footer>
-
-    </body>
+</body>
 </html>
