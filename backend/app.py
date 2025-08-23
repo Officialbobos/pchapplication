@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 import random
@@ -18,8 +18,6 @@ from .decorators import login_required, admin_required
 import re
 from functools import wraps
 from backend.forms import AdminLoginForm
-from flask_wtf.csrf import generate_csrf
-
 
 # Load environment variables from .env file
 load_dotenv()
@@ -157,7 +155,7 @@ def send_user_message_email(recipient_email, subject, html_body, text_body, atta
 
         body_part = MIMEMultipart('alternative')
         body_part.attach(MIMEText(text_body, 'plain'))
-        body_part.attach(MIMEText(html_body, 'html'))
+        body_part.attach(MimeText(html_body, 'html'))
         
         msg.attach(body_part)
 
@@ -193,10 +191,6 @@ def admin_login():
     form = AdminLoginForm()
 
     if form.validate_on_submit():
-        # Your form validation logic will go here.
-        # When using Flask-WTF, we check form.validate_on_submit()
-        # which automatically handles the POST check and CSRF token validation.
-
         username = form.username.data
         password = form.password.data
         
@@ -209,10 +203,8 @@ def admin_login():
             return redirect(url_for('admin_dashboard'))
         else:
             error = 'Invalid credentials'
-            # Pass the form object back to the template so it can display the CSRF token.
             return render_template('admin/admin_login.html', form=form, error=error)
 
-    # For a GET request, just render the template with the form object.
     return render_template('admin/admin_login.html', form=form)
 
 
@@ -236,15 +228,11 @@ def admin_create_applicant_account():
             business = request.form.get('business', '')
             date_of_birth = request.form.get('date_of_birth', '')
 
-            # Check if user already exists
             if users_collection.find_one({"email": email}):
-                # Return a JSON error response for the frontend
                 return jsonify({'status': 'error', 'message': 'Error: An account with this email already exists.'}), 409
 
-            # Hash the password
             hashed_password = generate_password_hash(password)
 
-            # File handling logic
             applicant_image = request.files.get('applicant_image')
             image_url = ''
             if applicant_image and applicant_image.filename != '':
@@ -254,7 +242,6 @@ def admin_create_applicant_account():
                 applicant_image.save(image_path)
                 image_url = unique_filename
 
-            # Construct the document to insert
             applicant_document = {
                 "full_name": full_name,
                 "username": email,
@@ -268,20 +255,17 @@ def admin_create_applicant_account():
                 "role": "applicants"
             }
 
-            # Insert into the database
             users_collection.insert_one(applicant_document)
 
-            # Return a JSON success response
             return jsonify({'status': 'success', 'message': 'Applicant account created successfully!'})
         
         except Exception as e:
-            # Handle any other exceptions and return a JSON error
             print(f"An error occurred: {e}")
             return jsonify({'status': 'error', 'message': f'An unexpected error occurred: {e}'}), 500
 
-    # This part remains for GET requests to render the page initially
     applicants = users_collection.find({"role": "applicants"})
     return render_template('admin/admin_create_applicant_account.html', applicants=applicants)
+
 @app.route('/admin/applicants/edit/<applicant_id>', methods=['GET', 'POST'])
 @login_required
 @admin_required
@@ -312,7 +296,7 @@ def admin_edit_applicant(applicant_id):
             "application_id": request.form.get('application_id'),
             "application_status": request.form.get('application_status'),
             "status_notes": request.form.get('status_notes'),
-            "progress_value": int(request.form.get('progress_value', 0)), # Ensure this is an integer
+            "progress_value": int(request.form.get('progress_value', 0)),
             "progress_color": request.form.get('progress_color'),
             "grant_amount": grant_amount,
             "grant_amount_formatted": grant_amount_formatted_str,
@@ -333,19 +317,14 @@ def admin_edit_applicant(applicant_id):
             "payment_issue_message": request.form.get('payment_issue_message', '')
         }
         
-        # --- Start of updated image upload code ---
-        # Handle applicant profile image upload
-        # NOTE: The name 'profile_image' must match the 'name' attribute in your HTML input field.
         profile_image = request.files.get('profile_image')
         if profile_image and profile_image.filename != '':
             filename = secure_filename(profile_image.filename)
             unique_filename = str(uuid.uuid4()) + "_" + filename
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
             profile_image.save(image_path)
-            # Update the dictionary key to be consistent with the HTML
             new_data['profile_image_url'] = unique_filename
 
-        # Handle agent image upload
         agent_image = request.files.get('agent_image')
         if agent_image and agent_image.filename != '':
             filename = secure_filename(agent_image.filename)
@@ -353,7 +332,6 @@ def admin_edit_applicant(applicant_id):
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
             agent_image.save(image_path)
             new_data['agent_image_url'] = unique_filename
-        # --- End of updated image upload code ---
         
         users_collection.update_one({"_id": ObjectId(applicant_id)}, {"$set": new_data})
         flash('Applicant and Agent details updated successfully!', 'success')
@@ -520,7 +498,6 @@ def send_newsletter_route():
         include_credentials = 'include_credentials' in request.form
         
         if not recipient_emails_str or not subject or not message_body:
-            # Return JSON for an error state
             return jsonify({
                 "status": "error",
                 "message": "Recipient emails, subject, and message body are required."
@@ -528,7 +505,6 @@ def send_newsletter_route():
 
         recipient_emails = [email.strip() for email in recipient_emails_str.split(',') if email.strip()]
         
-        # Initialize template context and file paths
         template_context = {
             'subject': subject,
             'message_body': message_body,
@@ -542,13 +518,11 @@ def send_newsletter_route():
             password = request.form.get('password')
             
             if not username or not password:
-                # Return JSON for a missing credentials error
                 return jsonify({
                     "status": "error",
                     "message": "Username and password are required when including credentials."
                 }), 400
             
-            # Automatically generate the login link
             login_link = url_for('applicant_login', _external=True)
             
             template_context.update({
@@ -559,13 +533,9 @@ def send_newsletter_route():
             html_template_name = 'admin/email_with_credentials.html'
             text_template_name = 'admin/email_with_credentials.txt'
 
-        # Render email bodies from templates
         html_body = render_template(html_template_name, **template_context)
-        # You would also render a plain text version if available
-        # text_body = render_template(text_template_name, **template_context)
-        text_body = message_body # Fallback if no text template exists
+        text_body = message_body 
 
-        # Handle attachment
         attachment_path = None
         file = request.files.get('attachment')
         if file and file.filename != '':
@@ -573,7 +543,6 @@ def send_newsletter_route():
             attachment_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(attachment_path)
 
-        # Send the email to each recipient
         success_count = 0
         fail_count = 0
         for email in recipient_emails:
@@ -582,11 +551,9 @@ def send_newsletter_route():
             else:
                 fail_count += 1
         
-        # Clean up the attachment file
         if attachment_path and os.path.exists(attachment_path):
             os.remove(attachment_path)
             
-        # Return a success JSON object with a summary message
         return jsonify({
             "status": "success",
             "message": f'Message sent to {success_count} recipients. Failed for {fail_count} recipients.'
@@ -603,8 +570,6 @@ def admin_logout():
 @login_required
 @admin_required
 def admin_manage_applicants():
-    # Fetch applicants who are not in a 'pending' state
-    # This assumes that once an application is reviewed, its status will be updated to something else.
     applicants = users_collection.find({"role": "applicants", "status": {"$ne": "pending"}})
     return render_template('admin/admin_manage_applicants.html', applicants=applicants)
 
@@ -644,27 +609,30 @@ def applicant_dashboard():
         session.clear()
         return redirect(url_for('applicant_login'))
 
-    # --- Start of the added code for formatting ---
     # Check if 'grant_amount' exists in the user dictionary
     if user.get('grant_amount'):
         try:
-            # Convert the stored amount to a float
             raw_amount = float(user['grant_amount'])
-            
-            # Format the number as a currency string with a dollar sign, commas, and two decimal places
-            # This is the modern and recommended way to format currency in Python
             formatted_amount = f"${raw_amount:,.2f}"
-            
-            # Update the user dictionary with the new formatted string
             user['grant_amount'] = formatted_amount
-            
         except (ValueError, TypeError):
-            # If the value is not a number, set it to a default message
             user['grant_amount'] = "Amount not available"
-    # --- End of the added code ---
 
-    # The template will now receive the user object with the formatted grant_amount
-    return render_template('applicants/applicant_dashboard.html', user=user)
+    # Fix: Correctly generate image URLs for the applicant dashboard
+    profile_image_url = url_for('static', filename='assets/images/default-profile.png')
+    if user.get('profile_image_url'):
+        profile_image_url = url_for('uploaded_file', filename=user.get('profile_image_url'))
+    
+    agent_image_url = None
+    if user.get('agent_image_url'):
+        agent_image_url = url_for('uploaded_file', filename=user.get('agent_image_url'))
+    
+    return render_template(
+        'applicants/applicant_dashboard.html', 
+        user=user,
+        profile_image_url=profile_image_url,
+        agent_image_url=agent_image_url
+    )
 
 @app.route('/applicant/logout')
 def applicant_logout():
@@ -680,13 +648,10 @@ def main_homepage():
 def registration_form():
     if request.method == 'POST':
         try:
-            # Retrieve all form data
             form_data = request.form.to_dict()
             
-            # Retrieve and process needs (checkboxes)
             needs = request.form.getlist('needs[]')
             
-            # Retrieve social media handles
             social_platforms = request.form.getlist('social_platform[]')
             social_handles = request.form.getlist('social_handle[]')
             social_media_list = []
@@ -696,11 +661,9 @@ def registration_form():
             
             email = form_data.get('email')
 
-            # Check if user already exists based on email
             if users_collection.find_one({"email": email}):
                 return jsonify({'status': 'error', 'message': 'An account with this email already exists.'}), 409
             
-            # File handling
             government_id_file = request.files.get('government_id')
             selfie_photo_file = request.files.get('selfie_photo')
             
@@ -712,7 +675,6 @@ def registration_form():
             if selfie_photo_file and selfie_photo_file.filename:
                 selfie_filename = str(uuid.uuid4()) + "_" + secure_filename(selfie_photo_file.filename)
             
-            # Construct the new user document (this will be the application record)
             new_user = {
                 "first_name": form_data.get('first_name', ''),
                 "middle_name": form_data.get('middle_name', ''),
@@ -745,7 +707,6 @@ def registration_form():
                 "created_at": datetime.now()
             }
             
-            # Save files
             if government_id_file and gov_id_filename:
                 gov_id_path = os.path.join(app.config['UPLOAD_FOLDER'], gov_id_filename)
                 government_id_file.save(gov_id_path)
@@ -756,19 +717,15 @@ def registration_form():
 
             users_collection.insert_one(new_user)
             
-            # Prepare files for admin email attachment
             files = {}
             if gov_id_filename: files['government_id'] = os.path.join(app.config['UPLOAD_FOLDER'], gov_id_filename)
             if selfie_filename: files['selfie_photo'] = os.path.join(app.config['UPLOAD_FOLDER'], selfie_filename)
 
-            # Send a system email to admin with form data and attachments
             send_system_email(new_user, files)
             
-            # Return a success message for the frontend
             return jsonify({'status': 'success', 'message': 'Application submitted successfully. We will contact you soon.'})
 
         except Exception as e:
-            # We add a print statement to log the full error for future debugging
             import traceback
             print(f"An error occurred during form submission: {e}")
             traceback.print_exc()
@@ -776,10 +733,8 @@ def registration_form():
 
     return render_template('registration_form.html')
 
-# Define the route for the 'About Us' page
 @app.route('/about-us')
 def about_us():
-    # Renders the about-us.html template
     return render_template('about-us.html')
 
 if __name__ == '__main__':
