@@ -296,7 +296,8 @@ def admin_create_applicant_account():
     applicants = users_collection.find({"role": "applicants"})
     return render_template('admin/admin_create_applicant_account.html', applicants=applicants)
 
-@app.route('/admin/create-admin-account', methods=['GET', 'POST'])
+
+@app.route('/admin/create_admin_account', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def admin_create_admin_account():
@@ -332,6 +333,7 @@ def admin_create_admin_account():
             
     admins = users_collection.find({"role": "admins"})
     return render_template('admin/create-admin-account.html', admins=admins)
+
     
 @app.route('/admin/applicants/edit/<applicant_id>', methods=['GET', 'POST'])
 @login_required

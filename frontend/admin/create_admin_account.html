@@ -90,14 +90,16 @@
                     </tr>
                 </thead>
                 <tbody id="admin-table-body" class="text-gray-600 text-sm font-light">
-                    <!-- This will be populated dynamically by the backend, but we'll include sample data for a complete file. -->
+                    <!-- Jinja2 loop to dynamically populate the table -->
+                    {% for admin in admins %}
                     <tr class="border-b border-gray-200 hover:bg-gray-100">
-                        <td class="py-3 px-6 text-left">pchadmin</td>
-                        <td class="py-3 px-6 text-left">pchsubmitinfo@gmail.com</td>
+                        <td class="py-3 px-6 text-left">{{ admin.username }}</td>
+                        <td class="py-3 px-6 text-left">{{ admin.email }}</td>
                         <td class="py-3 px-6 text-center">
                             <span class="text-gray-400">Default Account</span>
                         </td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
@@ -133,7 +135,7 @@
 
                 try {
                     // Send a POST request to a dedicated admin creation endpoint
-                    const response = await fetch('/admin/create-admin-account', {
+                    const response = await fetch('/admin/create_admin_account', {
                         method: 'POST',
                         body: formData,
                     });
