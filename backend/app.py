@@ -295,6 +295,43 @@ def admin_create_applicant_account():
 
     applicants = users_collection.find({"role": "applicants"})
     return render_template('admin/admin_create_applicant_account.html', applicants=applicants)
+
+@app.route('/admin/create-admin-account', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def admin_create_admin_account():
+    if request.method == 'POST':
+        try:
+            username = request.form['username']
+            email = request.form['email']
+            password = request.form['password']
+            
+            # Check if user already exists
+            if users_collection.find_one({"email": email}):
+                return jsonify({'status': 'error', 'message': 'Error: An account with this email already exists.'}), 409
+            
+            # Hash the password
+            hashed_password = generate_password_hash(password)
+            
+            # Construct the document to insert
+            admin_document = {
+                "username": username,
+                "email": email,
+                "password_hash": hashed_password,
+                "role": "admins"
+            }
+            
+            # Insert into the database
+            users_collection.insert_one(admin_document)
+            
+            return jsonify({'status': 'success', 'message': 'Admin account created successfully!'})
+        
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return jsonify({'status': 'error', 'message': f'An unexpected error occurred: {e}'}), 500
+            
+    admins = users_collection.find({"role": "admins"})
+    return render_template('admin/admin_create_admin_account.html', admins=admins)
     
 @app.route('/admin/applicants/edit/<applicant_id>', methods=['GET', 'POST'])
 @login_required

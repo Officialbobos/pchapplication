@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Create New Admin Account</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 700px;
+            margin: 2rem auto;
+            background-color: #ffffff;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            margin-top: 0.25rem;
+            transition: border-color 0.2s ease-in-out;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+        .flash-message {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .flash-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .flash-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Create New Admin Account</h1>
+
+        <!-- Message Container for status updates -->
+        <div id="message-container" class="mb-6"></div>
+
+        <!-- Admin Account Creation Form -->
+        <form id="create-admin-form" class="space-y-4">
+            <div>
+                <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                <input type="text" id="username" name="username" required class="form-input">
+            </div>
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                <input type="email" id="email" name="email" required class="form-input">
+            </div>
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" id="password" name="password" required class="form-input">
+            </div>
+            
+            <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl hover:bg-blue-700 transition duration-300 shadow-md">
+                Create Admin Account
+            </button>
+        </form>
+
+        <hr class="my-8 border-t border-gray-300">
+
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 text-center">Existing Admin Users</h2>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded-lg shadow-md overflow-hidden">
+                <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <tr>
+                        <th class="py-3 px-6 text-left">Username</th>
+                        <th class="py-3 px-6 text-left">Email</th>
+                        <th class="py-3 px-6 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-table-body" class="text-gray-600 text-sm font-light">
+                    <!-- This will be populated dynamically by the backend, but we'll include sample data for a complete file. -->
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6 text-left">pchadmin</td>
+                        <td class="py-3 px-6 text-left">pchsubmitinfo@gmail.com</td>
+                        <td class="py-3 px-6 text-center">
+                            <span class="text-gray-400">Default Account</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('create-admin-form');
+            const messageContainer = document.getElementById('message-container');
+
+            // Function to display messages
+            function showMessage(message, type) {
+                messageContainer.innerHTML = '';
+                const messageDiv = document.createElement('div');
+                messageDiv.textContent = message;
+                messageDiv.className = `flash-message flash-${type}`;
+                messageContainer.appendChild(messageDiv);
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    messageDiv.remove();
+                }, 5000);
+            }
+
+            // Handle form submission
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                
+                // Show a loading message
+                showMessage('Creating account...', 'info');
+
+                try {
+                    // Send a POST request to a dedicated admin creation endpoint
+                    const response = await fetch('/admin/create-admin-account', {
+                        method: 'POST',
+                        body: formData,
+                    });
+                    
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        showMessage(result.message, 'success');
+                        form.reset();
+                        // Optional: You could add logic here to dynamically update the table
+                        // with the new admin user without a page reload.
+                    } else {
+                        showMessage(result.message, 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showMessage('An unexpected error occurred. Please try again.', 'error');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
