@@ -331,7 +331,7 @@ def admin_create_admin_account():
             return jsonify({'status': 'error', 'message': f'An unexpected error occurred: {e}'}), 500
             
     admins = users_collection.find({"role": "admins"})
-    return render_template('admin/admin_create_admin_account.html', admins=admins)
+    return render_template('admin/create-admin-account.html', admins=admins)
     
 @app.route('/admin/applicants/edit/<applicant_id>', methods=['GET', 'POST'])
 @login_required
